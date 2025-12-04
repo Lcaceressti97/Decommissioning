@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
+  <component name="MavenProjectsManager">
+    <option name="originalFiles">
+      <list>
+        <option value="$PROJECT_DIR$/AnnotationsDecommissioning/pom.xml" />
+        <option value="$PROJECT_DIR$/ComodatosApi/pom.xml" />
+        <option value="$PROJECT_DIR$/EquipmentAccessoriesBilling/pom.xml" />
+        <option value="$PROJECT_DIR$/EquipmentBlacklist/pom.xml" />
+        <option value="$PROJECT_DIR$/EquipmentInsurance/pom.xml" />
+        <option value="$PROJECT_DIR$/InquiriesAmsysNavega/pom.xml" />
+        <option value="$PROJECT_DIR$/JTellerServices/pom.xml" />
+        <option value="$PROJECT_DIR$/SelfConsumptionModule/pom.xml" />
+        <option value="$PROJECT_DIR$/SimcardInquiry/pom.xml" />
+        <option value="$PROJECT_DIR$/BsimModule/pom.xml" />
+      </list>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_8" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/out" />
+  </component>
+</project>

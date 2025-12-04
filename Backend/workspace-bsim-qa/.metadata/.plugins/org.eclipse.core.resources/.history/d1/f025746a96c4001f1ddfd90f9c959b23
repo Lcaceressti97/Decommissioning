@@ -1,0 +1,196 @@
+package hn.com.tigo.equipmentaccessoriesbilling.models;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+import hn.com.tigo.equipmentaccessoriesbilling.entities.InvoiceDetailEntity;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class BillingModel {
+
+	private Long id;
+
+	@NotNull(message = "INVOICE_NO cannot be null")
+	@NotBlank(message = "INVOICE_NO cannot be blank")
+	private String invoiceNo;
+
+	@NotNull(message = "INVOICE_TYPE cannot be null")
+	@NotBlank(message = "INVOICE_TYPE cannot be blank")
+	@Pattern(regexp = "^(FS[1-4]|FC[1-4]|SHP|SHO)$", message = "The INVOICE TYPE is not valid and must be one of the following types: FS1, FS2, FS3, FS4, FC1, FC2, FC3, FC4, SHP, SHO")
+	private String invoiceType;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Long idReference;
+
+	@NotNull(message = "ACCTCODE cannot be null")
+	@NotBlank(message = "ACCTCODE cannot be blank")
+	@Pattern(regexp = "^[0-9]+$", message = "ACCTCODE must contain only numbers")
+	@Size(max = 30, message = "ACCTCODE must not exceed {max} characters")
+	private String acctCode;
+
+	private String primaryIdentity;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String documentNo;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String diplomaticCardNo;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String correlativeOrdenExemptNo;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String correlativeCertificateExoNo;
+
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String xml;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String cai;
+
+	@NotNull(message = "CUSTOMER cannot be null")
+	@NotBlank(message = "CUSTOMER cannot be blank")
+	private String customer;
+
+	private String customerId;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String cashierName;
+
+	@NotNull(message = "SELLER cannot be null")
+	@NotBlank(message = "SELLER cannot be blank")
+	private String seller;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String sellerCode;
+
+	private Long idBranchOffices;
+
+	private String agency;
+
+	// @JsonInclude(JsonInclude.Include.NON_NULL)
+	private String warehouse;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private LocalDateTime dueDate;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String initialRank;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String finalRank;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Long idCompany;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Long idSystem;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String numberDei;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String deadLine;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Long idVoucher;
+
+	//@NotNull(message = "SUBTOTAL cannot be null")
+	//@Positive(message = "SUBTOTAL must be a positive number")
+	private Double subtotal;
+
+	private Double exchangeRate;
+
+	private Double discount;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Double discountPercentage;
+
+	private Double taxPercentage;
+
+	private Double amountTax;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private Double amountExo;
+
+	//@Positive(message = "AMOUNT_TOTAL must be a positive number")
+	private Double amountTotal;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String authorizingUser;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private LocalDateTime authorizationDate;
+
+	//@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String userIssued;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private LocalDateTime dateOfIssue;
+
+	private Long exonerationStatus;
+
+	private Long status;
+
+	private LocalDateTime created;
+
+	private String inventoryType;
+
+	private String subWarehouse;
+
+	private Long channel;
+
+	private Double exemptAmount;
+
+	private String customerAddress;
+
+	private String customerRtnId;
+
+	private String sellerName;
+
+	private String paymentCode;
+
+	private String totalLps;
+
+	private String totalLpsLetters;
+
+	private String includesInsurance;
+	
+	private String fiscalProcess;
+
+	private Long idInsuranceClaim;	
+	
+	private String uti;
+	
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String tramaEmission;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String tramaCancellation;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String tramaCancellationIssued;
+
+	@JsonInclude(JsonInclude.Include.NON_NULL)
+	private String tramaInsurance;
+
+
+	@Valid
+	@NotNull(message = "invoiceDetails cannot be null")
+	private List<InvoiceDetailEntity> invoiceDetails;
+
+}

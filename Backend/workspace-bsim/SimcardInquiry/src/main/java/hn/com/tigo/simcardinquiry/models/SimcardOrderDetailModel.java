@@ -1,0 +1,16 @@
+package hn.com.tigo.simcardinquiry.models;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class SimcardOrderDetailModel {
+
+	private SimcardOrderControlModel orderControl;
+	private List<SimcardDetailModel> details;
+}

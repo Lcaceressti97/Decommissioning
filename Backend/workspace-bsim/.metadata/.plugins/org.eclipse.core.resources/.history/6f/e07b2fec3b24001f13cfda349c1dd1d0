@@ -1,0 +1,109 @@
+package hn.com.tigo.equipmentaccessoriesbilling.controllers;
+
+import java.util.List;
+
+import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import hn.com.tigo.equipmentaccessoriesbilling.models.PriceMasterDTO;
+import hn.com.tigo.equipmentaccessoriesbilling.models.PriceMasterModel;
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IPriceMasterService;
+import hn.com.tigo.equipmentaccessoriesbilling.utils.ResponseBuilder;
+
+@RestController
+@RequestMapping("/pricemaster")
+public class PriceMasterController {
+
+	private final IPriceMasterService priceMasterService;
+	private final ResponseBuilder responseBuilder;
+
+	public PriceMasterController(IPriceMasterService priceMasterService) {
+		super();
+		this.priceMasterService = priceMasterService;
+		this.responseBuilder = new ResponseBuilder();
+	}
+
+	@PostConstruct
+	void setGlobalSecurityContext() {
+		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+	}
+
+	@GetMapping()
+	public ResponseEntity<Object> getAll(HttpServletRequest request) {
+
+		try {
+			List<PriceMasterModel> getAllPageable = priceMasterService.getAllPriceMaster();
+			return responseBuilder.buildSuccessResponse(request, getAllPageable);
+		} catch (Exception ex) {
+			return responseBuilder.buildErrorResponse(ex, request);
+		}
+	}
+
+	@GetMapping("/model/{model}")
+	public ResponseEntity<Object> getByModel(@PathVariable String model, HttpServletRequest request) {
+
+		try {
+			List<PriceMasterDTO> priceMasterModel = this.priceMasterService.getPriceMasterByModel(model);
+			return responseBuilder.buildSuccessResponse(request, priceMasterModel);
+		} catch (Exception ex) {
+			return responseBuilder.buildErrorResponse(ex, request);
+		}
+	}
+
+	@GetMapping("/{id}")
+	public ResponseEntity<Object> getById(@PathVariable Long id, HttpServletRequest request) {
+
+		try {
+			PriceMasterModel model = this.priceMasterService.getPriceMasterById(id);
+			return responseBuilder.buildSuccessResponse(request, model);
+		} catch (Exception ex) {
+			return responseBuilder.buildErrorResponse(ex, request);
+		}
+	}
+
+	@PostMapping("/add")
+	public ResponseEntity<Object> add(@Valid @RequestBody PriceMasterModel model, HttpServletRequest httpRequest) {
+		try {
+			this.priceMasterService.addPriceMaster(model);
+			return responseBuilder.buildSuccessResponse(httpRequest, model);
+		} catch (Exception ex) {
+			return responseBuilder.buildErrorResponse(ex, httpRequest);
+		}
+	}
+
+	@PutMapping("/update/{id}")
+	public ResponseEntity<Object> update(@PathVariable Long id, @Valid @RequestBody PriceMasterModel model,
+			HttpServletRequest request) {
+
+		try {
+			this.priceMasterService.updatePriceMaster(id, model);
+			return responseBuilder.buildSuccessResponse(request, model);
+		} catch (Exception ex) {
+			return responseBuilder.buildErrorResponse(ex, request);
+		}
+	}
+
+	@DeleteMapping("/{id}")
+	public ResponseEntity<Object> delete(@PathVariable Long id, HttpServletRequest request) {
+
+		try {
+			this.priceMasterService.deletePriceMaster(id);
+			return responseBuilder.buildSuccessResponse(request, null);
+		} catch (Exception ex) {
+			return responseBuilder.buildErrorResponse(ex, request);
+		}
+	}
+
+}

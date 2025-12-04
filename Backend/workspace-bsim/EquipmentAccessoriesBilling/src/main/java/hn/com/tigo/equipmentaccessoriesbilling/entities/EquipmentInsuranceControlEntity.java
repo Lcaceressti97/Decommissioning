@@ -1,0 +1,134 @@
+package hn.com.tigo.equipmentaccessoriesbilling.entities;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.*;
+
+import hn.com.tigo.equipmentaccessoriesbilling.models.EquipmentInsuranceControlModel;
+
+import java.io.Serializable;
+import java.time.LocalDateTime;
+
+@Table(name = "SE_EQUIPMENT_INSURANCE_CONTROL")
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class EquipmentInsuranceControlEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "equipment_insurance_control_seq")
+	@SequenceGenerator(name = "equipment_insurance_control_seq", sequenceName = "SQ_EQUIPMENT_INSURANCE", allocationSize = 1)
+	private Long id;
+
+	@Column(name = "TRANSACTION_CODE", length = 5)
+	private String transactionCode;
+
+	@Column(name = "USER_AS", length = 10)
+	private String userAs;
+
+	@Column(name = "DATE_CONSULTATION")
+	private LocalDateTime dateConsultation;
+
+	@Column(name = "CUSTOMER_ACCOUNT", length = 30)
+	private String customerAccount;
+
+	@Column(name = "SERVICE_ACCOUNT", length = 30)
+	private String serviceAccount;
+
+	@Column(name = "BILLING_ACCOUNT", length = 30)
+	private String billingAccount;
+
+	@Column(name = "PHONE_NUMBER", length = 12)
+	private String phoneNumber;
+
+	@Column(name = "EQUIPMENT_MODEL", length = 6)
+	private String equipmentModel;
+
+	@Column(name = "ESN", length = 15)
+	private String esn;
+
+	@Column(name = "ORIGIN_AS", length = 1)
+	private String originAs;
+
+	@Column(name = "INVENTORY_TYPE_AS", length = 1)
+	private String inventoryTypeAs;
+
+	@Column(name = "ORIGIN_TYPE_AS", length = 1)
+	private String originTypeAs;
+
+	@Column(name = "DATE_CONTRACT")
+	private LocalDateTime dateContract;
+
+	@Column(name = "START_DATE")
+	private LocalDateTime startDate;
+
+	@Column(name = "END_DATE")
+	private LocalDateTime endDate;
+
+	@Column(name = "DATE_INCLUSION")
+	private LocalDateTime dateInclusion;
+
+	@Column(name = "INSURANCE_RATE", length = 9)
+	private Double insuranceRate;
+
+	@Column(name = "PERIOD", length = 3)
+	private Double period;
+
+	@Column(name = "INSURANCE_RATE_2", length = 9)
+	private Double insuranceRate2;
+
+	@Column(name = "PERIOD_2", length = 3)
+	private Double period2;
+
+	@Column(name = "INSURANCE_RATE_3", length = 9)
+	private Double insuranceRate3;
+
+	@Column(name = "PERIOD_3", length = 3)
+	private Double period3;
+
+	@Column(name = "INSURANCE_STATUS", length = 1)
+	private Long insuranceStatus;
+
+	@Column(name = "SUBSCRIBER", length = 30)
+	private String subscriber;
+
+	@Column(name = "TRAMA", length = 2000)
+	private String trama;
+
+	public EquipmentInsuranceControlModel entityToModel() {
+		EquipmentInsuranceControlModel model = new EquipmentInsuranceControlModel();
+		model.setId(this.getId());
+		model.setTransactionCode(this.getTransactionCode());
+		model.setUserAs(this.getUserAs());
+		model.setDateConsultation(this.getDateConsultation());
+		model.setCustomerAccount(this.getCustomerAccount());
+		model.setServiceAccount(this.getServiceAccount());
+		model.setBillingAccount(this.getBillingAccount());
+		model.setPhoneNumber(this.getPhoneNumber());
+		model.setEquipmentModel(this.getEquipmentModel());
+		model.setEsn(this.getEsn());
+		model.setOriginAs(this.getOriginAs());
+		model.setInventoryTypeAs(this.getInventoryTypeAs());
+		model.setOriginTypeAs(this.getOriginTypeAs());
+		model.setDateContract(this.getDateContract());
+		model.setStartDate(this.getStartDate());
+		model.setEndDate(this.getEndDate());
+		model.setDateInclusion(this.getDateInclusion());
+		model.setInsuranceRate(this.getInsuranceRate());
+		model.setPeriod(this.getPeriod());
+		model.setInsuranceRate2(this.getInsuranceRate2());
+		model.setPeriod2(this.getPeriod2());
+		model.setInsuranceRate3(this.getInsuranceRate3());
+		model.setPeriod3(this.getPeriod3());
+		model.setInsuranceStatus(this.getInsuranceStatus());
+		model.setSubscriber(this.getSubscriber());
+		model.setTrama(this.getTrama());
+		return model;
+	}
+
+}

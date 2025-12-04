@@ -1,0 +1,116 @@
+package hn.com.tigo.equipmentaccessoriesbilling.utils;
+
+public class Constants {
+
+	public static final String DATASOURCE = "ASDCMMSSI";
+
+	// General
+	public static final String ERROR_NOT_FOUND_RECORD = "No records found for id %s";
+	public static final String ERROR_NOT_FINDING_AN_ID = "Error get,Record with id %s is not valid";
+	public static final String ERROR_NOT_FINDING_AN_ID_IN_UPDATE = "Error update,Record with id %s is not valid";
+	public static final String ERROR_NOT_FINDING_AN_ID_IN_DELETE = "Record with id %s is not valid";
+	public static final String ERROR_NOT_FINDING_BY_STATUS = "No records found for the status: ";
+	public static final String ERROR_NOT_FINDING_BY_ID_REFERENCE = "The [IdPrefecture] %s entered does not exist";
+	public static final String ERROR_NOT_FOUND_RECORD_SERIE = "No records found for Serie %s";
+	public static final String ERROR_NOT_FOUND_MODEL = "No records found for model %s";
+
+	public static final String ERROR_WINERY_CODE = "la bodega seleccionada ya ha sido asignada %s";
+
+	// Date
+	public static final String ERROR_INVALID_DATE = "Both start date and end date are required.";
+
+	// User
+	public static final String USER_NOT_FOUND = "The seller %s is not registered in this system";
+	public static final String NOT_USER_RECORDS_FOUND = "No records found for the user: %s";
+	public static final String NOT_USER_ID_RECORDS_FOUND = "No records found for the userId: %s";
+	public static final String USER_HAS_NOT_ASSIGNED = "The user %s has not been assigned to any branch";
+	public static final String USER_NOT_ACTIVE_BRANCHE_OFFICES = "The user %s is not active in the assigned branch";
+	public static final String USER_NOT_PERMISSIONS_ISSUE_INVOICE = "The user does not have permissions to issue invoices";
+	public static final String USER_NOT_PERMISSION_AUTHORIZED_INVOICE = "The user does not have permission to authorize the invoice";
+	public static final String USER_NOT_PERMISSION_CANCELLED_INVOICE = "The user does not have permission to cancel the invoice";
+	public static final String USER_NOT_SELLER = "You do not have permission to issue the invoice because you are not the seller";
+	public static final String USER_BRANCH_VALIDATION = "The entered user is already assigned to a branch.";
+	public static final String ERROR_NOT_FOUND_RECORD_BRANCHE_OFFICES = "No records found for brach office by warehouse %s";
+
+	// Field
+	public static final String ERROR_UPDATE_FIELDS = "Error updateFields, Record with id %s is not valid";
+
+	// BrancheOffices
+	public static final String ERROR_ID_POINT = "The [idPoint] %s already exists, please enter a new one";
+	public static final String ERROR_BRANCHE_OFFICE_NULL = "The idBrancheOffices must not be null, zero or negative values";
+	public static final String ERROR_BRANCHE_OFFICE_NOT_EXISTS = "Error the Branch Offices with the id %s does not exist";
+	public static final String ERROR_BRANCHE_OFFICE_NOT_RECORDS = "No records found for the Branch Offices: ";
+
+	// Parameters
+	public static final String ERROR_ID_APP = "No records found for the idApplication: %s";
+	public static final String ERROR_PARAMETER_NAME = "No record found for the parameter name: %s";
+	public static final String ERROR_TYPE_USER_AUTH = "The user type is not allowed to authorize invoices.";
+	public static final String ERROR_TYPE_USER_EMISSION = "The user type is not allowed to issue invoices.";
+
+	// AuthEmission
+	public static final String ERROR_TYPE_APPROVAL = "No records found for the type approval: %s";
+
+	// Billing
+	public static final String ERROR_INVOICE_NOT_EXISTS = "The invoice %s does not exits";
+	public static final String ERROR_INVOICE_ISSUED = "The invoice %s has already been issued";
+	public static final String ERROR_INVOICE_AUTHORIZED = "The invoice has already been authorized";
+	public static final String ERROR_INVOICE_NOT_AUTHORIZED = "The invoice cannot issued because it has not been authorized";
+	public static final String ERROR_INVOICE_INVALID_STATUS = "The status entered is invalid";
+	public static final String ERROR_INVOICE_NOT_CANCEL = "The invoice %s cannot be canceled because it is not an invoice issued";
+	public static final String ERROR_INVOICE_NOT_CANCEL_BECAUSE_WITHOUT_ISSUED = "The invoice %s cannot be cancelled because it is not a pending or authorized invoice";
+	public static final String ERROR_INVOICE_DETAIL = "No invoice details found";
+	public static final String ERROR_INVOICE_IDS = "The [idCompany] and [idSystem] fields were not found because the [idBrancheOffice] %s does not exist";
+	public static final String INVOICE_NOT_ISSUED = "The invoice has not been issued";
+	public static final String ERROR_CASH_INVOICE_AUTHORIZED = "The invoice cannot be authorized because it is not a credit invoice.";
+	public static final String ERROR_INVALID_INVOICE_TYPE = "Invalid invoice type.";
+	public static final String ERROR_INVALID_TYPE_APPROVAL = "Invalid approval type.";
+	public static final String ERROR_CONFIGURATION_TYPE_APPROVAL = "The authorized approval type has not been configured.";
+	public static final String ERROR_INVOICE_TYPE = "Invalid invoice type.";
+	public static final String ERROR_CONFIGURATION_TYPE_ISSUED = "The issued approval type has not been configured.";
+	public static final String ERROR_CASH_TYPE = "The invoice cannot be issued because it is not cash type";
+	public static final String ERROR_CREDIT_TYPE = "The invoice cannot be issued because it is not credit type";
+	public static final String ERROR_ISSUED = "The invoice cannot be issued because it was canceled";
+	public static final String ERROR_NUMBER_DEI_NOT_EXISTS = "The Number DEI %s does not exits";
+	public static final String ERROR_USER_NOT_EXISTS = "The user entered does not exist: %s";
+	public static final String ERROR_USER_TYPE = "The User does not have a defined user type";
+	public static final String ERROR_USER_BRANCHOFFICE = "The User has not been assigned to a branch";
+	public static final String ERROR_INVALID_TYPE_CALCELATION = "Invalid cancellation type.";
+
+	// Error
+	public static final String BAD_REQUEST_EXCEPTION = "Error occurred while adding: ";
+
+	public static final String EXCEPTION = "Error occurred while adding: ";
+
+	public static final String ERROR_NOT_FOUND_CODMOD = "No records found for codmod %s";
+
+	// Mapper
+	public static final String ERROR_MAPPER_VOUCHER = " Error mapping the service responder";
+
+	// ControlCancellation
+	public static final String ERROR_VOUCHER_SERVICE_FAILURE = "Error when consuming the cancelVoucher";
+	public static final String ERROR_TYPE_USER_CANCELLATION = "Invalid user type for invoice cancellation.";
+	public static final String VALIDATION_DAY_FOR_CANCELLATION = "The supervisor user can only void invoices issued less than days ago.";
+
+	public static final String VALIDATE_CHANNEL_STATUS = "The entered channel %s is inactive.";
+	public static final String ERROR_NOT_FOUND_RECORD_CHANNEL = "The channel %s does not exist.";
+
+	public static final String ERROR_NOT_FOUND_SERVICE_CODE = "The service code %s does not exist.";
+
+	public static final String LOGO = "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";
+
+	//Validate Totals
+	public static final String INVALID_TOTAL = "The total amount of the product does not match: model %s.";
+	
+	public static final String INVALID_TOTAL_TAX = "The total tax amount on the invoice is incorrect.";
+	
+	public static final String INVALID_TOTAL_AMOUNT = "The total amount of the invoice is incorrect.";
+
+	public static final String INVALID_TOTAL_DISCOUNT = "The discount of the invoice is incorrect.";
+
+	
+	public static final String ERROR_NOT_FOUND_PHONE = "No records found for phone %s";
+	
+	public static final String ERROR_INSURANCE_CLAIM = "La linea seleccionada ya tiene un reclamo de seguro pendiente";
+
+
+}

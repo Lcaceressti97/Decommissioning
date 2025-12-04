@@ -1,0 +1,5 @@
+package hn.com.tigo.equipmentaccessoriesbilling.models;
+
+public class EquipmentInsuranceControlModel {
+
+}

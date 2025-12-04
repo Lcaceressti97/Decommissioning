@@ -1,0 +1,5 @@
+package hn.com.tigo;
+
+public class ServletInitializer {
+
+}

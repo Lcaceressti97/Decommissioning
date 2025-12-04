@@ -1,0 +1,20 @@
+1708485684919	Delete element
+1708664859038	Delete element
+1708664866220	Delete element
+1708664874188	Delete element
+1708664886579	Delete element
+1708664901786	Delete element
+1708664909369	Delete element
+1708724994123	Rename type 'HistoricalEntity'
+1708725013431	Rename type 'ArchiveStolenDefectivePhoneEntity'
+1708725181400	Rename type 'HistoricalModel'
+1708725218111	Rename type 'ArchiveStolenDefectivePhoneModel'
+1708725655281	Rename type 'IHistoricalRepository'
+1708725676340	Rename type 'HistoricalServiceImpl'
+1708725694783	Rename type 'IHistoricalService'
+1708725717044	Rename type 'HistoricalController'
+1708725727979	Rename type 'ArchiveStolenDefectivePhoneController'
+1708725756621	Rename type 'IArchiveStolenDefectivePhoneRepository'
+1708725772787	Rename type 'ArchiveStolenDefectivePhoneServiceImpl'
+1708725788351	Rename type 'IArchiveStolenDefectivePhoneService'
+1708799231795	Delete element

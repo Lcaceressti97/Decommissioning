@@ -1,0 +1,78 @@
+package hn.com.tigo.inquiriesamsysnavega.controllers;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import javax.annotation.PostConstruct;
+import javax.validation.Valid;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import hn.com.tigo.inquiriesamsysnavega.models.AmnetPaymentsModel;
+import hn.com.tigo.inquiriesamsysnavega.models.NavegaPaymentsModel;
+import hn.com.tigo.inquiriesamsysnavega.models.TableNameModel;
+import hn.com.tigo.inquiriesamsysnavega.services.interfaces.NavegaPaymentsService;
+import hn.com.tigo.inquiriesamsysnavega.utils.Util;
+
+@RestController
+@RequestMapping("/navegapayments")
+public class NavegaPaymentsController {
+
+	private final NavegaPaymentsService navegaPaymentsService;
+	private final Util util;
+
+	public NavegaPaymentsController(NavegaPaymentsService navegaPaymentsService) {
+		this.navegaPaymentsService = navegaPaymentsService;
+		this.util = new Util();
+	}
+
+	@PostConstruct
+	void setGlobalSecurityContext() {
+		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+	}
+
+	@GetMapping("/tablenames")
+	public List<TableNameModel> getTableNames() {
+		return navegaPaymentsService.getTableNamesQueryNavega();
+	}
+
+	@GetMapping("/tabledata")
+	public ResponseEntity<Object> getTableData(@RequestParam(value = "tableName", required = false) String tableName) {
+
+		List<NavegaPaymentsModel> models = this.navegaPaymentsService.getTableDataQueryNavega(tableName);
+		return ResponseEntity.ok(this.util.setSuccessResponse(models));
+	}
+
+	@GetMapping()
+	public ResponseEntity<Object> getByDateRange(
+			@RequestParam(value = "startDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> startDate,
+			@RequestParam(value = "endDate", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> endDate) {
+
+		List<NavegaPaymentsModel> models = this.navegaPaymentsService.getPaymentsNavegaByDateRange(startDate, endDate);
+		return ResponseEntity.ok(this.util.setSuccessResponse(models));
+	}
+
+	@PostMapping("/add")
+	public ResponseEntity<Object> add(@Valid @RequestBody NavegaPaymentsModel model) {
+		this.navegaPaymentsService.add(model);
+		return ResponseEntity.ok(this.util.setSuccessWithoutData());
+	}
+
+	@PatchMapping("/updateStatus/{id}")
+	public ResponseEntity<Object> updateStatusPaymentsNavega(@PathVariable Long id) {
+		this.navegaPaymentsService.updateStatusPaymentsNavega(id);
+		return ResponseEntity.ok(this.util.setSuccessWithoutData());
+	}
+
+}

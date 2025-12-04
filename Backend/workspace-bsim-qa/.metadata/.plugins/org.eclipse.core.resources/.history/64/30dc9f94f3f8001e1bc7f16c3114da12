@@ -1,0 +1,358 @@
+package hn.com.tigo.equipmentblacklist.services;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import hn.com.tigo.equipmentblacklist.entities.HistoricalEntity;
+
+import hn.com.tigo.equipmentblacklist.entities.HistoricalDetailEntity;
+import hn.com.tigo.equipmentblacklist.models.AddBloqueoImeiRequestModel;
+import hn.com.tigo.equipmentblacklist.models.HistoricalModel;
+import hn.com.tigo.equipmentblacklist.models.GeneralResponseImeiModel;
+import hn.com.tigo.equipmentblacklist.models.RemoveBloqueoImeiRequestModel;
+
+import hn.com.tigo.equipmentblacklist.repositories.IHistoricalRepository;
+import hn.com.tigo.equipmentblacklist.repositories.IHistoricalDetailRepository;
+import hn.com.tigo.equipmentblacklist.services.interfaces.IHistoricalService;
+import hn.com.tigo.equipmentblacklist.services.interfaces.ILogsService;
+import hn.com.tigo.equipmentblacklist.utils.Constants;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.BadRequestException;
+
+@Service
+public class HistoricalServiceImpl implements IHistoricalService {
+
+	private final IHistoricalRepository historicalRepository;
+	private final IHistoricalDetailRepository historicalDetailRepository;
+	private final ILogsService logsService;
+
+	public HistoricalServiceImpl(IHistoricalRepository historicalRepository,
+			IHistoricalDetailRepository historicalDetailRepository, ILogsService logsService) {
+		this.historicalRepository = historicalRepository;
+		this.historicalDetailRepository = historicalDetailRepository;
+		this.logsService = logsService;
+	}
+
+	@Override
+	public Page<HistoricalModel> getAllHistoricalByPagination(Pageable pageable) {
+		Pageable descendingPageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(),
+				Sort.by("createdDate").descending());
+
+		Page<HistoricalEntity> entities = this.historicalRepository.findAll(descendingPageable);
+
+		return entities.map(HistoricalEntity::entityToModel);
+	}
+
+	@Override
+	public HistoricalModel getById(Long id) {
+		HistoricalEntity entity = this.historicalRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format(Constants.RECORDNOTFOUNDID, id));
+		return entity.entityToModel();
+	}
+
+	@Override
+	public List<HistoricalModel> findByWithType(int type, String value) {
+		List<HistoricalEntity> entities;
+		entities = this.historicalRepository.findByType(type, value);
+		if (entities.isEmpty() && type == 1) {
+			throw new BadRequestException(String.format(Constants.RECORDNOTFOUNDPHONE, value));
+		} else if (entities.isEmpty() && type == 2) {
+			throw new BadRequestException(String.format(Constants.RECORDNOTFOUNDESN, value));
+		} 
+		return entities.stream().map(HistoricalEntity::entityToModel).collect(Collectors.toList());
+	}
+
+	@Override
+	public void add(HistoricalModel model) {
+		try {
+			HistoricalEntity entity = new HistoricalEntity();
+			entity.setId(-1L);
+			entity.setEsn(model.getEsn().trim());
+			entity.setAcctCode(model.getAcctCode());
+			entity.setPhone(model.getPhone().trim());
+			entity.setLockType(model.getLockType());
+			entity.setStatus(1L);
+			entity.setCreatedDate(LocalDateTime.now());
+			entity.setProcessDate(model.getProcessDate());
+			this.historicalRepository.save(entity);
+		} catch (BadRequestException e) {
+			logsService.saveLog(2, model.getAcctCode(), Constants.BADREQUESTEXCEPTION + e.getMessage());
+			throw e;
+
+		} catch (Exception e) {
+			logsService.saveLog(2, model.getAcctCode(), Constants.EXCEPTION + e.getMessage());
+			throw e;
+		}
+	}
+
+	@Override
+	public void update(Long id, HistoricalModel model) {
+		try {
+			HistoricalEntity entity = this.historicalRepository.findById(id).orElse(null);
+			if (entity == null)
+				throw new BadRequestException(String.format(Constants.RECORDNOTFOUNDID, id));
+			entity.setEsn(model.getEsn());
+			entity.setAcctCode(model.getAcctCode());
+			entity.setPhone(model.getPhone());
+			entity.setLockType(model.getLockType());
+			entity.setStatus(1L);
+			entity.setCreatedDate(LocalDateTime.now());
+			entity.setProcessDate(model.getProcessDate());
+			this.historicalRepository.save(entity);
+		} catch (BadRequestException e) {
+			logsService.saveLog(2, id, Constants.BADREQUESTEXCEPTIONUPDATE + e.getMessage());
+			throw e;
+
+		} catch (Exception e) {
+			logsService.saveLog(2, id, Constants.EXCEPTIONUPDATE + e.getMessage());
+			throw e;
+		}
+	}
+
+	@Override
+	public void delete(Long id) {
+		HistoricalEntity entity = this.historicalRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format(Constants.RECORDNOTFOUNDID, id));
+		this.historicalRepository.delete(entity);
+	}
+
+	@Override
+	@Transactional
+	public GeneralResponseImeiModel addBloqueoImei(AddBloqueoImeiRequestModel request) {
+		try {
+			if (request == null || request.getDetallebandit() == null) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, Constants.BADREQUEST, Constants.ERROR, Constants.ERROR);
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				logsService.saveLog(3, errorResponse.getCode(),
+						Constants.ERRORADDINGBLOCKING + errorResponse.getMessage());
+
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			if (request.getDetallebandit().getEsnImei() == null || request.getDetallebandit().getEsnImei().isEmpty()) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, Constants.IMEIREQUIRED, Constants.ERROR, Constants.ERROR);
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				logsService.saveLog(3, request.getDetallebandit().getAnexo(),
+						Constants.ERRORADDINGBLOCKING + errorResponse.getMessage());
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			if (historicalRepository.existsByEsnAndStatus(request.getDetallebandit().getEsnImei(), 1L)) {
+				return new GeneralResponseImeiModel(
+						new GeneralResponseImeiModel.ReturnData(new GeneralResponseImeiModel.GeneralResponse(400,
+								Constants.BLOCKEDLINE, Constants.ERROR, Constants.ERROR)));
+			}
+
+			HistoricalEntity existingEntity = historicalRepository
+					.findByEsnAndStatus(request.getDetallebandit().getEsnImei(), 0L);
+
+			LocalDateTime createdDate = LocalDateTime.now();
+
+			if (existingEntity != null) {
+				existingEntity.setAcctCode(request.getDetallebandit().getAnexo());
+				existingEntity.setPhone(request.getDetallebandit().getTelefono());
+				existingEntity.setLockType(request.getTipobloqueo());
+				existingEntity.setStatus(1L);
+				existingEntity.setCreatedDate(createdDate);
+				existingEntity.setProcessDate(createdDate);
+				historicalRepository.save(existingEntity);
+			} else {
+				HistoricalEntity entity = new HistoricalEntity();
+				entity.setId(-1L);
+				entity.setEsn(request.getDetallebandit().getEsnImei());
+				entity.setAcctCode(request.getDetallebandit().getAnexo());
+				entity.setPhone(request.getDetallebandit().getTelefono());
+				entity.setLockType(request.getTipobloqueo());
+				entity.setStatus(1L);
+				entity.setCreatedDate(createdDate);
+				historicalRepository.save(entity);
+			}
+			Long historicalId = this.historicalRepository.findLastInsertedId();
+
+			HistoricalDetailEntity historicalDetailEntity = new HistoricalDetailEntity();
+			historicalDetailEntity.setId(-1L);
+			historicalDetailEntity.setIdHistorical(historicalId);
+			historicalDetailEntity.setLockType(request.getTipobloqueo());
+			historicalDetailEntity.setAcctCode(request.getDetallebandit().getAnexo());
+			historicalDetailEntity.setComplainingAddress(request.getDetallebandit().getDireccionUsuarioTransaccion());
+			historicalDetailEntity.setEsnImei(request.getDetallebandit().getEsnImei());
+			historicalDetailEntity.setStatusLowHigh(request.getDetallebandit().getEstadoBajaAlta());
+			historicalDetailEntity.setComplainingIdentity(request.getDetallebandit().getIdentidadUsuarioTransaccion());
+			historicalDetailEntity.setImeiSinUltDigit(request.getDetallebandit().getIvesn());
+			historicalDetailEntity.setReasonBlocking(request.getDetallebandit().getMotivoTransaccion());
+			historicalDetailEntity.setComplainingName(request.getDetallebandit().getNombreUsuarioTransaccion());
+			historicalDetailEntity.setOperator(request.getDetallebandit().getOperador());
+			historicalDetailEntity.setTransactionScreen(request.getDetallebandit().getPantallaTransaccion());
+			historicalDetailEntity.setSimcard(request.getDetallebandit().getSimcard());
+			historicalDetailEntity.setTypeTechnology(request.getDetallebandit().getTechnologyType());
+			historicalDetailEntity.setPhone(request.getDetallebandit().getTelefono());
+			historicalDetailEntity.setComplainingPhone(request.getDetallebandit().getTelefonoUsuarioTransaccion());
+			historicalDetailEntity.setUserTransaction(request.getDetallebandit().getUsuarioTransaccion());
+			historicalDetailEntity.setUserTransaction(request.getDetallebandit().getUsuarioTransaccion());
+			historicalDetailEntity.setModel(request.getDetallebandit().getModelo());
+
+			// LocalDateTime createdDateTime =
+			// LocalDateTime.of(request.getDetallebandit().getAnoTransaccion(),
+			// request.getDetallebandit().getMesTransaccion().intValue(),
+			// request.getDetallebandit().getDiaTransaccion().intValue(),
+			// request.getDetallebandit().getHoraTransaccion().intValue(), 0);
+			historicalDetailEntity.setStatus(1L);
+			historicalDetailEntity.setCreatedDate(createdDate);
+			historicalDetailEntity.setBlockDate(createdDate);
+
+			System.out.println("HISTORICAL DETAIL ENTITY:" + historicalDetailEntity);
+			historicalDetailRepository.save(historicalDetailEntity);
+
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(1,
+					Constants.SERVICECOMPLETED, Constants.OK, Constants.INFO);
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			return new GeneralResponseImeiModel(returnData);
+
+		} catch (DataIntegrityViolationException e) {
+			GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(602,
+					Constants.DATAINTREGITYVIOLATIONEXCEPTION, Constants.ERROR, Constants.ERROR);
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+			logsService.saveLog(3, request.getDetallebandit().getAnexo(),
+					Constants.ERRORADDINGBLOCKING + errorResponse.getMessage());
+			return new GeneralResponseImeiModel(returnData);
+		} catch (BadRequestException e) {
+			logsService.saveLog(3, request.getDetallebandit().getAnexo(),
+					Constants.ERRORADDINGBLOCKING + e.getMessage());
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(601,
+					Constants.INTERNALSERVERERROR, Constants.ERROR, Constants.ERROR);
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			logsService.saveLog(3, request.getDetallebandit().getAnexo(),
+					Constants.ERRORADDINGBLOCKING + returnData.getGeneralResponse().getMessage());
+
+			return new GeneralResponseImeiModel(returnData);
+		}
+	}
+
+	@Override
+	public GeneralResponseImeiModel removeBloqueoImei(RemoveBloqueoImeiRequestModel request) {
+		try {
+			if (request == null || request.getActualizarDetalleBanditDesbloqueo() == null
+					|| request.getActualizarDetalleBanditDesbloqueo().getDetallebandit() == null) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, Constants.BADREQUEST, Constants.ERROR, Constants.ERROR);
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				logsService.saveLog(4, errorResponse.getCode(),
+						Constants.ERRORADDINGREMOVEBLOCKING + errorResponse.getMessage());
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			if (request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEsnImei() == null
+					|| request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEsnImei().isEmpty()) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, Constants.IMEIREQUIRED, Constants.ERROR, Constants.ERROR);
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				logsService.saveLog(4, request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnexo(),
+						Constants.ERRORADDINGREMOVEBLOCKING + errorResponse.getMessage());
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			if (historicalRepository.existsByEsnAndStatus(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEsnImei(), 0L)) {
+				return new GeneralResponseImeiModel(
+						new GeneralResponseImeiModel.ReturnData(new GeneralResponseImeiModel.GeneralResponse(400,
+								Constants.UNLOCKEDLINEVALIDATION, Constants.ERROR, Constants.ERROR)));
+			}
+
+			Optional<HistoricalEntity> existingEntityOptional = historicalRepository.findByEsn(request.getImei());
+			Long historicalId = null;
+			LocalDateTime createdDate = LocalDateTime.now();
+
+			if (existingEntityOptional.isPresent()) {
+				HistoricalEntity existingEntity = existingEntityOptional.get();
+				historicalId = existingEntity.getId();
+				existingEntity.setLockType(request.getTipobloqueo());
+				existingEntity.setStatus(0L);
+				existingEntity.setProcessDate(createdDate);
+				historicalRepository.save(existingEntity);
+			} else {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						602, Constants.LINEVALIDATIONDOESNOTEXIST, Constants.ERROR, Constants.ERROR);
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				logsService.saveLog(4, request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnexo(),
+						Constants.ERRORADDINGREMOVEBLOCKING + errorResponse.getMessage());
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			HistoricalDetailEntity existingDetailEntity = historicalDetailRepository
+					.findByIdHistoricalAndStatus(historicalId, 1L);
+			if (existingDetailEntity != null) {
+				existingDetailEntity.setUnlockingAddress(request.getActualizarDetalleBanditDesbloqueo()
+						.getDetallebandit().getDireccionUsuarioTransaccion());
+				existingDetailEntity.setStatusLowHigh(
+						request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEstadoBajaAlta());
+				existingDetailEntity.setReasonUnlock(
+						request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getMotivoTransaccion());
+				existingDetailEntity.setUnlockingIdentity(request.getActualizarDetalleBanditDesbloqueo()
+						.getDetallebandit().getIdentidadUsuarioTransaccion());
+				existingDetailEntity.setUnlockingName(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit()
+						.getNombreUsuarioTransaccion());
+				existingDetailEntity.setUnlockingPhone(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit()
+						.getTelefonoUsuarioTransaccion());
+				// LocalDateTime createdDateTime = LocalDateTime.of(
+				// request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnoTransaccion(),
+				// request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getMesTransaccion()
+				// .intValue(),
+				// request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getDiaTransaccion()
+				// .intValue(),
+				// request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getHoraTransaccion()
+				// .intValue(),
+				// 0);
+
+				existingDetailEntity.setStatus(0L);
+				//existingDetailEntity.setCreatedDate(createdDate);
+				existingDetailEntity.setUnlockDate(createdDate);
+				historicalDetailRepository.save(existingDetailEntity);
+			}
+
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(1,
+					Constants.SERVICECOMPLETED, Constants.OK, Constants.INFO);
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			return new GeneralResponseImeiModel(returnData);
+
+		} catch (DataIntegrityViolationException e) {
+			logsService.saveLog(4, request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnexo(),
+					Constants.ERRORADDINGREMOVEBLOCKING + e.getMessage());
+			GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(602,
+					Constants.DATAINTREGITYVIOLATIONEXCEPTION, Constants.ERROR, Constants.ERROR);
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+			return new GeneralResponseImeiModel(returnData);
+		} catch (BadRequestException e) {
+			logsService.saveLog(4, request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnexo(),
+					Constants.ERRORADDINGREMOVEBLOCKING + e.getMessage());
+			throw e;
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			logsService.saveLog(4, request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnexo(),
+					Constants.ERRORADDINGREMOVEBLOCKING + e.getMessage());
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(601,
+					Constants.INTERNALSERVERERROR, Constants.ERROR, Constants.ERROR);
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			return new GeneralResponseImeiModel(returnData);
+		}
+	}
+
+}

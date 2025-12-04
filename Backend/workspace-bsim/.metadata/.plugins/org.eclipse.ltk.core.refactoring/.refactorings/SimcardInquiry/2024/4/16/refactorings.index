@@ -1,0 +1,19 @@
+1713316930705	Delete elements
+1713317683145	Rename package 'hn.com.tigo.simcardinquiry.services.emailService'
+1713318196067	Delete element
+1713324299545	Move compilation unit
+1713327378858	Delete element
+1713411875112	Rename type 'WebConfig'
+1713411952529	Rename type 'LogsController'
+1713412067233	Rename type 'GlobalExceptionHandler'
+1713412106534	Rename type 'AuthValidateFilter'
+1713412157328	Rename type 'ConfigParametersServiceImpl'
+1713412193676	Rename type 'LogsServiceImpl'
+1713412237259	Rename type 'ConfigParametersEntity'
+1713412254313	Rename type 'ConfigParametersModel'
+1713412296802	Rename type 'LogsEntity'
+1713412308402	Rename type 'LogsModel'
+1713412470005	Rename type 'IConfigParametersRepository'
+1713412493054	Rename type 'IConfigParametersService'
+1713412570713	Rename type 'ILogsService'
+1713412635920	Rename type 'ILogsRepository'

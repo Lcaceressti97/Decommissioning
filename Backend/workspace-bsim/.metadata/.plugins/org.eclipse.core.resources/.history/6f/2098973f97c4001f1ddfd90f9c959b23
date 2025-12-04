@@ -1,0 +1,517 @@
+package hn.com.tigo.equipmentaccessoriesbilling.services;
+
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.BadRequestException;
+import javax.xml.ws.WebServiceException;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import hn.com.tigo.equipmentaccessoriesbilling.entities.BillingEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.CancelInvoiceWithFiscalNoEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.CancelInvoiceWithoutFiscalNoEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.ChannelEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.ControlCancellationEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.ControlUserPermissionsEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.InsuranceClaimEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.InvoiceDetailEntity;
+//import hn.com.tigo.equipmentaccessoriesbilling.entities.MooringBillingEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.TypeUserEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.models.AuthenticationBsimResponse;
+import hn.com.tigo.equipmentaccessoriesbilling.models.ConfigParametersModel;
+import hn.com.tigo.equipmentaccessoriesbilling.models.ControlCancellationModel;
+import hn.com.tigo.equipmentaccessoriesbilling.provider.ProcessQueue;
+import hn.com.tigo.equipmentaccessoriesbilling.provider.VoucherProvider;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.IBillingRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.ICancelInvoiceWithFiscalNoRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.ICancelInvoiceWithoutFiscalNoRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.IChannelRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.IControlCancellationRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.IControlUserPermissionsRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.IInsuranceClaimRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.IMooringBillingRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.ITypeUserRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.services.basicvoucherservice.MessageFaultMsg;
+import hn.com.tigo.equipmentaccessoriesbilling.services.basicvoucherservice.VoucherACKType;
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IConfigParametersService;
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IControlCancellationService;
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.ILogsService;
+import hn.com.tigo.equipmentaccessoriesbilling.utils.Constants;
+import hn.com.tigo.equipmentaccessoriesbilling.utils.ReadFilesConfig;
+
+@Service
+public class ControlCancellationServiceImpl implements IControlCancellationService {
+
+	private final IControlCancellationRepository controlCancellationRepository;
+	private final IBillingRepository billingRepository;
+	private final ICancelInvoiceWithFiscalNoRepository cancelInvoiceWithFiscalNoRepository;
+	private final ICancelInvoiceWithoutFiscalNoRepository cancelInvoiceWithoutFiscalNoRepository;
+	private final ILogsService logsService;
+	private final VoucherProvider voucherProvider;
+	private final IConfigParametersService configParametersService;
+	//private final IMooringBillingRepository mooringBillingRepository;
+	private final IControlUserPermissionsRepository controlUserPermissionsRepository;
+	private final ITypeUserRepository typeUserRepository;
+	private final IChannelRepository channelRepository;
+	private final AuthenticationBsimService authenticationService;
+	private final ReleaseSerialBsimService releaseSerialBsimService;
+	private final LoadStockBsimService loadStockBsimService;
+	private final ProcessQueue processQueue;
+	private final IInsuranceClaimRepository insuranceClaimRepository;
+
+	public ControlCancellationServiceImpl(IControlCancellationRepository controlCancellationRepository,
+			IBillingRepository billingRepository,
+			ICancelInvoiceWithFiscalNoRepository cancelInvoiceWithFiscalNoRepository,
+			ICancelInvoiceWithoutFiscalNoRepository cancelInvoiceWithoutFiscalNoRepository, ILogsService logsService,
+			VoucherProvider voucherProvider, IConfigParametersService configParametersService,
+			IMooringBillingRepository mooringBillingRepository,
+			IControlUserPermissionsRepository controlUserPermissionsRepository, ITypeUserRepository typeUserRepository,
+			IChannelRepository channelRepository, AuthenticationBsimService authenticationService,
+			ReleaseSerialBsimService releaseSerialBsimService, LoadStockBsimService loadStockBsimService,
+			ProcessQueue processQueue, IInsuranceClaimRepository insuranceClaimRepository) {
+		super();
+		this.controlCancellationRepository = controlCancellationRepository;
+		this.billingRepository = billingRepository;
+		this.cancelInvoiceWithFiscalNoRepository = cancelInvoiceWithFiscalNoRepository;
+		this.cancelInvoiceWithoutFiscalNoRepository = cancelInvoiceWithoutFiscalNoRepository;
+		this.logsService = logsService;
+		this.voucherProvider = voucherProvider;
+		this.configParametersService = configParametersService;
+		//this.mooringBillingRepository = mooringBillingRepository;
+		this.controlUserPermissionsRepository = controlUserPermissionsRepository;
+		this.typeUserRepository = typeUserRepository;
+		this.channelRepository = channelRepository;
+		this.authenticationService = authenticationService;
+		this.releaseSerialBsimService = releaseSerialBsimService;
+		this.loadStockBsimService = loadStockBsimService;
+		this.processQueue = processQueue;
+		this.insuranceClaimRepository = insuranceClaimRepository;
+	}
+
+	@Override
+	public List<ControlCancellationModel> getAll() {
+		List<ControlCancellationEntity> entities = this.controlCancellationRepository
+				.findAll(Sort.by(Sort.Direction.DESC, "created"));
+		return entities.stream().map(ControlCancellationEntity::entityToModel).collect(Collectors.toList());
+	}
+
+	@Override
+	public List<ControlCancellationModel> getByTypeCancellation(Long typeCancellation) {
+		List<ControlCancellationEntity> entities = controlCancellationRepository
+				.findByTypeCancellation(typeCancellation);
+
+		if (entities.isEmpty()) {
+			throw new BadRequestException(Constants.ERROR_NOT_FINDING_BY_STATUS + typeCancellation);
+		}
+
+		return entities.stream().map(ControlCancellationEntity::entityToModel).collect(Collectors.toList());
+	}
+
+	@Override
+	public ControlCancellationModel getById(Long id) {
+		ControlCancellationEntity entity = this.controlCancellationRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format(Constants.ERROR_NOT_FINDING_AN_ID, id));
+		return entity.entityToModel();
+	}
+
+	@Override
+	public void add(ControlCancellationModel model) throws Exception {
+		long startTime = System.currentTimeMillis();
+
+		try {
+
+			BillingEntity billingEntity = this.billingRepository.findById(model.getIdPrefecture()).orElse(null);
+
+			List<CancelInvoiceWithFiscalNoEntity> cancelInvoiceWithFiscalNo = cancelInvoiceWithFiscalNoRepository
+					.findByUserName(model.getUserCreate().toLowerCase());
+
+			List<CancelInvoiceWithoutFiscalNoEntity> cancelInvoiceWithoutFiscalNo = cancelInvoiceWithoutFiscalNoRepository
+					.findByUserName(model.getUserCreate().toLowerCase());
+
+			if (billingEntity == null) {
+				throw new BadRequestException(
+						String.format(Constants.ERROR_INVOICE_NOT_EXISTS, model.getIdPrefecture()));
+			}
+
+			ChannelEntity channelEntity = this.channelRepository.findById(billingEntity.getChannel()).orElse(null);
+
+			/**
+			 * Procedimiento de cargar los parámetros
+			 * 
+			 */
+			List<ConfigParametersModel> listTInvoiceType = this.configParametersService.getByIdApplication(1002L);
+			Map<String, List<String>> parametersInvoice = new HashMap<>();
+			Map<String, String> paramsTypeCancellation = new HashMap<>();
+
+			for (ConfigParametersModel parameter : listTInvoiceType) {
+				String paramName = parameter.getParameterName();
+				String paramValue = parameter.getParameterValue();
+
+				if (!parametersInvoice.containsKey(paramName)) {
+					parametersInvoice.put(paramName, new ArrayList<>());
+				}
+
+				parametersInvoice.get(paramName).add(paramValue);
+				paramsTypeCancellation.put(paramName, paramValue);
+			}
+
+			// Seteando los valores de los tipos de estados de la factura
+			int statusPending = Integer.parseInt(paramsTypeCancellation.get("PENDING"));
+			int statusAuthorized = Integer.parseInt(paramsTypeCancellation.get("AUTHORIZED"));
+			int statusIssued = Integer.parseInt(paramsTypeCancellation.get("ISSUED"));
+			int statusWithTaxNumber = Integer.parseInt(paramsTypeCancellation.get("INVOICE_WITH_TAX_NUMBER"));
+			int statusCanceletUnissued = Integer.parseInt(paramsTypeCancellation.get("CANCELED_UNISSUED"));
+			int statusCanceledWithTaxNumber = Integer.parseInt(paramsTypeCancellation.get("CANCELED_WITH_TAX_NUMBER"));
+
+			// Seteando los valores de los tipos de anulacion
+			int typeNotIssued = Integer.parseInt(paramsTypeCancellation.get("TYPE_CANCELLATION_NOT_ISSUED"));
+			int typeWithTaxNumber = Integer.parseInt(paramsTypeCancellation.get("TYPE_CANCELLATION_WITH_TAX_NUMBER"));
+
+			// Validación de la anulación del usuario
+			validateUserCancellation(billingEntity, model.getUserCreate().toLowerCase(), model, typeWithTaxNumber);
+
+			// Validación si existe el usuario
+			if (cancelInvoiceWithFiscalNo.isEmpty() || cancelInvoiceWithoutFiscalNo.isEmpty()) {
+				throw new BadRequestException(String.format(Constants.NOT_USER_RECORDS_FOUND, model.getUserCreate()));
+			}
+			// Validaciones para anulacion de facturas con numero fiscal
+			if ((billingEntity.getStatus() != statusWithTaxNumber && billingEntity.getStatus() != statusIssued)
+					&& model.getTypeCancellation() == typeWithTaxNumber) {
+				throw new BadRequestException(String.format(Constants.ERROR_INVOICE_NOT_CANCEL, billingEntity.getId()));
+			} else if (cancelInvoiceWithFiscalNo.get(0).getPermitStatus().equals("N")
+					&& model.getTypeCancellation() == typeWithTaxNumber) {
+				throw new BadRequestException(Constants.USER_NOT_PERMISSION_CANCELLED_INVOICE);
+			}
+			// Validaciones para anulacion de facturas sin emitir
+			if ((billingEntity.getStatus() != statusAuthorized && billingEntity.getStatus() != statusPending)
+					&& model.getTypeCancellation() == typeNotIssued) {
+				throw new BadRequestException(String.format(Constants.ERROR_INVOICE_NOT_CANCEL_BECAUSE_WITHOUT_ISSUED,
+						billingEntity.getId()));
+			} else if (cancelInvoiceWithoutFiscalNo.get(0).getPermitStatus().equals("N")
+					&& model.getTypeCancellation() == typeNotIssued) {
+				throw new BadRequestException(Constants.USER_NOT_PERMISSION_CANCELLED_INVOICE);
+			}
+
+			if (model.getTypeCancellation() == typeNotIssued) {
+
+				// Liberacion de números de serie
+				if (channelEntity.getReleaseSerialNumber() == 1) {
+					for (InvoiceDetailEntity detail : billingEntity.getInvoiceDetails()) {
+						if (detail.getSerieOrBoxNumber() != null && !detail.getSerieOrBoxNumber().isEmpty()) {
+							AuthenticationBsimResponse accessToken = authenticationService.getAccessToken();
+							List<InvoiceDetailEntity> detailList = Arrays.asList(detail);
+							releaseSerialBsimService.releaseSeries(accessToken.getAccess_token(),
+									billingEntity.getInventoryType(), detail.getModel(), billingEntity.getWarehouse(),
+									billingEntity.getSubWarehouse(), detailList);
+						}
+					}
+				}
+
+				billingEntity.setStatus((long) statusCanceletUnissued);
+			} else if (model.getTypeCancellation() == typeWithTaxNumber) {
+				try {
+					List<ConfigParametersModel> list = this.configParametersService.getByIdApplication(1001L);
+					Map<String, String> parameters = new HashMap<>();
+					for (ConfigParametersModel parameter : list) {
+						parameters.put(parameter.getParameterName(), parameter.getParameterValue());
+					}
+
+					VoucherACKType voucherACKType = voucherProvider.cancelVoucher(model.getIdPrefecture(),
+							model.getUserCreate().toLowerCase(), parameters);
+					System.out.println(voucherACKType);
+
+					// Carga del inventario
+					if (channelEntity.getReleaseSerialNumber() == 1) {
+						for (InvoiceDetailEntity detail : billingEntity.getInvoiceDetails()) {
+							if (detail.getSerieOrBoxNumber() != null && !detail.getSerieOrBoxNumber().isEmpty()) {
+								AuthenticationBsimResponse accessToken = authenticationService.getAccessToken();
+								List<InvoiceDetailEntity> detailList = Arrays.asList(detail);
+								loadStockBsimService.loadStock(accessToken.getAccess_token(), model.getCancelReason(),
+										detail.getModel(), billingEntity.getWarehouse(),
+										billingEntity.getSubWarehouse(), detailList);
+							}
+						}
+					}
+
+					// MooringBillingEntity mooringBillingEntity = this.mooringBillingRepository
+					// .getMooringBillingByInvoiceNumber(billingEntity.getNumberDei());
+
+					// if (mooringBillingEntity != null) {
+					// mooringBillingEntity.setCmdStatus("C");
+					// mooringBillingEntity.setUserCancelled(model.getUserCreate().toLowerCase());
+					// mooringBillingEntity.setDueDate(LocalDateTime.now());
+					// mooringBillingEntity.setMooring(0L);
+					// mooringBillingRepository.save(mooringBillingEntity);
+					// }
+
+					billingEntity.setWarehouse(model.getWarehouse() == null || model.getWarehouse().isEmpty()
+							? billingEntity.getWarehouse()
+							: model.getWarehouse());
+					billingEntity
+							.setInventoryType(model.getInventoryType() == null || model.getInventoryType().isEmpty()
+									? billingEntity.getInventoryType()
+									: model.getInventoryType());
+					billingEntity.setStatus((long) statusCanceledWithTaxNumber);
+				} catch (WebServiceException e) {
+					throw new BadRequestException(e.getMessage());
+				} catch (MessageFaultMsg ex) {
+
+					throw ex;
+				}
+			} else {
+				throw new BadRequestException(Constants.ERROR_INVALID_TYPE_CALCELATION);
+			}
+
+			ControlCancellationEntity entity = new ControlCancellationEntity();
+			entity.setId(-1L);
+			entity.setIdPrefecture(model.getIdPrefecture());
+			entity.setTypeCancellation(model.getTypeCancellation());
+			entity.setDescription(model.getDescription());
+			entity.setUserCreate(model.getUserCreate().toLowerCase());
+			entity.setCreated(LocalDateTime.now());
+			this.controlCancellationRepository.save(entity);
+
+			if (channelEntity.getGenerateTrama() == 1) {
+				this.processQueue.getProps();
+				ReadFilesConfig readConfig = null;
+				long startTimeQueue = 0;
+
+				try {
+					readConfig = new ReadFilesConfig();
+					String trama = generateTrama(model, billingEntity);
+
+					startTimeQueue = this.processQueue.processTrama(readConfig, startTimeQueue, trama);
+
+					if (model.getTypeCancellation() == typeWithTaxNumber) {
+						billingEntity.setTramaCancellationIssued(trama);
+
+					} else {
+						billingEntity.setTramaCancellation(trama);
+
+					}
+					this.billingRepository.save(billingEntity);
+				} catch (Exception error) {
+					logsService.saveLog(8, model.getIdPrefecture(),
+							"An error occurred while creating the override: " + error.getMessage(),
+							model.getUserCreate(), startTimeQueue);
+					System.out.println("ERROR ENVIO DE TRAMA:" + error);
+
+				}
+
+			}
+			
+			if ("Facturación por Reclamo de Seguros".equals(billingEntity.getFiscalProcess())) {
+				this.processQueue.getProps();
+				ReadFilesConfig readConfig = null;
+				long startTimeQueue = 0;
+
+				try {
+					readConfig = new ReadFilesConfig();
+					String trama = generateTramaCancellationInsurance(model);
+
+					startTimeQueue = this.processQueue.processTrama(readConfig, startTimeQueue, trama);
+					billingEntity.setTramaInsurance(trama);
+					this.billingRepository.save(billingEntity);
+
+				} catch (Exception error) {
+					logsService.saveLog(8, model.getIdPrefecture(),
+							"An error occurred while creating the override: " + error.getMessage(),
+							model.getUserCreate(), startTimeQueue);
+					System.out.println("ERROR ENVIO DE TRAMA:" + error);
+
+				}
+			}
+
+		} catch (BadRequestException e) {
+			long duration = System.currentTimeMillis() - startTime;
+
+			logsService.saveLog(8, model.getIdPrefecture(),
+					"An error occurred while creating the override: " + e.getMessage(), model.getUserCreate(),
+					duration);
+			throw e;
+
+		} catch (Exception e) {
+			long duration = System.currentTimeMillis() - startTime;
+
+			logsService.saveLog(8, model.getIdPrefecture(),
+					"An error occurred while creating the override: " + e.getMessage(), model.getUserCreate(),
+					duration);
+			throw e;
+		}
+	}
+
+	private void validateUserCancellation(BillingEntity billingEntity, String user,
+			ControlCancellationModel cancellationModel, int typeWithTaxNumber) throws BadRequestException {
+
+		ControlUserPermissionsEntity controlUserPermissionsEntity = controlUserPermissionsRepository
+				.findByUserName(user);
+		if (controlUserPermissionsEntity == null)
+			throw new BadRequestException(String.format(Constants.ERROR_USER_NOT_EXISTS, user));
+
+		TypeUserEntity typeUserEntity = this.typeUserRepository.findById(controlUserPermissionsEntity.getTypeUser())
+				.orElse(null);
+		if (typeUserEntity == null)
+			throw new BadRequestException(String.format(Constants.ERROR_USER_TYPE));
+
+		List<ConfigParametersModel> listTypeUser = this.configParametersService.getByIdApplication(1002L);
+		Map<String, List<String>> parametersTypeUser = new HashMap<>();
+		Map<String, String> paramsTypeUser = new HashMap<>();
+
+		for (ConfigParametersModel parameter : listTypeUser) {
+			String paramName = parameter.getParameterName();
+			String paramValue = parameter.getParameterValue();
+
+			if (!parametersTypeUser.containsKey(paramName)) {
+				parametersTypeUser.put(paramName, new ArrayList<>());
+			}
+
+			parametersTypeUser.get(paramName).add(paramValue);
+			paramsTypeUser.put(paramName, paramValue);
+		}
+
+		List<String> typeUserSupervisor = parametersTypeUser.get("TYPE_USER_SUPERVISOR");
+		// List<String> typeUserCancellation =
+		// parametersTypeUser.get("TYPE_USER_CANCELLATION");
+		int dayCalcelInvoice = Integer.parseInt(paramsTypeUser.get("DAY_CANCEL_INVOICE"));
+
+		if (typeUserSupervisor.contains(typeUserEntity.getTypeUser().toString())
+				&& cancellationModel.getTypeCancellation() == typeWithTaxNumber) {
+			LocalDateTime dateOdIssie = billingEntity.getDateOfIssue();
+			long daysSinceIssue = ChronoUnit.DAYS.between(dateOdIssie, LocalDateTime.now());
+
+			if (cancellationModel.getTypeCancellation() == typeWithTaxNumber && daysSinceIssue > dayCalcelInvoice) {
+				throw new BadRequestException(Constants.VALIDATION_DAY_FOR_CANCELLATION);
+			}
+		}
+		// if (!typeUserCancellation.contains(typeUserEntity.getTypeUser().toString()))
+		// {
+		// throw new BadRequestException(Constants.ERROR_TYPE_USER_CANCELLATION);
+		// }
+	}
+
+	public String generateTrama(ControlCancellationModel controlCancellationModel, BillingEntity billingEntity) {
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+		StringBuilder marco = new StringBuilder("FACTURACION");
+
+		if (controlCancellationModel.getTypeCancellation() == 1) {
+			marco.append("|ANULACION");
+		} else {
+			marco.append("|ANULACION_TOTAL");
+
+		}
+		marco.append("|SUBSNUMB=")
+				.append(billingEntity.getPrimaryIdentity() != null && !billingEntity.getPrimaryIdentity().isEmpty()
+						? billingEntity.getPrimaryIdentity()
+						: billingEntity.getAcctCode());
+		marco.append("|CUENTA_CLIENTE=").append(billingEntity.getCustomerId());
+		marco.append("|CUENTA_FACTURACION=").append(billingEntity.getAcctCode());
+		marco.append("|ID_PEDIDO_VENTA=").append(
+				billingEntity.getUti() != null && !billingEntity.getUti().isEmpty() ? billingEntity.getUti() : 0);
+		marco.append("|NUMERO_PREFACTURA=").append(billingEntity.getId());
+		if (controlCancellationModel.getTypeCancellation() == 1) {
+			marco.append("|NUMERO_FACTURA=");
+		} else {
+			marco.append("|NUMERO_FACTURA=").append(billingEntity.getNumberDei());
+
+		}
+		if (controlCancellationModel.getTypeCancellation() == 1) {
+			marco.append("|FECHAEMISION=").append(billingEntity.getCreated().format(formatter));
+		} else {
+			marco.append("|FECHAEMISION=").append(billingEntity.getDateOfIssue().format(formatter));
+
+		}
+		marco.append("|IMEI=").append(billingEntity.getInvoiceDetails().get(0).getSerieOrBoxNumber());
+		marco.append("|TOTAL_FACTURADO=").append(billingEntity.getAmountTotal());
+		marco.append("|IMPUESTO=").append(billingEntity.getTaxPercentage());
+		marco.append("|TIPO_FACTURA=").append(billingEntity.getInvoiceType());
+		marco.append("|USUARIO=").append(controlCancellationModel.getUserCreate().toUpperCase());
+		if (controlCancellationModel.getTypeCancellation() == 1) {
+			marco.append("|MOTIVO=").append("ANULACION PREFACTURA");
+		} else {
+			marco.append("|MOTIVO=998");
+		}
+		if (controlCancellationModel.getTypeCancellation() == 1) {
+			marco.append("|CAI=");
+
+		} else {
+			marco.append("|CAI=").append(billingEntity.getCai());
+		}
+		marco.append("|PROGRAMA=|");
+
+		return marco.toString();
+	}
+
+	public String generateTramaCancellationInsurance(ControlCancellationModel controlCancellationModel) {
+		StringBuilder marco = new StringBuilder("SEGUROS|RECLAMO");
+
+		InsuranceClaimEntity insuranceClaimEntity = this.insuranceClaimRepository
+				.getInsuranceClaimByInvoiceNumber(controlCancellationModel.getIdPrefecture());
+
+		marco.append("|MSISDN=").append(insuranceClaimEntity.getPhone());
+		marco.append("|CUENTA_CLIENTE=").append(insuranceClaimEntity.getCustomerAccount());
+		marco.append("|CUENTA_FACTURACION=").append(insuranceClaimEntity.getBillingAccount());
+		marco.append("|CUENTA_SERVICIO=").append(insuranceClaimEntity.getServiceAccount());
+		marco.append("|MARCA_ANTERIOR=").append(insuranceClaimEntity.getActualModel().concat(":").concat(insuranceClaimEntity.getActualModel()));
+		marco.append("|MODELO_ANTERIOR=").append(insuranceClaimEntity.getActualModel().concat(":").concat(insuranceClaimEntity.getActualModel()));
+		marco.append("|SERIE_ANTERIOR=").append(insuranceClaimEntity.getActualEsn());
+		marco.append("|MARCA_NUEVA=").append(insuranceClaimEntity.getNewModel().concat(":").concat(insuranceClaimEntity.getNewModel()));
+		marco.append("|MODELO_NUEVO=").append(
+				insuranceClaimEntity.getNewModel().concat(":").concat(insuranceClaimEntity.getNewModelDescription()));
+		marco.append("|SERIE_NUEVA=").append(insuranceClaimEntity.getNewEsn());
+		marco.append("|COBERTURA=02: ROBO|");
+
+		return marco.toString();
+	}
+
+	@Override
+	public void update(Long id, ControlCancellationModel model) {
+		long startTime = System.currentTimeMillis();
+
+		try {
+			ControlCancellationEntity entity = this.controlCancellationRepository.findById(id).orElse(null);
+			if (entity == null)
+				throw new BadRequestException(String.format(Constants.ERROR_NOT_FINDING_AN_ID_IN_UPDATE, id));
+
+			entity.setIdPrefecture(model.getIdPrefecture());
+			entity.setTypeCancellation(model.getTypeCancellation());
+			entity.setDescription(model.getDescription());
+			entity.setUserCreate(model.getUserCreate().toLowerCase());
+			entity.setCreated(LocalDateTime.now());
+			this.controlCancellationRepository.save(entity);
+		} catch (BadRequestException e) {
+			long duration = System.currentTimeMillis() - startTime;
+
+			logsService.saveLog(8, model.getIdPrefecture(),
+					"An error occurred while updating the override: " + e.getMessage(), model.getUserCreate(),
+					duration);
+			throw e;
+		} catch (Exception e) {
+			long duration = System.currentTimeMillis() - startTime;
+
+			logsService.saveLog(8, model.getIdPrefecture(),
+					"An error occurred while updating the override: " + e.getMessage(), model.getUserCreate(),
+					duration);
+			throw e;
+		}
+	}
+
+	@Override
+	public void delete(Long id) {
+		ControlCancellationEntity entity = this.controlCancellationRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format(Constants.ERROR_NOT_FINDING_AN_ID_IN_DELETE, id));
+
+		this.controlCancellationRepository.delete(entity);
+	}
+
+}

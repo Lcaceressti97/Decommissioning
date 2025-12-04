@@ -1,0 +1,39 @@
+package hn.com.tigo.equipmentaccessoriesbilling.components;
+
+import java.util.Calendar;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
+import org.springframework.context.ApplicationListener;
+import org.springframework.stereotype.Component;
+
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IGenerationReportInvService;
+
+@Component
+public class ReportScheduler implements ApplicationListener<ApplicationStartedEvent> {
+
+	@Autowired
+	private IGenerationReportInvService generationReportInvService;
+
+	@Override
+	public void onApplicationEvent(ApplicationStartedEvent event) {
+		ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+		scheduler.scheduleAtFixedRate(new Runnable() {
+			@Override
+			public void run() {
+				generationReportInvService.generateReport();
+			}
+		}, getInitialDelay(), 86400000, TimeUnit.MILLISECONDS);
+	}
+
+	private long getInitialDelay() {
+		Calendar calendar = Calendar.getInstance();
+		calendar.set(Calendar.HOUR_OF_DAY, 01);
+		calendar.set(Calendar.MINUTE, 0);
+		calendar.set(Calendar.SECOND, 0);
+		return calendar.getTimeInMillis() - System.currentTimeMillis();
+	}
+}

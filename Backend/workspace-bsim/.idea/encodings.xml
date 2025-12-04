@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/AnnotationsDecommissioning/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/BsimModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/ComodatosApi/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/EquipmentAccessoriesBilling/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/EquipmentBlacklist/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/EquipmentInsurance/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/InquiriesAmsysNavega/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/JTellerServices/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/SelfConsumptionModule/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/SimcardInquiry/src/main/java" charset="UTF-8" />
+  </component>
+</project>

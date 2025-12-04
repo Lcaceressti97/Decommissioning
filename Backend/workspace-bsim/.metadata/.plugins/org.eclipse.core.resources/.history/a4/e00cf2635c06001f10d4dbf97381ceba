@@ -1,0 +1,106 @@
+package hn.com.tigo.equipmentaccessoriesbilling.utils;
+
+import java.util.Base64;
+import java.util.List;
+
+import hn.com.tigo.equipmentaccessoriesbilling.entities.BillingEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.BranchOfficesEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.InvoiceDetailEntity;
+
+public class InvoicePrintingDetailGenerator {
+
+	public static String generateInvoiceDetail(BillingEntity billing, BranchOfficesEntity branchOffice) {
+
+		StringBuilder detalleFactura = new StringBuilder();
+
+		// Encabezado de la factura
+		detalleFactura.append("Telefónica Celular S.A de C.V. \\CELTEL").append("\n\n");
+		detalleFactura.append(billing.getAgency()).append(", ").append(branchOffice.getAddress())
+				.append("\n");
+		detalleFactura.append("PBX: ").append(branchOffice.getPbx()).append(", FAX: ").append(branchOffice.getFax())
+				.append("\n");
+		detalleFactura.append("Rtn: ").append(branchOffice.getRtn()).append(", Usuario: ").append(billing.getSeller())
+				.append("\n\n");
+
+		// Número de Facturación
+		detalleFactura.append("No. de Facturacion: ").append(billing.getInvoiceNo()).append("\n\n");
+
+		// CAI
+		detalleFactura.append("CAI: ").append(billing.getCai()).append("\n\n");
+
+		// Datos del Adquiriente exonerado
+		detalleFactura.append("Datos del Adquiriente exonerado\n");
+		detalleFactura.append(branchOffice.getEmail()).append("\n");
+		detalleFactura.append("Agencia ").append(billing.getAgency()).append("\n");
+		detalleFactura.append("PBX: ").append(branchOffice.getPbx()).append(", FAX: ").append(branchOffice.getFax())
+				.append("\n");
+		detalleFactura.append("Cajero: ").append(billing.getCashierName()).append(" Hora: ")
+				.append(billing.getCreated()).append("\n\n");
+
+		// Documento SHP
+		detalleFactura.append("Documento SHP\n");
+		detalleFactura.append("Fecha: ").append(billing.getCreated()).append(" Vence: ").append(billing.getDueDate())
+				.append("\n");
+		detalleFactura.append("Bodega: ").append(billing.getWarehouse()).append("\n");
+		detalleFactura.append("Tel: ").append(branchOffice.getPhone()).append("\n");
+		detalleFactura.append("Nombre: ").append(branchOffice.getName()).append("\n\n");
+
+		// Credito / Contado
+		detalleFactura.append("Credito / Contado:\n");
+		detalleFactura.append("Vendedor: ").append(billing.getSeller()).append("\n\n");
+
+		// Detalles de la factura
+		detalleFactura.append("Cant.\tArtic.\tPrecio\tDescripcion\n");
+		detalleFactura.append("*--------------------------------------------------*\n");
+		List<InvoiceDetailEntity> detalles = billing.getInvoiceDetails();
+		for (InvoiceDetailEntity detalle : detalles) {
+			detalleFactura.append(detalle.getQuantity()).append("\t       ");
+			detalleFactura.append(detalle.getModel()).append("\t          ");
+			detalleFactura.append(detalle.getAmountTotal()).append("\t          ");
+			detalleFactura.append(detalle.getDescription()).append("\n");
+			detalleFactura.append("*--------------------------------------------------*\n");
+		}
+
+		// Subtotal, descuentos, impuestos y total
+		detalleFactura.append("Subtotal.....................................................................: $").append(billing.getSubtotal()).append("\n");
+		detalleFactura.append("( - ) Descuentos y Rebajas Otorgados......................: $").append(billing.getDiscount()).append("\n");
+		detalleFactura.append("( - ) Valores Exonerado.............................................: $").append(billing.getAmountExo()).append("\n");
+		detalleFactura.append("( - ) Impuesto Sobre Venta........................................: $").append(billing.getAmountTax()).append("\n");
+		detalleFactura.append("Total Factura.............................................................: $").append(billing.getAmountTotal()).append("\n\n");
+
+		// Tasa de Cambio
+		detalleFactura.append("Tasa de Cambio: ").append(billing.getExchangeRate()).append("\n\n");
+
+
+		// Texto adicional
+		detalleFactura.append(
+				"\"Reconozco y acepto que la unica garantia sobre este equipo es otorgada por el Fabricante, liberando al Celtel, S.A.DE C.V de cualquier responsabilidad\".\n");
+		detalleFactura.append(
+				"Tiene 5 días habiles para hacer reclamos por desperfecto de fabrica. Recuerda presentarte a la agencia con el equipo como fue entregado. Reclamos posteriores a 5 días habiles por favor visita CETREL.\n\n\n");
+
+		// Firma y sello de recibo
+		detalleFactura.append("--------------------------------------------------\n");
+		detalleFactura.append("Firma y sello de recibo\n");
+		detalleFactura.append("Original: Cliente\n");
+		detalleFactura.append("Copia: Obligado Tributario Emisor\n");
+
+		
+		// Convertir el detalle de la factura a Base64
+		//String facturaEnTexto = detalleFactura.toString();
+		//byte[] facturaEnBytes = facturaEnTexto.getBytes();
+		//String facturaEnBase64 = Base64.getEncoder().encodeToString(facturaEnBytes);
+		
+
+		//return facturaEnBase64;
+		
+		 // Convertir el detalle de la factura a Base64 con el tipo de letra en cursiva
+        String facturaEnTexto = detalleFactura.toString();
+        String newText = "<span style='font-style: italic;'>" + facturaEnTexto + "</span>";
+        byte[] facturaEnBytes = newText.getBytes();
+        String facturaEnBase64 = Base64.getEncoder().encodeToString(facturaEnBytes);
+
+        // Devolver el detalle de la factura codificado en Base64 con el tipo de letra en cursiva
+        return facturaEnBase64;
+	}
+
+}

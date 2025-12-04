@@ -1,0 +1,26 @@
+spring.jpa.database=default
+server.port=4437
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+logging.level.org.hibernate.SQL=DEBUG
+
+server.servlet.context-path=/invoiceequipmentaccessories
+spring.output.ansi.enabled=ALWAYS
+spring.main.allow-bean-definition-overriding=true
+#security.basic.enable=false
+#Oracle
+spring.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.datasource.url=jdbc:oracle:thin:@//192.168.159.52:1521/josmdb.celtel.net
+spring.datasource.username=ASDCMMSSI
+spring.datasource.password=Celtel2009
+
+# Oracle BSIM 192.168.105.43
+spring.bsim.datasource.driver-class-name=oracle.jdbc.OracleDriver
+spring.bsim.datasource.url=jdbc:oracle:thin:@192.168.105.43:1521:bsimjtbd
+spring.bsim.datasource.username=STCINVENTORY_DWH
+spring.bsim.datasource.password=Dc$W4VTwqiQ8
+
+#spring.thymeleaf.prefix=classpath:/templates/
+#spring.thymeleaf.suffix=.html
+#spring.thymeleaf.cache=false
+

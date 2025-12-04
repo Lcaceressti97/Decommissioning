@@ -1,0 +1,296 @@
+package hn.com.tigo.equipmentblacklist.services;
+
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import hn.com.tigo.equipmentblacklist.entities.ArchiveStolenDefectivePhoneEntity;
+
+import hn.com.tigo.equipmentblacklist.entities.HistoricalEntity;
+import hn.com.tigo.equipmentblacklist.exceptions.BadRequestException;
+import hn.com.tigo.equipmentblacklist.models.AddBloqueoImeiRequestModel;
+import hn.com.tigo.equipmentblacklist.models.ArchiveStolenDefectivePhoneModel;
+import hn.com.tigo.equipmentblacklist.models.GeneralResponseImeiModel;
+import hn.com.tigo.equipmentblacklist.models.RemoveBloqueoImeiRequestModel;
+
+import hn.com.tigo.equipmentblacklist.repositories.IArchiveStolenDefectivePhoneRepository;
+import hn.com.tigo.equipmentblacklist.repositories.IHistoricalRepository;
+import hn.com.tigo.equipmentblacklist.services.interfaces.IArchiveStolenDefectivePhoneService;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+@Service
+public class ArchiveStolenDefectivePhoneServiceImpl implements IArchiveStolenDefectivePhoneService {
+
+	private final IArchiveStolenDefectivePhoneRepository archiveStolenPhoneRepository;
+	private final IHistoricalRepository historicalRepository;
+
+	public ArchiveStolenDefectivePhoneServiceImpl(IArchiveStolenDefectivePhoneRepository archiveStolenPhoneRepository,
+			IHistoricalRepository historicalRepository) {
+		this.archiveStolenPhoneRepository = archiveStolenPhoneRepository;
+		this.historicalRepository = historicalRepository;
+	}
+
+	@Override
+	public List<ArchiveStolenDefectivePhoneModel> getAll() {
+		List<ArchiveStolenDefectivePhoneEntity> entities = this.archiveStolenPhoneRepository.findAll();
+		return entities.stream().map(ArchiveStolenDefectivePhoneEntity::entityToModel).collect(Collectors.toList());
+	}
+
+	@Override
+	public ArchiveStolenDefectivePhoneModel getById(Long id) {
+		ArchiveStolenDefectivePhoneEntity entity = this.archiveStolenPhoneRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format("Error get, Record with id %s is not valid", id));
+		return entity.entityToModel();
+	}
+
+	@Override
+	public List<ArchiveStolenDefectivePhoneModel> findByWithType(int type, String value) {
+		List<ArchiveStolenDefectivePhoneEntity> entities;
+		entities = this.archiveStolenPhoneRepository.findByType(type, value);
+		return entities.stream().map(ArchiveStolenDefectivePhoneEntity::entityToModel).collect(Collectors.toList());
+	}
+
+	@Override
+	public void add(ArchiveStolenDefectivePhoneModel model) {
+		ArchiveStolenDefectivePhoneEntity entity = new ArchiveStolenDefectivePhoneEntity();
+		entity.setId(-1L);
+		entity.setEsn(model.getEsn());
+		entity.setAcctCode(model.getAcctCode());
+		entity.setSubscriberId(model.getSubscriberId());
+		entity.setBlockType(model.getBlockType());
+		entity.setCreatedDate(model.getCreatedDate());
+		this.archiveStolenPhoneRepository.save(entity);
+	}
+
+	@Override
+	public void update(Long id, ArchiveStolenDefectivePhoneModel model) {
+		ArchiveStolenDefectivePhoneEntity entity = this.archiveStolenPhoneRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format("Error update, Record with id %s is not valid", id));
+		entity.setEsn(model.getEsn());
+		entity.setAcctCode(model.getAcctCode());
+		entity.setSubscriberId(model.getSubscriberId());
+		entity.setBlockType(model.getBlockType());
+		entity.setCreatedDate(model.getCreatedDate());
+		this.archiveStolenPhoneRepository.save(entity);
+	}
+
+	@Override
+	public void delete(Long id) {
+		ArchiveStolenDefectivePhoneEntity entity = this.archiveStolenPhoneRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format("Record with id %s is not valid", id));
+		this.archiveStolenPhoneRepository.delete(entity);
+	}
+
+	@Override
+	@Transactional
+	public GeneralResponseImeiModel addBloqueoImei(AddBloqueoImeiRequestModel request) {
+		try {
+			// Validación de estructura del request
+			if (request == null || request.getDetallebandit() == null) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, "Bad Request", "ERROR", "ERROR");
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			// Validación de campos en el request
+			if (request.getDetallebandit().getEsnImei() == null || request.getDetallebandit().getEsnImei().isEmpty()) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, "EsnImei is required", "ERROR", "ERROR");
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			if (archiveStolenPhoneRepository.existsByEsnAndStatus(request.getDetallebandit().getEsnImei(), 1L)) {
+				return new GeneralResponseImeiModel(
+						new GeneralResponseImeiModel.ReturnData(new GeneralResponseImeiModel.GeneralResponse(400,
+								"La línea ya está bloqueada", "ERROR", "ERROR")));
+			}
+
+			ArchiveStolenDefectivePhoneEntity existingEntity = archiveStolenPhoneRepository
+					.findByEsnAndStatus(request.getDetallebandit().getEsnImei(), 0L);
+
+			if (existingEntity != null) {
+				existingEntity.setStatus(1L);
+				archiveStolenPhoneRepository.save(existingEntity);
+			} else {
+				ArchiveStolenDefectivePhoneEntity entity = new ArchiveStolenDefectivePhoneEntity();
+				entity.setId(-1L);
+				entity.setEsn(request.getDetallebandit().getEsnImei());
+				entity.setAcctCode(request.getDetallebandit().getAnexo());
+				entity.setSubscriberId(request.getDetallebandit().getTelefono());
+				entity.setBlockType(request.getTipobloqueo());
+				entity.setStatus(1L);
+				entity.setCreatedDate(LocalDateTime.now());
+				archiveStolenPhoneRepository.save(entity);
+			}
+
+			HistoricalEntity historicalEntity = new HistoricalEntity();
+			historicalEntity.setId(-1L);
+			historicalEntity.setLockType(request.getTipobloqueo());
+			historicalEntity.setAcctCode(request.getDetallebandit().getAnexo());
+			historicalEntity.setComplainingAddress(request.getDetallebandit().getDireccionUsuarioTransaccion());
+			historicalEntity.setEsnImei(request.getDetallebandit().getEsnImei());
+			historicalEntity.setStatusLowHigh(request.getDetallebandit().getEstadoBajaAlta());
+			historicalEntity.setComplainingIdentity(request.getDetallebandit().getIdentidadUsuarioTransaccion());
+			historicalEntity.setImeiSinUltDigit(request.getDetallebandit().getIvesn());
+			historicalEntity.setReasonBlocking(request.getDetallebandit().getMotivoTransaccion());
+			historicalEntity.setComplainingName(request.getDetallebandit().getNombreUsuarioTransaccion());
+			historicalEntity.setOperator(request.getDetallebandit().getOperador());
+			historicalEntity.setScreenUnlocks(request.getDetallebandit().getPantallaTransaccion());
+			historicalEntity.setSimcard(request.getDetallebandit().getSimcard());
+			historicalEntity.setTypeTechnology(request.getDetallebandit().getTechnologyType());
+			historicalEntity.setPhone(request.getDetallebandit().getTelefono());
+			historicalEntity.setComplainingPhone(request.getDetallebandit().getTelefonoUsuarioTransaccion());
+			historicalEntity.setUserUnlocks(request.getDetallebandit().getUsuarioTransaccion());
+			LocalDateTime createdDateTime = LocalDateTime.of(request.getDetallebandit().getAnoTransaccion(),
+					request.getDetallebandit().getMesTransaccion().intValue(),
+					request.getDetallebandit().getDiaTransaccion().intValue(),
+					request.getDetallebandit().getHoraTransaccion().intValue(), 0);
+			historicalEntity.setStatus(1L);
+			historicalEntity.setCreatedDate(createdDateTime);
+			historicalEntity.setBlockDate(createdDateTime);
+			
+			historicalRepository.save(historicalEntity);
+
+			// Respuesta exitosa
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(1,
+					"Service Completed", "OK", "INFO");
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			return new GeneralResponseImeiModel(returnData);
+
+		} catch (DataIntegrityViolationException e) {
+			// Validación de errores de base de datos
+			GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(602,
+					"Data Integrity Violation", "ERROR", "ERROR");
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+			return new GeneralResponseImeiModel(returnData);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			// Respuesta de error por defecto
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(601,
+					"Internal Server Error", "ERROR", "ERROR");
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			return new GeneralResponseImeiModel(returnData);
+		}
+	}
+
+	@Override
+	public GeneralResponseImeiModel removeBloqueoImei(RemoveBloqueoImeiRequestModel request) {
+		try {
+			// Validación de estructura del request
+			if (request == null || request.getActualizarDetalleBanditDesbloqueo() == null
+					|| request.getActualizarDetalleBanditDesbloqueo().getDetallebandit() == null) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, "Bad Request", "ERROR", "ERROR");
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			// Validación de campos en el request
+			if (request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEsnImei() == null
+					|| request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEsnImei().isEmpty()) {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						400, "EsnImei is required", "ERROR", "ERROR");
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			if (archiveStolenPhoneRepository.existsByEsnAndStatus(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEsnImei(), 0L)) {
+				return new GeneralResponseImeiModel(
+						new GeneralResponseImeiModel.ReturnData(new GeneralResponseImeiModel.GeneralResponse(400,
+								"La línea ya está desbloqueada", "ERROR", "ERROR")));
+			}
+
+			// Buscar el registro existente por Esn
+			Optional<ArchiveStolenDefectivePhoneEntity> existingEntityOptional = archiveStolenPhoneRepository
+					.findByEsn(request.getImei());
+
+			if (existingEntityOptional.isPresent()) {
+				// Si existe, actualiza los campos necesarios
+				ArchiveStolenDefectivePhoneEntity existingEntity = existingEntityOptional.get();
+				existingEntity.setBlockType(request.getTipobloqueo());
+				existingEntity.setStatus(0L);
+				existingEntity.setCreatedDate(LocalDateTime.now());
+				archiveStolenPhoneRepository.save(existingEntity);
+			} else {
+				GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(
+						602, "No se puede realizar el desbloqueo porque la linea no existe", "ERROR", "ERROR");
+				GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+				return new GeneralResponseImeiModel(returnData);
+			}
+
+			HistoricalEntity historicalEntity = new HistoricalEntity();
+			historicalEntity.setId(-1L);
+			historicalEntity.setLockType(request.getTipobloqueo());
+			historicalEntity.setAcctCode(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnexo());
+			historicalEntity.setUnlockingAddress(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getDireccionUsuarioTransaccion());
+			historicalEntity.setEsnImei(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEsnImei());
+			historicalEntity.setStatusLowHigh(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getEstadoBajaAlta());
+			historicalEntity.setUnlockingIdentity(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getIdentidadUsuarioTransaccion());
+			historicalEntity
+					.setImeiSinUltDigit(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getIvesn());
+			historicalEntity.setReasonUnlock(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getMotivoTransaccion());
+			historicalEntity.setUnlockingName(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getNombreUsuarioTransaccion());
+			historicalEntity
+					.setOperator(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getOperador());
+			historicalEntity.setScreenUnlocks(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getPantallaTransaccion());
+			historicalEntity.setSimcard(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getSimcard());
+			historicalEntity.setTypeTechnology(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getTechnologyType());
+			historicalEntity.setPhone(request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getTelefono());
+			historicalEntity.setUnlockingPhone(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getTelefonoUsuarioTransaccion());
+			historicalEntity.setUserUnlocks(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getUsuarioTransaccion());
+			// Crear un LocalDateTime con los componentes de fecha y hora
+			LocalDateTime createdDateTime = LocalDateTime.of(
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getAnoTransaccion(),
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getMesTransaccion().intValue(),
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getDiaTransaccion().intValue(),
+					request.getActualizarDetalleBanditDesbloqueo().getDetallebandit().getHoraTransaccion().intValue(), 0);
+			
+			historicalEntity.setStatus(0L);
+			historicalEntity.setCreatedDate(createdDateTime);
+			historicalEntity.setUnlockDate(createdDateTime);
+			historicalRepository.save(historicalEntity);
+
+			// Respuesta exitosa
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(1,
+					"Service Completed", "OK", "INFO");
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			return new GeneralResponseImeiModel(returnData);
+
+		} catch (DataIntegrityViolationException e) {
+			// Validación de errores de base de datos
+			GeneralResponseImeiModel.GeneralResponse errorResponse = new GeneralResponseImeiModel.GeneralResponse(602,
+					"Data Integrity Violation", "ERROR", "ERROR");
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(errorResponse);
+			return new GeneralResponseImeiModel(returnData);
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			// Respuesta de error por defecto
+			GeneralResponseImeiModel.GeneralResponse generalResponse = new GeneralResponseImeiModel.GeneralResponse(601,
+					"Internal Server Error", "ERROR", "ERROR");
+			GeneralResponseImeiModel.ReturnData returnData = new GeneralResponseImeiModel.ReturnData(generalResponse);
+			return new GeneralResponseImeiModel(returnData);
+		}
+	}
+
+}

@@ -1,0 +1,46 @@
+{
+    "queueProperties": [{
+            "name": "URL_NOTIFY_EVENT",
+            "value": "http://192.168.159.46:7004/NotifyEvent/NotifyQueue/dist"
+        }, {
+            "name": "SUBSCRIBER_SPLIT",
+            "value": "="
+        }, {
+            "name": "SUBEVENT_KEY",
+            "value": "SUBEVENT"
+        }, {
+            "name": "NOT_AVAILABLE",
+            "value": "n/a"
+        }, {
+            "name": "INITITAL_CTX_CF",
+            "value": "weblogic.jndi.WLInitialContextFactory"
+        }, {
+            "name": "T3_QUEUE_READER",
+            "value": "t3://192.168.159.46:7004"
+        }, {
+            "name": "CONNECTION_QUEUE_DQ_QR",
+            "value": "jms/processorDQ"
+        }, {
+            "name": "CONNECTION_QUEUE_CF_QR",
+            "value": "jms/processorCF"
+        }, {
+            "name": "T3_QUEUE_READER_PAY",
+            "value": "t3://192.168.159.46:7004"
+        }, {
+            "name": "CONNECTION_QUEUE_DQ_QRP",
+            "value": "jms/processorPayDQ"
+        }, {
+            "name": "CONNECTION_QUEUE_CF_QRP",
+            "value": "jms/processorPayCF"
+        }, {
+            "name": "T3_QUEUE_READER_RECYCLE",
+            "value": "t3://192.168.159.46:7004"
+        }, {
+            "name": "CONNECTION_QUEUE_DQ_QRR",
+            "value": "jms/processorRecycleDQ"
+        }, {
+            "name": "CONNECTION_QUEUE_CF_QRR",
+            "value": "jms/processorRecycleCF"
+        }
+    ]
+}

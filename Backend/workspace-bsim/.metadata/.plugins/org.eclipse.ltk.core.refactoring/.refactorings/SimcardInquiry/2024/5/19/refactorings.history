@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring accessors="true" comment="Delete 5 elements from project &apos;SimcardInquiry&apos;&#x0D;&#x0A;- Original project: &apos;SimcardInquiry&apos;&#x0D;&#x0A;- Original elements:&#x0D;&#x0A;     CELTEL 2HN1.INP&#x0D;&#x0A;     CELTEL 2HN3.INP&#x0D;&#x0A;     CELTELHN1.INP&#x0D;&#x0A;     CELTELHN2.INP&#x0D;&#x0A;     CeltelHN3.INP" description="Delete elements" element1="CELTEL 2HN3.INP" element2="CELTEL 2HN1.INP" element3="CELTELHN2.INP" element4="CELTELHN1.INP" element5="CeltelHN3.INP" elements="0" flags="589830" id="org.eclipse.jdt.ui.delete" resources="5" stamp="1715292800522" subPackages="false" version="1.0"/>
+</session>

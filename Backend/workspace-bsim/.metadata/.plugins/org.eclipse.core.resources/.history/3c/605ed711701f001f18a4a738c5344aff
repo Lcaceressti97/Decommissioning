@@ -1,0 +1,339 @@
+package hn.com.tigo.comodatos.service;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.ws.rs.BadRequestException;
+
+import org.springframework.stereotype.Service;
+
+import hn.com.tigo.comodatos.entities.MooringBillingEntity;
+import hn.com.tigo.comodatos.entities.MooringEntity;
+import hn.com.tigo.comodatos.models.MooringInfoModel;
+import hn.com.tigo.comodatos.models.MooringModel;
+import hn.com.tigo.comodatos.repositories.IMooringBillingRepository;
+import hn.com.tigo.comodatos.repositories.MooringRepository;
+import hn.com.tigo.comodatos.services.interfaces.MooringService;
+
+@Service
+public class MooringServiceImpl implements MooringService {
+
+	private final MooringRepository mooringRepository;
+	private final IMooringBillingRepository imooringBillingRepository;
+
+	public MooringServiceImpl(MooringRepository mooringRepository,
+			IMooringBillingRepository imooringBillingRepository) {
+		super();
+		this.mooringRepository = mooringRepository;
+		this.imooringBillingRepository = imooringBillingRepository;
+	}
+
+	@Override
+	public MooringModel findById(Long id) {
+
+		MooringEntity entity = this.mooringRepository.findById(id).orElse(null);
+
+		if (entity == null) {
+			throw new BadRequestException(String.format("Error getById, Record with id %s is not valid", id));
+		}
+
+		MooringModel model = entity.entityToModel();
+
+		return model;
+	}
+
+	@Override
+	public List<MooringModel> findByIdMooringBilling(Long idMooringBilling) {
+
+		List<MooringEntity> entities = this.mooringRepository.findByIdMooringBilling(idMooringBilling);
+
+		if (entities.isEmpty()) {
+			throw new BadRequestException(
+					String.format("Error getByIdMooringBilling, Record with id %s is not valid", idMooringBilling));
+		}
+
+		return entities.stream().map(MooringEntity::entityToModel).collect(Collectors.toList());
+	}
+
+	@Override
+	public void add(Long id, MooringModel model) {
+
+		MooringBillingEntity validateEntity = this.imooringBillingRepository.findById(id).orElse(null);
+
+		if (validateEntity == null) {
+			throw new BadRequestException(
+					String.format("Error createMorring, Record with idMooringBilling %s is not valid", id));
+		}
+
+		if (id == model.getIdMooringBilling()) {
+
+			MooringEntity entity = new MooringEntity();
+
+			entity.setIdMooringBilling(model.getIdMooringBilling());
+			entity.setCustomerAccount(model.getCustomerAccount());
+			entity.setBillingAccount(model.getBillingAccount());
+			entity.setSubscriberId(model.getSubscriberId());
+			entity.setUserName(model.getUserName());
+			entity.setDateOfEntry(model.getDateOfEntry());
+			entity.setCheckInTime(model.getCheckInTime());
+			entity.setUnmooringUser(model.getUnmooringUser());
+			entity.setUnmooringDate(model.getUnmooringDate());
+			entity.setMooringStatus(model.getMooringStatus());
+			entity.setCreated(LocalDateTime.now());
+
+			this.mooringRepository.save(entity);
+		} else {
+			throw new BadRequestException(
+					String.format("Error createMorring, Record with idMooringBilling %s is not valid", id));
+		}
+
+	}
+
+	@Override
+	public void update(Long id, MooringModel model) {
+		MooringEntity entity = this.mooringRepository.findById(id).orElse(null);
+
+		if (entity == null) {
+			throw new BadRequestException(String.format("Error updateMooring, Record with id %s is not valid", id));
+		}
+
+		entity.setCustomerAccount(model.getCustomerAccount());
+		entity.setBillingAccount(model.getBillingAccount());
+		entity.setSubscriberId(model.getSubscriberId());
+		entity.setUserName(model.getUserName());
+		entity.setDateOfEntry(model.getDateOfEntry());
+		entity.setCheckInTime(model.getCheckInTime());
+		entity.setUnmooringUser(model.getUnmooringUser());
+		entity.setUnmooringDate(model.getUnmooringDate());
+		entity.setMooringStatus(model.getMooringStatus());
+
+		this.mooringRepository.save(entity);
+
+	}
+
+	@Override
+	public void delete(Long id, int status) {
+		MooringEntity entity = this.mooringRepository.findById(id).orElse(null);
+
+		if (entity == null) {
+			throw new BadRequestException(String.format("Error deleteMooring, Record with id %s is not valid", id));
+		}
+
+		entity.setMooringStatus(status);
+		this.mooringRepository.save(entity);
+	}
+
+	@Override
+	public void addTest(Long id, List<MooringModel> model) {
+
+		MooringBillingEntity validateEntity = this.imooringBillingRepository.findById(id).orElse(null);
+
+		if (validateEntity == null) {
+			throw new BadRequestException(
+					String.format("Error createMorring, Record with idMooringBilling %s is not valid", id));
+		}
+
+		List<MooringEntity> morringEntities = new ArrayList<>();
+		for (MooringModel mooringModel : model) {
+
+			if (mooringModel.getIdMooringBilling() == null) {
+				throw new BadRequestException("Error createMorring, Record with [idMooringBilling] is not null");
+			}
+
+			if (mooringModel.getIdMooringBilling() < 1) {
+				throw new BadRequestException(
+						String.format("Error createMorring, Record with idMooringBilling %s is not positive",
+								mooringModel.getIdMooringBilling()));
+			}
+
+			if (id == mooringModel.getIdMooringBilling()) {
+
+				MooringEntity entity = new MooringEntity();
+
+				entity.setCustomerAccount(mooringModel.getCustomerAccount());
+				entity.setBillingAccount(mooringModel.getBillingAccount());
+				entity.setSubscriberId(mooringModel.getSubscriberId());
+				entity.setUserName(mooringModel.getUserName());
+				entity.setDateOfEntry(mooringModel.getDateOfEntry());
+				entity.setCheckInTime(mooringModel.getCheckInTime());
+				entity.setUnmooringUser(mooringModel.getUnmooringUser());
+				entity.setUnmooringDate(mooringModel.getUnmooringDate());
+				entity.setMooringStatus(mooringModel.getMooringStatus());
+				entity.setIdMooringBilling(mooringModel.getIdMooringBilling());
+
+				morringEntities.add(entity);
+
+			}
+
+		}
+
+		this.mooringRepository.saveAll(morringEntities);
+
+	}
+
+	/**
+	 * Método encargado de validar si el comodato está o no activo ó amarrado
+	 * 
+	 */
+	@Override
+	public void validateSubcriber(String subcriber) {
+
+		// TODO Auto-generated method stub
+		List<MooringEntity> listMorring = this.mooringRepository.findByCmdMorringActive(subcriber);
+
+		/**
+		 * Validamos si el registro existe y está activo en la tabla hija
+		 * 
+		 */
+		if (!listMorring.isEmpty()) {
+			throw new BadRequestException(String
+					.format("The [subscriberId] = %s is already tied and the record cannot be created", subcriber));
+		}
+
+		List<MooringBillingEntity> list = this.imooringBillingRepository.findByCmdActive(subcriber);
+
+		/**
+		 * Validamos si el registro existe y está activo en la en la tabla principal
+		 * 
+		 */
+		if (!list.isEmpty()) {
+			throw new BadRequestException(String
+					.format("The [subscriberId] = %s belongs to an active loan and cannot be created", subcriber));
+		}
+
+	}
+
+	/**
+	 * Método encargado de obtener la información del comodato
+	 * 
+	 */
+	@Override
+	public MooringInfoModel getInfoMooringBySubscriber(String subscriber) {
+		// TODO Auto-generated method stub
+
+		// Props
+		boolean existMooringBilling = true;
+		boolean existMooring = true;
+
+		List<MooringBillingEntity> list = this.imooringBillingRepository.findByConsultSubscriberDesc(subscriber);
+		List<MooringEntity> moorings = this.mooringRepository.findByConsultSubscriberDesc(subscriber);
+
+		if (list.isEmpty()) {
+			existMooringBilling = false;
+		}
+
+		if (moorings.isEmpty()) {
+			existMooring = false;
+		}
+
+		/**
+		 * Validamos si existe el registro en las tablas padre e hija
+		 * 
+		 */
+		if (existMooringBilling == false && existMooring == false) {
+			throw new BadRequestException(String.format("The subscriber %s does not exist", subscriber));
+		}
+
+		MooringInfoModel data = new MooringInfoModel();
+
+		/**
+		 * Si existe vamos a hacer la consulta, del padre y después traer las lineas
+		 * amarradas
+		 * 
+		 */
+		if (!list.isEmpty()) {
+
+			// Seteamos los valores del padre
+			data.setCorrelativeCmd(list.get(0).getCorrelativeCmd());
+			data.setSubscriber(list.get(0).getSubscriberId());
+			data.setCorrelativeMooringCmd(list.get(0).getCorrelativeMooringCmd());
+			data.setCreateDate(list.get(0).getCreateDate());
+			data.setDueDate(list.get(0).getDueDate());
+			data.setCmdStatus(list.get(0).getCmdStatus());
+			data.setMonthsOfPermanence(list.get(0).getMonthsOfPermanence());
+			data.setDiscount(list.get(0).getPhoneDiscount());
+			// Calculo Fecha estimada
+			LocalDateTime estimatedDate = list.get(0).getCreateDate().plusMonths(list.get(0).getMonthsOfPermanence());
+			data.setEstimatedDate(estimatedDate);
+			LocalDate localDate = list.get(0).getCreateDate().toLocalDate();
+			if (list.get(0).getDueDate() != null) {
+				LocalDate localDueDate = list.get(0).getCreateDate().toLocalDate();
+				Long pendingMonths = localDueDate.until(localDate, null);
+				data.setPendingMonths(pendingMonths);
+				System.out.println("Entro");
+			} else {
+				LocalDateTime date = LocalDateTime.now();
+				Long pendingMonths = list.get(0).getCreateDate().until(date, ChronoUnit.MONTHS);
+				data.setPendingMonths(pendingMonths);
+			}
+
+			List<MooringEntity> mooringSubs = this.mooringRepository
+					.getMooringByIdMooringBillinfAndStatus(list.get(0).getId(), 1);
+
+			List<String> subscribers = new ArrayList<>();
+
+			/**
+			 * Validamos si el comodato padre tiene lineas amarradas
+			 * 
+			 */
+			if (mooringSubs.isEmpty()) {
+				data.setSubscribers(subscribers);
+			} else {
+
+				for (MooringEntity mooring : mooringSubs) {
+					subscribers.add(mooring.getSubscriberId());
+				}
+
+				data.setSubscribers(subscribers);
+
+			}
+
+		} else {
+
+			MooringBillingEntity father = this.imooringBillingRepository.findById(moorings.get(0).getIdMooringBilling())
+					.orElseThrow(null);
+
+			// Seteamos los valores del padre
+			data.setCorrelativeCmd(father.getCorrelativeCmd());
+			data.setSubscriber(father.getSubscriberId());
+			data.setCorrelativeMooringCmd(father.getCorrelativeMooringCmd());
+			data.setCreateDate(father.getCreateDate());
+			data.setDueDate(father.getDueDate());
+			data.setCmdStatus(father.getCmdStatus());
+			data.setMonthsOfPermanence(father.getMonthsOfPermanence());
+			data.setDiscount(father.getPhoneDiscount());
+			// Calculo Fecha estimada
+			LocalDateTime estimatedDate = father.getCreateDate().plusMonths(father.getMonthsOfPermanence());
+			data.setEstimatedDate(estimatedDate);
+
+			List<MooringEntity> mooringSubs = this.mooringRepository
+					.getMooringByIdMooringBillinfAndStatus(father.getId(), 1);
+
+			List<String> subscribers = new ArrayList<>();
+
+			/**
+			 * Validamos si el comodato padre tiene lineas amarradas
+			 * 
+			 */
+			if (mooringSubs.isEmpty()) {
+				data.setSubscribers(subscribers);
+			} else {
+
+				for (MooringEntity mooring : mooringSubs) {
+					subscribers.add(mooring.getSubscriberId());
+				}
+
+				data.setSubscribers(subscribers);
+
+			}
+
+		}
+
+		return data;
+	}
+
+}

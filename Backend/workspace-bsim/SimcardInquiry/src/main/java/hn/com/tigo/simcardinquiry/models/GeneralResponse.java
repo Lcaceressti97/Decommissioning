@@ -1,0 +1,52 @@
+package hn.com.tigo.simcardinquiry.models;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
+@Getter
+@Setter
+@ToString
+public class GeneralResponse {
+
+	private Long code;
+	private String description;
+	private Object data;
+	private List<GeneralError> errors = new ArrayList<>();
+
+	public Long getCode() {
+		return code;
+	}
+
+	public void setCode(Long code) {
+		this.code = code;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public Object getData() {
+		return data;
+	}
+
+	public void setData(Object data) {
+		this.data = data;
+	}
+
+	public List<GeneralError> getErrors() {
+		return errors;
+	}
+
+	public void setErrors(List<GeneralError> errors) {
+		this.errors = errors;
+	}
+
+}

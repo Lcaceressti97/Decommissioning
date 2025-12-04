@@ -1,0 +1,96 @@
+package hn.com.tigo.equipmentaccessoriesbilling.services;
+
+import java.time.LocalDateTime;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+
+import hn.com.tigo.equipmentaccessoriesbilling.entities.BranchOfficesEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.exceptions.BadRequestException;
+import hn.com.tigo.equipmentaccessoriesbilling.models.BranchOfficesModel;
+import hn.com.tigo.equipmentaccessoriesbilling.repositories.IBranchOfficesRepository;
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IBranchOfficesService;
+
+@Service
+public class BranchOfficesServiceImpl implements IBranchOfficesService {
+
+	private final IBranchOfficesRepository branchOfficesRepository;
+
+	public BranchOfficesServiceImpl(IBranchOfficesRepository branchOfficesRepository) {
+		super();
+		this.branchOfficesRepository = branchOfficesRepository;
+	}
+
+	@Override
+	public Page<BranchOfficesModel> getAllBranchOffices(Pageable pageable) {
+		Page<BranchOfficesEntity> entities = this.branchOfficesRepository.findAll(pageable);
+		return entities.map(BranchOfficesEntity::entityToModel);
+	}
+
+	@Override
+	public BranchOfficesModel getById(Long id) {
+		BranchOfficesEntity entity = this.branchOfficesRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format("Error get,Record with id %s is not valid", id));
+		return entity.entityToModel();
+	}
+
+	@Override
+	public void add(BranchOfficesModel model) {
+		BranchOfficesEntity entity = new BranchOfficesEntity();
+
+		entity.setId(-1L);
+		entity.setName(model.getName());
+		entity.setAddress(model.getAddress());
+		entity.setPhone(model.getPhone());
+		entity.setRtn(model.getRtn());
+		entity.setFax(model.getFax());
+		entity.setPbx(model.getPbx());
+		entity.setEmail(model.getEmail());
+		entity.setAcctCode(model.getAcctCode());
+		entity.setFictitiousNumber(model.getFictitiousNumber());
+		entity.setIdCompany(model.getIdCompany());
+		entity.setIdSystem(model.getIdSystem());
+		entity.setIdWarehouse(model.getIdWarehouse());
+		entity.setWarehouseName(model.getWarehouseName());
+		entity.setStatus(1L);
+		entity.setCreated(LocalDateTime.now());
+		this.branchOfficesRepository.save(entity);
+	}
+
+	@Override
+	public void update(Long id, BranchOfficesModel model) {
+		BranchOfficesEntity entity = this.branchOfficesRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format("Error update, Record with id %s is not valid", id));
+
+		entity.setName(model.getName());
+		entity.setAddress(model.getAddress());
+		entity.setPhone(model.getPhone());
+		entity.setRtn(model.getRtn());
+		entity.setFax(model.getFax());
+		entity.setPbx(model.getPbx());
+		entity.setEmail(model.getEmail());
+		entity.setAcctCode(model.getAcctCode());
+		entity.setFictitiousNumber(model.getFictitiousNumber());
+		entity.setIdCompany(model.getIdCompany());
+		entity.setIdSystem(model.getIdSystem());
+		entity.setIdWarehouse(model.getIdWarehouse());
+		entity.setWarehouseName(model.getWarehouseName());
+		entity.setStatus(1L);
+		entity.setCreated(LocalDateTime.now());
+		this.branchOfficesRepository.save(entity);
+	}
+
+	@Override
+	public void delete(Long id) {
+		BranchOfficesEntity entity = this.branchOfficesRepository.findById(id).orElse(null);
+		if (entity == null)
+			throw new BadRequestException(String.format("Record with id %s is not valid", id));
+
+		this.branchOfficesRepository.delete(entity);
+
+	}
+
+}
