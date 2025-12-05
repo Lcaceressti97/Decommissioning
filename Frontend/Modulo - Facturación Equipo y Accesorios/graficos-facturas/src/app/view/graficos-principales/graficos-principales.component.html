@@ -1,0 +1,304 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="card-header">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                        <h5 _ngcontent-c9="" class="title">CONTROL GRÁFICOS DE EQUIPOS Y ACCESORIOS
+                        </h5>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Cuerpo -->
+            <div class="card-body">
+
+                <div class="container-fluid mb-2">
+                    <div class="row" style="padding-left: 12px;">
+                        <div class="col-12">
+                            <div class="row">
+                                <label class="form-label font-size-large text-dark mr-1"><b>Tipo de Sucursal:</b>
+                                </label>
+                                <div [classList]="inputClasses">
+                                    <angular2-multiselect [data]="dropDownListBrancheOffices"
+                                        [(ngModel)]="selectedItemBrancheOffices"
+                                        (onSelect)="onItemSelectBrancheOffice($event)"
+                                        (onDeSelect)="onItemDeSelectBrancheOffice($event)"
+                                        (onSelectAll)="onSelectAllBrancheOffice($event)"
+                                        (onDeSelectAll)="onDeSelectAllBrancheOffice($event)"
+                                        [settings]="dropsownSettingsBrancheOffices">
+                                    </angular2-multiselect>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid mb-2">
+                    <div class="row" style="padding-left: 12px;">
+                        <div class="col-12">
+                            <div class="row">
+                                <label class="form-label font-size-large text-dark mr-2"><b>Territorio:</b>
+                                </label>
+                                <div [classList]="inputClasses">
+                                    <angular2-multiselect [data]="dropDownListTerritories"
+                                        [(ngModel)]="selectedItemTerritory" (onSelect)="onItemSelectTerritories($event)"
+                                        (onDeSelect)="onItemDeSelectTerritories($event)"
+                                        (onSelectAll)="onSelectAllTerritories($event)"
+                                        (onDeSelectAll)="onDeSelectAllTerritories($event)"
+                                        [settings]="dropsownSettingsTerritories" >
+                                    </angular2-multiselect>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="container-fluid mb-2">
+                    <div class="row" style="padding-left: 12px;">
+                        <div class="col-12">
+                            <div class="row">
+                                <label class="form-label font-size-large text-dark mr-2"><b>Tipo de Factura:</b>
+                                </label>
+                                <div [classList]="inputClasses">
+                                    <angular2-multiselect [data]="dropDownListType" [(ngModel)]="selectedItemType"
+                                        (onSelect)="onItemSelectType($event)" (onDeSelect)="onItemDeSelectType($event)"
+                                        (onSelectAll)="onSelectAllType($event)"
+                                        (onDeSelectAll)="onDeSelectAllType($event)" [settings]="dropsownSettingsType">
+                                    </angular2-multiselect>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="container-fluid mb-3">
+                    <div class="row" style="padding-left: 12px;">
+                        <div class="col-12">
+                            <div class="row">
+                                <label class="form-label font-size-large text-dark mr-3"><b>Tipo de Estado:</b>
+                                </label>
+                                <div [classList]="inputClasses">
+                                    <angular2-multiselect [data]="dropDownListStatus" [(ngModel)]="selectedItemStatus"
+                                        (onSelect)="onItemSelectStatus($event)"
+                                        (onDeSelect)="onItemDeSelectStatus($event)"
+                                        (onSelectAll)="onSelectAllStatus($event)"
+                                        (onDeSelectAll)="onDeSelectAllStatus($event)"
+                                        [settings]="dropsownSettingsStatus">
+                                    </angular2-multiselect>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="container-fluid mb-4">
+                    <form [formGroup]="dateForm">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="row">
+                                    <div class="col-4">
+                                        <label class="form-label font-size-large text-dark  mr-4">
+                                            <b>Fecha de Inicio:</b>
+                                        </label>
+                                        <input type="date" class="form-control" formControlName="dateInit"
+                                            name="dateInit" id="dateInit" [class.is-invalid]="
+                                                            dateForm.get('dateInit')?.touched &&
+                                                            dateForm.get('dateInit')?.invalid"
+                                            (change)="validateDates()">
+                                    </div>
+                                    <div class="col-4">
+                                        <label class="form-label font-size-large text-dark  mr-4">
+                                            <b>Fecha Fin:</b>
+                                        </label>
+                                        <input type="date" class="form-control" formControlName="dateEnd" id="dateEnd"
+                                            name="dateEnd" (change)="validateDates()">
+                                    </div>
+
+                                </div>
+
+                                <div class="row">
+                                    <button class="btn btn-md btn-round btn-info ml-3"
+                                        [disabled]="!utilService.loadGrants('UP')" (click)="getFilterMix()">
+                                        Filtrar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+
+                <!--  
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="btn btn-md btn-round btn-info" (click)="exportExcel()">
+                            Exportar
+                        </div>
+                    </div>
+                </div>
+-->
+
+
+                <!-- Tab de gráficos  -->
+                <div class="d-flex" style="justify-content: center;" *ngIf="hideGraphes">
+
+                    <div class="row">
+                        <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                            <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                                <a ngbNavLink>
+                                    Generales
+                                </a>
+                            </li>
+                            <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                                <a ngbNavLink>
+                                    Tipo
+                                </a>
+                            </li>
+                            <li (click)="changeTab(3)" id='nav3' [ngbNavItem]="3">
+                                <a ngbNavLink>
+                                    Sucursal
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+
+                <!-- Gráficos generales -->
+                <div class="container-fluid mb-5" *ngIf="hideGraphes && graphGeneral">
+
+                    <div class="row m-2">
+                        <div class="col-12">
+                            <div class="alert alert-info p-1 text-center w-100">
+                                GRÁFICOS GENERALES DE FACTURACIÓN
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Graficos -->
+                    <div class="row mb-5">
+
+                        <!-- Gráfica general -->
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row" @endState>
+                                <div class="col-12">
+                                    <div style="height: 300px;">
+                                        <app-graficos-circulares [inputData]="data" [visible]="hidddenComponent"
+                                            #grafico></app-graficos-circulares>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br>
+                    <br>
+                    <br>
+
+                    <div class="row">
+                        <!-- Gráfica vendedores -->
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row" @endState>
+                                <div class="col-12">
+                                    <div style="height: 300px;">
+                                        <app-graficos-barra [inputData]="data"></app-graficos-barra>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Gráficos para los detalles -->
+                <div class="container-fluid mt-5" *ngIf="hideGraphes && graphType">
+
+                    <!-- Graficos -->
+                    <div class="row">
+
+                        <!-- Gráfica por tipo -->
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-info p-1 text-center w-100">
+                                        GRÁFICOS POR TIPO DE FACTURACIÓN
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" @endState>
+                                <div class="col-12">
+                                    <app-grafico-circular-tipo [inputData]="data"></app-grafico-circular-tipo>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+                    <br>
+                    <br>
+
+                    <div class="row">
+                        <!-- Gráfica por tipo y estado -->
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-info p-1 text-center w-100">
+                                        GRÁFICO POR TIPO Y ESTADO DE LAS FACTURAS
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" @endState>
+                                <div class="col-12">
+                                    <div style="height: 300px;">
+                                        <app-grafico-barra-tipo-estado
+                                            [inputData]="data"></app-grafico-barra-tipo-estado>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+
+
+                <!-- Gráficos Sucursales  -->
+                <div class="container-fluid mt-5" *ngIf="hideGraphes && graphBrancheOffice">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12">
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="alert alert-info p-1 text-center w-100">
+                                        GRÁFICO POR SUCURSAL
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" @endState>
+                                <div class="col-12">
+                                    <div style="height: 300px;">
+                                        <app-grafico-barra-sucursal [inputData]="data"></app-grafico-barra-sucursal>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

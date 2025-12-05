@@ -1,0 +1,749 @@
+<div class="main-content">
+
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            {{
+            "Proceso de Creación:"
+            }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row mb-3" style="justify-content: center;">
+            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs" style="padding-bottom: 0px;">
+                <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                    <a ngbNavLink>
+                        General
+                    </a>
+                </li>
+                <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                    <a ngbNavLink>
+                        Detalles
+                    </a>
+                </li>
+                <li (click)="changeTab(3)" id='nav2' [ngbNavItem]="3">
+                    <a ngbNavLink>
+                        Validar Factura
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <br>
+
+        <!-- Card de los datos Generales -->
+        <div class="card shadow" [hidden]="hiddeGeneral">
+
+            <div class="card-header text-center">
+                <h5 style="font-weight: bold;">
+                    Datos Principales
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <div class="container">
+                    <form [formGroup]="formGeneral">
+
+                        <div class="card card-optional">
+
+                            <div class="card-body">
+                                <div class="container">
+
+                                    <div class="row mb-2">
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Proceso Fiscal:</b>
+                                            </label>
+                                            <select class="form-control text-center" formControlName="fiscalProcess"
+                                                [class.is-invalid]="
+                                                formGeneral.get('fiscalProcess').touched &&
+                                                formGeneral.get('fiscalProcess').invalid">
+                                                <option *ngFor="let fiscalProcess of fiscalProcessData"
+                                                    [value]="fiscalProcess.id">
+                                                    {{ fiscalProcess.name }}
+                                                </option>
+                                            </select>
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGeneral.get('fiscalProcess')?.valid &&
+                                            (formGeneral.get('fiscalProcess')?.touched || formGeneral.get('fiscalProcess')?.dirty)
+                                            ">
+                                                {{formGeneral.get('fiscalProcess')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY }}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Tipo de factura:</b>
+                                            </label>
+                                            <select class="form-control text-center" formControlName="invoiceType"
+                                                [class.is-invalid]="
+                                                formGeneral.get('invoiceType').touched &&
+                                                formGeneral.get('invoiceType').invalid">
+                                                <option [value]="invoiceType" *ngFor="let invoiceType of invoiceTypes">
+                                                    {{ invoiceType}}
+                                                </option>
+                                            </select>
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGeneral.get('invoiceType')?.valid &&
+                                            (formGeneral.get('invoiceType')?.touched || formGeneral.get('invoiceType')?.dirty)
+                                            ">
+                                                {{formGeneral.get('invoiceType')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY }}
+                                            </span>
+
+                                        </div>
+
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="this.formGeneral.get('fiscalProcess')?.value == 1">
+                                            <label class="form-label">
+                                                <b>Tipo de cliente:</b>
+                                            </label>
+                                            <select class="form-control text-center" formControlName="customerType"
+                                                (change)="onCustomerTypeChange($event)"
+                                                [class.is-invalid]="formGeneral.get('customerType').touched && formGeneral.get('customerType').invalid">
+                                                <option *ngFor="let customerType of customerTypeData"
+                                                    [value]="customerType.id">
+                                                    {{ customerType.name }}
+                                                </option>
+                                            </select>
+                                            <span class="text-danger mt-1"
+                                                *ngIf="!formGeneral.get('customerType')?.valid && (formGeneral.get('customerType')?.touched || formGeneral.get('customerType')?.dirty)">
+                                                {{formGeneral.get('customerType')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY }}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Fila Uno -->
+                                    <div class="row mb-2">
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Cuenta de facturación:</b>
+                                            </label>
+                                            <div class="row">
+                                                <div class="col-10 col-10-optional">
+                                                    <input type="text" class="form-control text-center"
+                                                        formControlName="acctCode" [class.is-invalid]="
+                                                    formGeneral.get('acctCode').touched &&
+                                                    formGeneral.get('acctCode').invalid">
+
+                                                </div>
+
+                                                <div class="col-2">
+                                                    <button (click)="findByAcctCode()" type="button"
+                                                        class="btn btn-round btn-info btn-sm btn-optional-create">
+                                                        <i class="now-ui-icons ui-1_zoom-bold"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Cuenta cliente:</b>
+                                            </label>
+                                            <input type="text" class="form-control text-center"
+                                                formControlName="customerId" [class.is-invalid]="
+                                            formGeneral.get('customerId').touched &&
+                                            formGeneral.get('customerId').invalid" readonly>
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGeneral.get('customerId')?.valid &&
+                                            (formGeneral.get('customerId')?.touched || formGeneral.get('customerId')?.dirty)
+                                            ">
+                                                {{formGeneral.get('customerId')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY}}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Usuario Vendedor:</b>
+                                            </label>
+                                            <input type="text" class="form-control text-center" formControlName="seller"
+                                                [class.is-invalid]="
+                                            formGeneral.get('seller').touched &&
+                                            formGeneral.get('seller').invalid" readonly>
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGeneral.get('seller')?.valid &&
+                                            (formGeneral.get('seller')?.touched || formGeneral.get('seller')?.dirty)
+                                            ">
+                                                {{formGeneral.get('seller')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY}}
+                                            </span>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- Fila Dos -->
+                                    <div class="row mb-2">
+
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Nombre del cliente:</b>
+                                            </label>
+                                            <input type="text" class="form-control text-center"
+                                                formControlName="customer" [class.is-invalid]="
+                                            formGeneral.get('customer').touched &&
+                                            formGeneral.get('customer').invalid" >
+                  <!--                           <span class="text-danger mt-1" *ngIf="
+                                            !formGeneral.get('customer')?.valid &&
+                                            (formGeneral.get('customer')?.touched || formGeneral.get('customer')?.dirty)
+                                            ">
+                                                {{formGeneral.get('customer')?.hasError('required') ?
+                                                messages.NO_EMPTY : formGeneral.get('customer')?.hasError('maxLength') ?
+                                                messages.MAX_100 : messages.MAX_100 }}
+                                            </span> -->
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Teléfono:</b>
+                                            </label>
+
+                                            <input type="text" class="form-control text-center"
+                                                formControlName="primaryIdentity" [class.is-invalid]="
+                                                    formGeneral.get('primaryIdentity').touched &&
+                                                    formGeneral.get('primaryIdentity').invalid"
+                                                >
+
+       <!--                                      <span class="text-danger mt-1" *ngIf="
+                                                        !formGeneral.get('primaryIdentity')?.valid &&
+                                                        (formGeneral.get('primaryIdentity')?.touched || formGeneral.get('primaryIdentity')?.dirty)
+                                                    ">
+                                                {{formGeneral.get('primaryIdentity')?.hasError('required') ?
+                                                messages.NO_EMPTY :
+                                                formGeneral.get('primaryIdentity')?.hasError('maxLength') ?
+                                                messages.MAX_30 : messages.MAX_50}}
+                                            </span> -->
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>RTN del cliente:</b>
+                                            </label>
+                                            <input type="text" class="form-control text-center"
+                                                formControlName="customerRtnId" [class.is-invalid]="
+                                            formGeneral.get('customerRtnId').touched &&
+                                            formGeneral.get('customerRtnId').invalid"
+                                                >
+
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <hr>
+
+                                    <!-- Fila Tres -->
+                                    <!--                             <div class="row mb-2">
+
+
+                                        <div class="col-sm-12 col-md-12 col-lg-12">
+                                            <label class="form-label">
+                                                <b>Dirección del cliente:</b>
+                                            </label>
+                                            <textarea readonly formControlName="customerAddress" [class.is-invalid]="
+                                                formGeneral.get('customerAddress').touched &&
+                                                formGeneral.get('customerAddress').invalid" class="form-control"
+                                                type="text">
+                                            </textarea>
+                                        </div>
+
+                                    </div>
+
+                                    <hr> -->
+
+
+                                    <!-- Fila Cuatro -->
+                                    <div class="row mb-2">
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Sucursal:</b>
+                                            </label>
+
+                                            <select class="form-control text-center" formControlName="idBranchOffices"
+                                                [class.is-invalid]="
+                                                formGeneral.get('idBranchOffices').touched &&
+                                                formGeneral.get('idBranchOffices').invalid"
+                                                (change)="changeSucursal($event)">
+                                                <option
+                                                    [value]="branch.id + '||' + branch.name + '||' + branch.wineryCode + '||' + branch.acctCode"
+                                                    *ngFor="let branch of branchOffices">
+                                                    {{ branch.id + " - " + branch.name}}
+                                                </option>
+                                            </select>
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                                        !formGeneral.get('idBranchOffices')?.valid &&
+                                                        (formGeneral.get('idBranchOffices')?.touched || formGeneral.get('idBranchOffices')?.dirty)
+                                                    ">
+                                                {{formGeneral.get('idBranchOffices')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY}}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Código de bodega:</b>
+                                            </label>
+                                            <input type="text" class="form-control text-center"
+                                                formControlName="warehouse" [class.is-invalid]="
+                                            formGeneral.get('warehouse').touched &&
+                                            formGeneral.get('warehouse').invalid" readonly>
+
+                                        </div>
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Tipo de inventario:</b>
+                                            </label>
+                                            <angular2-multiselect [data]="inventoryTypeModel"
+                                                formControlName="inventoryType" [settings]="dropdownSettingsInventory"
+                                                (onSelect)="onChangeInventoryType($event)" displayByKey="name"
+                                                (change)="onChangeInventoryType($event)">
+
+                                            </angular2-multiselect>
+
+                                            <span class="text-danger mt-1"
+                                                *ngIf="!formGeneral.get('inventoryType')?.valid && 
+                                              (formGeneral.get('inventoryType')?.touched || formGeneral.get('inventoryType')?.dirty)">
+                                                {{ formGeneral.get('inventoryType')?.hasError('required') ?
+                                                messages.NO_EMPTY :
+                                                formGeneral.get('inventoryType')?.hasError('maxLength') ?
+                                                messages.MAX_100 : messages.MAX_100 }}
+                                            </span>
+                                        </div>
+
+
+                                    </div>
+
+                                    <!-- Fila Cinco -->
+                                    <div class="row mb-2">
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+                                            <label class="form-label">
+                                                <b>Sub-bodega:</b>
+                                            </label>
+                                            <select class="form-control text-center" formControlName="subWarehouse"
+                                                [class.is-invalid]="
+                                                formGeneral.get('subWarehouse').touched &&
+                                                formGeneral.get('subWarehouse').invalid">
+                                                <option [value]="''">
+                                                    SIN SUB-BODEGA
+                                                </option>
+                                                <option [value]="subbodega.code"
+                                                    *ngFor="let subbodega of subWarehouseModel">
+                                                    {{ subbodega.code + " - " + subbodega.name}}
+                                                </option>
+                                            </select>
+
+
+                                        </div>
+                                    </div>
+
+                                    <hr>
+
+
+
+
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+                    </form>
+                </div>
+
+
+            </div>
+
+        </div>
+
+        <!-- Card para los prodcutos -->
+
+        <div class="card shadow" [hidden]="hiddeDetail">
+
+            <div class="card-header text-center">
+                <h5 style="font-weight: bold;">
+                    Detalles Productos
+                </h5>
+            </div>
+
+            <div class="card-body">
+                <div class="container">
+
+                    <div class="card card-optional">
+                        <div class="card-body">
+                            <div class="container">
+                                <div class="row">
+                                    <div class="col-12">
+
+                                        <div class="dataTables_wrapper">
+                                            <div class="row">
+                                                <div class="col-sm-12 col-md-6">
+                                                    <div class="dataTables_length" id="datatable_length">
+                                                        <button class="btn btn-info btn-round btn-sm btn-optional"
+                                                            (click)="openModalAddProduct()">
+                                                            Agregar Item
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-sm-12 col-md-6">
+                                                    <div class="dataTables_filter" id="datatable_filter">
+                                                        <label>
+                                                            <input aria-controls="datatable"
+                                                                class="form-control form-control-sm p-2 w-100"
+                                                                placeholder="Buscar" type="search"
+                                                                [(ngModel)]="searchedValue" (keyup)="search()" />
+                                                        </label>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+
+                                        </div>
+
+
+                                        <ngx-datatable
+                                            class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                                            [rows]="invoiceDetail" [loadingIndicator]="loadingIndicator"
+                                            columnMode="force" rowHeight="auto" [limit]="resultsPerPage"
+                                            [footerHeight]="60"
+                                            [messages]="{emptyMessage: 'No hay registros disponibles', totalMessage: getTotalTextActive()}">
+
+                                            <ngx-datatable-column name="Código" prop="model"
+                                                [cellClass]="'custom-class'">
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="Servicio" prop="description"
+                                                [cellClass]="'custom-class'">
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="Cantidad" prop="quantity"
+                                                [cellClass]="'custom-class'">
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="Precio" prop="unitPrice"
+                                                [cellClass]="'custom-class'">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+                                                    {{ row.unitPrice | number: '1.2-2' }}
+                                                </ng-template>
+
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="Subtotal" prop="subtotal"
+                                                [cellClass]="'custom-class'">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+                                                    {{ row.subtotal | number: '1.2-2' }}
+                                                </ng-template>
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="Descuento" prop="discount"
+                                                [cellClass]="'custom-class'">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+                                                    {{ row.discount | number: '1.2-2' }}
+                                                </ng-template>
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="I.S.V" prop="tax" [cellClass]="'custom-class'">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+                                                    {{ row.tax | number: '1.2-2' }}
+                                                </ng-template>
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="Total" prop="amountTotal"
+                                                [cellClass]="'custom-class'">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+                                                    {{ row.amountTotal | number: '1.2-2' }}
+                                                </ng-template>
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="E.S.N" prop="serieOrBoxNumber"
+                                                [cellClass]="'custom-class'">
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column name="Remover">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+
+
+                                                    <button (click)="removeProduct(row)" type="button"
+                                                        class="btn btn-round btn-sm btn-danger" data-placement="right"
+                                                        data-toggle="tooltip" title="Dar clic para inactivar">
+                                                        <i class="now-ui-icons  ui-1_simple-remove"></i>
+                                                    </button>
+                                                </ng-template>
+
+                                            </ngx-datatable-column>
+
+
+                                        </ngx-datatable>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <br>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- Tab de Validación -->
+        <div class="container">
+            <div class="card shadow" [hidden]="hiddeValidation">
+
+                <div class="card-header text-center">
+                    <h5 style="font-weight: bold;">
+                        Datos Calculados
+                    </h5>
+                </div>
+
+                <form [formGroup]="formValidation">
+
+                    <div class="card-body">
+                        <div class="container">
+
+                            <div class="card card-optional">
+                                <div class="card-body">
+                                    <div class="container">
+                                        <div class="row flex-row-reverse mb-2">
+                                            <div class="col-sm-12 col-md-4 col-lg-4">
+                                                <label class="form-label">
+                                                    <b>Subtotal:</b>
+                                                </label>
+                                                <input readonly type="text" class="form-control text-center"
+                                                    formControlName="subtotal" [class.is-invalid]="
+                                                formValidation.get('subtotal').touched &&
+                                                formValidation.get('subtotal').invalid">
+
+                                                <span class="text-danger mt-1" *ngIf="
+                                                !formValidation.get('subtotal')?.valid &&
+                                                (formValidation.get('subtotal')?.touched || formValidation.get('subtotal')?.dirty)
+                                                ">
+                                                    {{formValidation.get('subtotal')?.hasError('required') ?
+                                                    messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                </span>
+
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row flex-row-reverse mb-2">
+
+                                            <div class="col-sm-12 col-md-4 col-lg-4">
+                                                <label class="form-label">
+                                                    <b>Descuento:</b>
+                                                </label>
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <input type="text" class="form-control text-center"
+                                                            formControlName="discount" [class.is-invalid]="
+                                                        formValidation.get('discount').touched &&
+                                                        formValidation.get('discount').invalid" readonly>
+
+                                                        <span class="text-danger mt-1" *ngIf="
+                                                            !formValidation.get('discount')?.valid &&
+                                                            (formValidation.get('discount')?.touched || formValidation.get('discount')?.dirty)
+                                                        ">
+                                                            {{formValidation.get('discount')?.hasError('required') ?
+                                                            messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row flex-row-reverse mb-2">
+
+
+                                            <div class="col-sm-12 col-md-4 col-lg-4">
+                                                <label class="form-label">
+                                                    <b>Impuesto:</b>
+                                                </label>
+                                                <div class="row">
+                                                    <div class="col-12 ">
+                                                        <input type="text" class="form-control text-center"
+                                                            formControlName="amountTax" [class.is-invalid]="
+                                                        formValidation.get('amountTax').touched &&
+                                                        formValidation.get('amountTax').invalid" readonly>
+
+                                                        <span class="text-danger mt-1" *ngIf="
+                                                            !formValidation.get('amountTax')?.valid &&
+                                                            (formValidation.get('amountTax')?.touched || formValidation.get('amountTax')?.dirty)
+                                                        ">
+                                                            {{formValidation.get('amountTax')?.hasError('required') ?
+                                                            messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+
+                                            <div class="col-sm-12 col-md-4 col-lg-4">
+                                                <label class="form-label">
+                                                    <b>Porcentaje del impuesto:</b>
+                                                </label>
+                                                <input type="text" readonly class="form-control text-center"
+                                                    formControlName="taxPercentage" [class.is-invalid]="
+                                                formValidation.get('taxPercentage').touched &&
+                                                formValidation.get('taxPercentage').invalid">
+                                                <span class="text-danger mt-1" *ngIf="
+                                                !formValidation.get('taxPercentage')?.valid &&
+                                                (formValidation.get('taxPercentage')?.touched || formValidation.get('taxPercentage')?.dirty)
+                                                ">
+                                                    {{formValidation.get('taxPercentage')?.hasError('required') ?
+                                                    messages.NO_EMPTY : messages.ONLY_NUMBER_DECIMAL }}
+                                                </span>
+
+                                            </div>
+
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row flex-row-reverse mb-2">
+
+                                            <div class="col-sm-12 col-md-4 col-lg-4">
+                                                <label class="form-label">
+                                                    <b>Total en dolares:</b>
+                                                </label>
+                                                <input type="text" class="form-control text-center"
+                                                    formControlName="amountTotal" [class.is-invalid]="
+                                                formValidation.get('amountTotal').touched &&
+                                                formValidation.get('amountTotal').invalid" readonly>
+
+                                                <span class="text-danger mt-1" *ngIf="
+                                                !formValidation.get('amountTotal')?.valid &&
+                                                (formValidation.get('amountTotal')?.touched || formValidation.get('amountTotal')?.dirty)
+                                                ">
+                                                    {{formValidation.get('amountTotal')?.hasError('required') ?
+                                                    messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                </span>
+
+                                            </div>
+
+
+                                        </div>
+
+                                        <hr>
+
+                                        <div class="row flex-row-reverse mb-2">
+
+                                            <div class="col-sm-12 col-md-4 col-lg-4">
+                                                <label class="form-label">
+                                                    <b>Total en Lempiras:</b>
+                                                </label>
+                                                <div class="row">
+                                                    <div class="col-12 ">
+                                                        <input type="text" class="form-control text-center"
+                                                            formControlName="totalLps" [class.is-invalid]="
+                                                        formValidation.get('totalLps').touched &&
+                                                        formValidation.get('totalLps').invalid" readonly>
+
+                                                        <span class="text-danger mt-1" *ngIf="
+                                                            !formValidation.get('totalLps')?.valid &&
+                                                            (formValidation.get('totalLps')?.touched || formValidation.get('totalLps')?.dirty)
+                                                        ">
+                                                            {{formValidation.get('totalLps')?.hasError('required') ?
+                                                            messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                        </span>
+                                                    </div>
+
+                                                </div>
+
+
+                                            </div>
+
+
+                                            <div class="col-sm-12 col-md-4 col-lg-4">
+                                                <label class="form-label">
+                                                    <b>Tasa de cambio:</b>
+                                                </label>
+                                                <input type="text" class="form-control text-center"
+                                                    formControlName="exchangeRate" [class.is-invalid]="
+                                                formValidation.get('exchangeRate').touched &&
+                                                formValidation.get('exchangeRate').invalid" readonly>
+                                                <span class="text-danger mt-1" *ngIf="
+                                                !formValidation.get('exchangeRate')?.valid &&
+                                                (formValidation.get('exchangeRate')?.touched || formValidation.get('exchangeRate')?.dirty)
+                                                ">
+                                                    {{formValidation.get('exchangeRate')?.hasError('required') ?
+                                                    messages.NO_EMPTY : messages.ONLY_NUMBER_DECIMAL_FOUR }}
+                                                </span>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+
+
+                        </div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+
+
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+        <button (click)="createInvoice()" type="button" class="btn btn-round btn-success mr-1"
+            [disabled]="formGeneral.invalid || !utilService.loadGrants('CR') || invoiceDetail.length === 0">
+            Crear
+        </button>
+
+    </div>
+
+</div>

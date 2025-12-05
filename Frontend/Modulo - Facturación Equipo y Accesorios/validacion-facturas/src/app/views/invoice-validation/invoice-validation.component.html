@@ -1,0 +1,112 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">VALIDACIÓN DE FACTURAS
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="card-body">
+                    <div class="dataTables_wrapper">
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length" id="datatable_length">
+                                    <label>
+                                        Se muestran
+                                        <select aria-controls="datatable" class="form-control form-control-sm"
+                                            name="datatable_length" [(ngModel)]="resultsPerPage">
+                                            <option [value]="10">10</option>
+                                            <option [value]="15">15</option>
+                                            <option [value]="50">50</option>
+                                        </select>
+                                        resultados
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_filter" id="datatable_filter">
+                                    <label>
+                                        <input aria-controls="datatable" class="form-control form-control-sm"
+                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                            (keyup)="searchInvoice()" (search)="reloadRows()" />
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                        [rows]="rowsInvoiceEquipmentAccesories" [loadingIndicator]="loadingIndicator" columnMode="force"
+                        rowHeight="auto" [limit]="resultsPerPage" [footerHeight]="100"
+                        [messages]="{emptyMessage: 'No hay facturas de equipos y accesorios disponibles', totalMessage: getTotalText()}">
+                        <ngx-datatable-column name="ID" prop="id" class="center-column">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Cuenta de Facturación" prop="billingAccount">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Tipo de Factura" prop="invoiceType">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Estado Factura" prop="invoiceStatusName">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Subscriptor" prop="subscriber">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Nombre Cliente" prop="customerName">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="ID-RTN" prop="custcode">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Compañia" prop="company">
+                            <ng-template ngx-datatable-cell-template let-value="value">
+                                <div class="center-cell">{{ value }}</div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Agencia" prop="agency">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Acciones" prop="Id">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                <div class="center-cell">
+                                  
+                                    <div class="action-button">
+                                        <button type="button" class="btn btn-round btn-outline-darkBlue bg-darkBlue smaller-button text-white"
+                                            data-toggle="tooltip" data-placement="top" title="Procesar Facturas"
+                                             (click)="see(row)">
+                                            Procesar Facturas
+                                        </button>
+                                    </div>
+                        
+                                    
+                                    <div class="action-button">
+                                        <button type="button" class="btn btn-round btn-outline-success bg-success smaller-button text-white"
+                                            data-toggle="tooltip" data-placement="top" title="Cargar OCEP"
+                                            (click)="openModalOcep('see', row)">
+                                            Cargar OCEP
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        
+                        <ngx-datatable-column name="Pre Facturas" prop="Id">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                                <div class="center-cell">
+                                    <div class="action-button">
+                                        <button type="button" class="btn btn-round btn-outline-darkBlue bg-darkBlue smaller-button text-white"
+                                            data-toggle="tooltip" data-placement="top" title="Procesar Facturas"
+                                            >
+                                            Pre Facturas
+                                        </button>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

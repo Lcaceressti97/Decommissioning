@@ -1,0 +1,119 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row mt-3">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">SERVICIOS DE FACTURACIÓN
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <br>
+                    <div class="row">
+                        <div class="col">
+                            <button (click)="openModal('add', null)" class="btn btn-success btn-round mr-1">
+                                Crear Servicio
+                            </button>
+                        </div>
+                    </div>
+                    <div class="dataTables_wrapper">
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length" id="datatable_length">
+                                    <label>
+                                        Se muestran
+                                        <select aria-controls="datatable" class="form-control form-control-sm"
+                                            name="datatable_length" [(ngModel)]="resultsPerPage">
+                                            <option [value]="5">5</option>
+                                            <option [value]="10">10</option>
+                                            <option [value]="15">15</option>
+                                        </select>
+                                        resultados
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_filter" id="datatable_filter">
+                                    <label>
+                                        <input aria-controls="datatable" class="form-control form-control-sm"
+                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                            (keyup)="search()" />
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <!-- Tabla de contenido -->
+
+
+                    <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                        [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                        [externalPaging]="true" [count]="totalElements" [offset]="currentPage" [limit]="pageSize"
+                        (page)="onPageChange($event)" [footerHeight]="50" [messages]="{
+                    emptyMessage: 'No hay registros disponibles', 
+                    totalMessage: 'total',
+                    selectedMessage: 'seleccionado'
+                }">
+                        <ngx-datatable-column name="Código" prop="serviceCode" [cellClass]="'custom-class'">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Nombre" prop="serviceName" [cellClass]="'custom-class'">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Precio" prop="totalQuantity" [cellClass]="'custom-class'">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                {{ row.totalQuantity | number: '1.2-2' }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Estado" prop="status" [cellClass]="'custom-class'">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Usuario Creador" prop="creationUser" [cellClass]="'custom-class'">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Fecha Creación" prop="creationDate" [cellClass]="'custom-class'">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+
+                                {{ row.creationDate | date: 'dd/MM/yyyy hh:mm:ss' }}
+
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Acciones">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+
+                                <button (click)="openModal('see', row)" type="button"
+                                    class="btn btn-round btn-sm btn-info" data-placement="right" data-toggle="tooltip"
+                                    title="Dar clic para visualizar los detalles">
+                                    <i class="now-ui-icons design_bullet-list-67"></i>
+                                </button>
+                                <button (click)="openModal('edit', row)" type="button"
+                                    class="btn btn-round btn-sm btn-warning" data-placement="right"
+                                    data-toggle="tooltip" title="Dar clic para editar">
+                                    <i class="now-ui-icons ui-2_settings-90"></i>
+                                </button>
+
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                    </ngx-datatable>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

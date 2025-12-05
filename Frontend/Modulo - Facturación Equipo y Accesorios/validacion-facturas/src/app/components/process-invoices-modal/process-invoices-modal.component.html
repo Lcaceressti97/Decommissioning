@@ -1,0 +1,43 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            {{ getTitle() }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider"> <!-- Línea divisoria -->
+    </div>
+    <br>
+    <div class="modal-body">
+        <form [formGroup]="processInvoiceForm">
+            <div class="row">
+                <div class="col-md-10 mx-auto">
+                    <div class="form-group row align-items-center">
+                        <label class="col-sm-6"><b>Número de Documento:</b></label>
+                        <div class="col-sm-6">
+                            <input oninput="this.value = this.value.toUpperCase()" #inputRef2
+                                formControlName="documentNumber" [class.is-invalid]="
+                              processInvoiceForm.get('documentNumber').touched &&
+                              processInvoiceForm.get('documentNumber').invalid" autocomplete="off" class="form-control"
+                                type="text" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center">
+                <button class="btn btn-round mr-2 btn-outline-primary bg-darkBlue" (click)="updateDocumentNo()">
+                    Procesar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+</div>

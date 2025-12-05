@@ -1,0 +1,270 @@
+.btn-close {
+    border: none !important;
+    background: transparent;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+}
+
+.row-optional {
+    margin-right: -10px !important;
+}
+
+.fa {
+    color: #ff3636 !important;
+}
+
+.icon {
+    color: #ffffff !important;
+}
+
+.modal-footer {
+    justify-content: end;
+}
+
+.modal-footer button {
+    justify-content: end;
+    margin-left: 10px;
+}
+
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+.modal-body {
+    padding: 20px;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th {
+    background-color: #f8f9fa;
+}
+
+.form-check-input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 55vh;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+.card {
+    width: 100%;
+    max-width: 700px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0px 2px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-top: 2%;
+}
+
+.card-content {
+    padding: 20px;
+    margin: 0;
+}
+
+.detail-list {
+    margin-bottom: 20px;
+    padding: 0;
+}
+
+.detail-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    margin: 0;
+}
+
+.detail-item:last-child {
+    border-bottom: none;
+}
+
+.detail-label {
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+}
+
+.detail-value {
+    color: #666;
+    margin: 0;
+}
+
+.amounts {
+    margin-top: 20px;
+    padding: 0;
+}
+
+.amount {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    margin: 0;
+}
+
+.amount:last-child {
+    border-bottom: none;
+}
+
+.amount-label-two {
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    padding-left: 60%;
+}
+
+.amount-label {
+    font-weight: bold;
+    color: #333;
+    margin: 0;
+    padding-left: 0%;
+}
+
+.amount-value {
+    color: #666;
+    margin: 0;
+}
+
+.modal-divider-container {
+    margin: 0 1rem;
+}
+
+.modal-divider {
+    border: none;
+    border-top: 1px solid #022649;
+    margin: 0;
+}
+
+/* ===== contenedor con padding lateral ===== */
+.content-wrap {
+    padding-inline: 16px;
+    /* padding a los lados */
+    padding-bottom: 8px;
+}
+
+/* ===== preview centrado y sin scroll horizontal ===== */
+.preview-card {
+    border: 1px solid #e7ecf3;
+    border-radius: 12px;
+    background: #fff;
+    overflow: hidden;
+    margin-top: 12px;
+}
+
+/* grid de 3 columnas iguales, todo centrado */
+.preview-header,
+.preview-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+}
+
+.preview-header {
+    background: #f8fafc;
+    border-bottom: 1px solid #e9edf3;
+    color: #6c757d;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: .03em;
+    font-weight: 700;
+    text-align: center;
+}
+
+.preview-body {
+    max-height: none;
+    overflow-x: hidden;
+}
+
+.preview-body.scrollable {
+    max-height: 220px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* una “fila lógica” que pinta las 3 columnas por cada item usando *ngFor en cada col */
+.preview-row {
+    border-bottom: 1px dashed #eef2f7;
+    font-size: 14px;
+    text-align: center;
+}
+
+.preview-row:last-child {
+    border-bottom: none;
+}
+
+.col-id,
+.col-customer,
+.col-type {
+    min-width: 0;
+}
+
+.nowrap-ellipses {
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* píldora del tipo */
+.pill {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: #edf2ff;
+    border: 1px solid #dbe4ff;
+    font-size: 12px;
+    font-weight: 700;
+    color: #003b8e;
+}
+
+/* footer del preview */
+.preview-footer {
+    padding: 8px 12px;
+    background: #fff;
+    text-align: center;
+    border-top: 1px solid #eef2f7;
+}
+
+.more-link {
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.more-link:hover {
+    text-decoration: underline;
+}
+
+:host ::ng-deep .swal2-icon.swal2-icon-print {
+  width: 72px;
+  height: 72px;
+  border: none !important;
+  box-shadow: none !important;
+  margin: 0 auto 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+:host ::ng-deep .swal2-icon.swal2-icon-print .fa-print {
+  font-size: 44px;
+  color: #002e6e;
+}
+
+:host ::ng-deep .swal2-popup { border-radius: 16px; }
+:host ::ng-deep .swal2-title { font-weight: 700; }

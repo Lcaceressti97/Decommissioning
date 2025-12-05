@@ -1,0 +1,287 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">REPORTE FACTURACIÓN EQUIPO Y ACCESORIOS
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="card-body">
+                    <div class="dataTables_wrapper">
+                        <div class="filter-container">
+                            <h5>Filtros de Búsqueda</h5>
+                            <br>
+
+                            <div class="container-fluid">
+
+                                <!-- Labels -->
+                                <div class="row" [hidden]="true">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label font-size-large text-dark">
+                                            <b>Tipo de Estado</b>
+                                        </label>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label font-size-large text-dark">
+                                            <b>Sucursal</b>
+                                        </label>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label font-size-large text-dark">
+                                            <b>Bodega</b>
+                                        </label>
+                                    </div>
+
+                                </div>
+
+                                <!-- Select -->
+                                <div class="row mb-2">
+
+                                    <!-- Estado -->
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-label">
+                                            <b>Tipo de Estado:</b>
+                                        </div>
+                                        <div>
+                                            <angular2-multiselect [data]="dropDownListStatus"
+                                                [(ngModel)]="selectedItemStatus" (onSelect)="onItemSelectStatus($event)"
+                                                (onDeSelect)="onItemDeSelectStatus($event)"
+                                                (onSelectAll)="onSelectAllStatus($event)"
+                                                (onDeSelectAll)="onDeSelectAllStatus($event)"
+                                                [settings]="dropsownSettingsStatus">
+                                            </angular2-multiselect>
+                                        </div>
+                                    </div>
+
+                                    <!-- Sucursal -->
+                                    <div class="col-sm-12 col-md-4 col-lg-4 ">
+                                        <div class="form-label">
+                                            <b>Sucursal:</b>
+                                        </div>
+                                        <div>
+                                            <angular2-multiselect [data]="dropDownListBrancheOffices"
+                                                [(ngModel)]="selectedItemBrancheOffice"
+                                                (onSelect)="onItemSelectBrancheOffice($event)"
+                                                (onDeSelect)="onItemDeSelectBrancheOffice($event)"
+                                                (onSelectAll)="onSelectAllBrancheOffice($event)"
+                                                (onDeSelectAll)="onDeSelectAllBrancheOffice($event)"
+                                                [settings]="dropsownSettingsBrancheOffices">
+                                            </angular2-multiselect>
+                                        </div>
+                                    </div>
+
+                                    <!-- Bodega -->
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-label">
+                                            <b>Bodega:</b>
+                                        </div>
+                                        <div>
+                                            <angular2-multiselect [data]="dropDownListWareHouse"
+                                                [(ngModel)]="selectedItemWareHouse"
+                                                (onSelect)="onItemSelectWareHouse($event)"
+                                                (onDeSelect)="onItemDeSelectWareHouse($event)"
+                                                (onSelectAll)="onSelectAllWareHouse($event)"
+                                                (onDeSelectAll)="onDeSelectAllWareHouse($event)"
+                                                [settings]="dropsownSettingsWareHouse">
+                                            </angular2-multiselect>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <form [formGroup]="dateForm" class="mt-3">
+                                <div class="row m-1">
+
+                                    <!-- Territorio -->
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <div class="form-label">
+                                            <b>Territorio:</b>
+                                        </div>
+                                        <div>
+                                            <angular2-multiselect [data]="dropDownListTerritories"
+                                                [(ngModel)]="selectedItemTerritory"
+                                                (onSelect)="onItemSelectTerritories($event)"
+                                                (onDeSelect)="onItemDeSelectTerritories($event)"
+                                                (onSelectAll)="onSelectAllTerritories($event)"
+                                                (onDeSelectAll)="onDeSelectAllTerritories($event)"
+                                                [settings]="dropsownSettingsTerritories" formControlName="territory"
+                                                class="optional-select-multi">
+                                            </angular2-multiselect>
+                                        </div>
+                                    </div>
+
+
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4 ">
+                                        <div class="form-label">
+                                            <b>Fecha de Inicio:</b>
+                                        </div>
+                                        <input type="date" class="form-control" formControlName="dateInit"
+                                            name="dateInit" id="dateInit" [class.is-invalid]="
+                                            dateForm.get('dateInit')?.touched &&
+                                            dateForm.get('dateInit')?.invalid" (change)="validateDates()">
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4 ">
+                                        <div class="form-label">
+                                            <b>Fecha Fin:</b>
+                                        </div>
+                                        <input type="date" class="form-control" formControlName="dateEnd" name="dateEnd"
+                                            id="dateEnd" [class.is-invalid]="
+                                            dateForm.get('dateEnd')?.touched &&
+                                            dateForm.get('dateEnd')?.invalid" (change)="validateDates()">
+                                    </div>
+
+
+                                </div>
+
+                                <div class="row ml-2">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <button class="btn btn-round mr-2 bg-darkBlue btn-outline-primary"
+                                            (click)="getMixFilter()">
+                                            Filtrar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+
+                        </div>
+
+                        <br>
+                        <div class="d-flex" style="justify-content: end;">
+                            <button type="button" class="btn btn-round btn-success" (click)="exportExcel()"
+                                [disabled]="rows.length==0">
+                                Exportar Excel
+                            </button>
+                        </div>
+
+                        <div class="col-md-6" *ngIf="false">
+                            <div class="row">
+                                <div class="col-lg-5 col-md-8 col-sm-5 mb-3"
+                                    style="padding-top: 12px; padding-left: 0px;">
+                                    <angular2-multiselect class="" [data]="dropdownListData" [(ngModel)]="selectedItems"
+                                        [settings]="dropdownSettingsData">
+                                    </angular2-multiselect>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="button" class="btn btn-fill btn-info" (click)="exportData()">
+                                        Exportar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length" id="datatable_length">
+                                    <label>
+                                        Se muestran
+                                        <select aria-controls="datatable" class="form-control form-control-sm"
+                                            name="datatable_length" [(ngModel)]="resultsPerPage"
+                                            (ngModelChange)="onResultsPerPageChange($event)">
+                                            <option [value]="20">20</option>
+                                            <option [value]="50">50</option>
+                                            <option [value]="100">100</option>
+                                        </select>
+                                        resultados
+                                    </label>
+                                </div>
+
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_filter" id="datatable_filter">
+                                    <label>
+                                        <input aria-controls="datatable" class="form-control form-control-sm"
+                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                            (keyup)="searchInvoice()" (search)="reloadRows()" />
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                        [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                        [externalPaging]="true" [count]="totalElements" [offset]="currentPage" [limit]="pageSize"
+                        (page)="onPageChange($event)" [footerHeight]="50" [messages]="{
+    emptyMessage: 'No hay registros disponibles',
+    totalMessage: 'total',
+    selectedMessage: 'seleccionado'
+  }">
+                        <ngx-datatable-column name="No. Factura" prop="id" class="center-column"
+                            cellClass="custom-class">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Tipo de Factura" prop="invoiceType" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Estado Factura" prop="status" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Cliente" prop="customer" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Vendedor" prop="seller" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Sucursal" prop="agency" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Bodega" prop="warehouse" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+
+                        <ngx-datatable-column name="Fecha Creación" cellClass="custom-class" prop="created">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                {{ row.created | date: 'dd/MM/yyyy hh:mm:ss' }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Exonerada" cellClass="custom-class" prop="created">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                {{ row.exonerationStatus===0 ? "No" : "Sí" }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="SubTotal" prop="subtotal" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Descuento" prop="discount" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="I.S.V" prop="amountTax" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Total" prop="amountTotal" cellClass="custom-class">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Emitido Por" prop="userIssued" cellClass="custom-class">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Acción" cellClass="custom-class" cellClass="custom-class">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <div>
+                                    <button type="button" class="btn btn-round btn-md btn-info text-white"
+                                        data-toggle="tooltip" data-placement="top" title="Detalles de la factura"
+                                        (click)="openModal(row)">
+                                        <i class="fa fa-info-circle icon"></i>
+                                    </button>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                    </ngx-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

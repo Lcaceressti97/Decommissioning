@@ -1,0 +1,26 @@
+/* You can add global styles to this file, and also import other style files 
+
+dataGraficos
+
+cargarGraficos()
+
+${arrLabelError[index]}
+*/
+.nav-tabs .nav-item .nav-link.active {
+  color: #ffffff;
+  background-color: #002e6e;
+  border: 1px solid #ffffff;
+}
+
+.nav-tabs .nav-item .nav-link.active:hover {
+  color: #ffffff !important;
+  background-color: #002e6e;
+  border: 1px solid #ffffff;
+}
+
+.selected-list .c-list {
+  height: 50px !important;
+  /* Asegura que se aplique la altura */
+  overflow-y: auto !important;
+  /* Asegura que se aplique el desplazamiento vertical */
+}

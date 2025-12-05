@@ -1,0 +1,148 @@
+<div class="main-content">
+  <form [formGroup]="dataForm">
+
+    <div class="modal-header">
+      <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+        {{ button === "see" ? "Detalles del Modelo:" : button === "add" ? "Formulario de Creación:" : "Formulario de
+        Modificación:"}}
+      </h4>
+      <button type="button" class="btn-close" (click)="closeModal()">
+        <i class="fa fa-times-circle" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="modal-divider-container">
+      <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+      <div class="container">
+
+        <div class="card shadow">
+          <div class="card-header text-center">
+            <h5 style="font-weight: bold;"> Datos del Modelo</h5>
+          </div>
+
+          <div class="card-body">
+            <div class="container">
+
+              <div class="row mb-3">
+                <div class="col-12">
+                  <label class="form-label">
+                    <b>Nombre:</b>
+                  </label>
+                  <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="name"
+                    [class.is-invalid]="
+                                  dataForm.get('name').touched &&
+                                  dataForm.get('name').invalid">
+                  <span class="text-danger mt-1" *ngIf="
+                                  !dataForm.get('name')?.valid &&
+                                  (dataForm.get('name')?.touched || dataForm.get('name')?.dirty)
+                                  ">
+                    {{dataForm.get('name')?.hasError('required') ?
+                    messages.NO_EMPTY : dataForm.get('name')?.hasError('maxLength') ? messages.MAX_50 :
+                    messages.MAX_50}}
+                  </span>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-12">
+                  <label class="form-label">
+                    <b>Código Modelo:</b>
+                  </label>
+                  <input type="text" [readOnly]="inputReadOnly" class="form-control text-center"
+                    formControlName="codMod" [class.is-invalid]="
+                                  dataForm.get('codMod').touched &&
+                                  dataForm.get('codMod').invalid">
+                  <span class="text-danger mt-1" *ngIf="
+                                  !dataForm.get('codMod')?.valid &&
+                                  (dataForm.get('codMod')?.touched || dataForm.get('codMod')?.dirty)
+                                  ">
+                    {{dataForm.get('codMod')?.hasError('required') ?
+                    messages.NO_EMPTY : dataForm.get('codMod')?.hasError('maxLength') ? messages.MAX_50 :
+                    messages.MAX_50}}
+                  </span>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-12">
+                  <label class="form-label">
+                    <b>Código EBS:</b>
+                  </label>
+                  <input type="text" [readOnly]="inputReadOnly" class="form-control text-center"
+                    formControlName="codEbs" [class.is-invalid]="
+                                dataForm.get('codEbs').touched &&
+                                dataForm.get('codEbs').invalid">
+                  <span class="text-danger mt-1" *ngIf="
+                                !dataForm.get('codEbs')?.valid &&
+                                (dataForm.get('codEbs')?.touched || dataForm.get('codEbs')?.dirty)
+                                ">
+                    {{dataForm.get('codEbs')?.hasError('required') ?
+                    messages.NO_EMPTY : dataForm.get('codEbs')?.hasError('maxLength') ? messages.MAX_50 :
+                    messages.MAX_50}}
+                  </span>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-12">
+                  <label class="form-label">
+                    <b>Sub Bodega:</b>
+                  </label>
+                  <input type="text" [readOnly]="inputReadOnly" class="form-control text-center"
+                    formControlName="subBod" [class.is-invalid]="
+                              dataForm.get('subBod').touched &&
+                              dataForm.get('subBod').invalid">
+                  <span class="text-danger mt-1" *ngIf="
+                              !dataForm.get('subBod')?.valid &&
+                              (dataForm.get('subBod')?.touched || dataForm.get('subBod')?.dirty)
+                              ">
+                    {{dataForm.get('subBod')?.hasError('required') ?
+                    messages.NO_EMPTY : dataForm.get('subBod')?.hasError('maxLength') ? messages.MAX_50 :
+                    messages.MAX_50}}
+                  </span>
+                </div>
+              </div>
+
+              <div class="row mb-3">
+                <div class="col-12">
+                  <label class="form-label">
+                    <b>Nuevo Modelo:</b>
+                  </label>
+                  <input type="text" [readOnly]="inputReadOnly" class="form-control text-center"
+                    formControlName="newMod" [class.is-invalid]="
+                              dataForm.get('newMod').touched &&
+                              dataForm.get('newMod').invalid">
+                  <span class="text-danger mt-1" *ngIf="
+                              !dataForm.get('newMod')?.valid &&
+                              (dataForm.get('newMod')?.touched || dataForm.get('newMod')?.dirty)
+                              ">
+                    {{dataForm.get('newMod')?.hasError('required') ?
+                    messages.NO_EMPTY : dataForm.get('newMod')?.hasError('maxLength') ? messages.MAX_50 :
+                    messages.MAX_50}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+      <button *ngIf="button==='add'" (click)="crudModelAsEbs()" type="button" class="btn btn-round btn-success mr-1"
+        [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+        Crear
+      </button>
+      <button *ngIf="button==='edit'" (click)="crudModelAsEbs()" type="button" class="btn btn-round btn-success mr-1"
+        [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+        Actualizar
+      </button>
+    </div>
+
+  </form>
+</div>

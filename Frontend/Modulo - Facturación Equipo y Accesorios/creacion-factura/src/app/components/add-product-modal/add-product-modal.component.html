@@ -1,0 +1,318 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            {{
+            "Proceso agregar producto:"
+            }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="card card-optional shadow">
+
+                <div class="card-body">
+                    <form [formGroup]="formDetail">
+
+                        <div class="container">
+                            <div class="row">
+
+
+
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label class="form-label">
+                                        <b>Bodega:</b>
+                                    </label>
+                                    <angular2-multiselect [data]="warehouseModel" formControlName="warehouse"
+                                        [settings]="dropdownSettings" (onSelect)="changeWarehouseAndInventory($event)"
+                                        displayByKey="name" (change)="changeWarehouseAndInventory($event)">
+
+                                    </angular2-multiselect>
+                                </div>
+
+
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label class="form-label">
+                                        <b>Tipo de inventario:</b>
+                                    </label>
+                                    <angular2-multiselect [data]="inventoryTypeModel" formControlName="inventoryType"
+                                        [settings]="dropdownSettingsInventory"
+                                        (onSelect)="changeWarehouseAndInventory($event)" displayByKey="name"
+                                        (change)="changeWarehouseAndInventory($event)">
+
+                                    </angular2-multiselect>
+                                </div>
+
+                            </div>
+                            <br>
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label class="form-label">
+                                        <b>
+                                            Modelo
+                                        </b>
+                                    </label>
+
+                                    <select class="form-control" formControlName="model" [class.is-invalid]="
+                                    formDetail.get('model').touched &&
+                                    formDetail.get('model').invalid" (change)="changeCodeService($event)">
+                                        <option *ngFor="let existence of existencesModel" [value]="existence.code">
+                                            {{ existence.code }} - {{ existence.description }}
+                                        </option>
+                                    </select>
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formDetail.get('model')?.valid &&
+                                    (formDetail.get('model')?.touched || formDetail.get('model')?.dirty)
+                                    ">
+                                        {{formDetail.get('model')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+
+                                </div>
+                                <div class="col-sm-12 col-md-4 col-lg-4" [hidden]="true">
+                                    <label class="form-label">
+                                        <b>Descripción:</b>
+                                    </label>
+                                    <input type="text" class="form-control text-center" [value]="description" readonly>
+                                </div>
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <label class="form-label">
+                                        <b>Número de serie:</b>
+                                    </label>
+                                    <textarea readonly class="form-control text-center"
+                                        (change)="getSerialNumbersByQuantity()" formControlName="serieOrBoxNumber"
+                                        [class.is-invalid]=" 
+                                        formDetail.get('serieOrBoxNumber').touched &&
+                                        formDetail.get('serieOrBoxNumber').invalid ">
+                                    </textarea>
+                                </div>
+                            </div>
+
+                            <hr>
+
+                            <div class="row mb-2">
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Precio unitario:
+                                        </b>
+                                    </label>
+
+                                    <input type="text" class="form-control text-center" formControlName="unitPrice"
+                                        [class.is-invalid]="
+                                    formDetail.get('unitPrice').touched &&
+                                    formDetail.get('unitPrice').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formDetail.get('unitPrice')?.valid &&
+                                    (formDetail.get('unitPrice')?.touched || formDetail.get('unitPrice')?.dirty)
+                                    ">
+                                        {{formDetail.get('unitPrice')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.ONLY_NUMBER_DECIMAL}}
+                                    </span>
+
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Cantidad:
+                                        </b>
+                                    </label>
+
+                                    <input type="number" class="form-control text-center" formControlName="quantity"
+                                        [class.is-invalid]="
+                                    formDetail.get('quantity').touched &&
+                                    formDetail.get('quantity').invalid">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formDetail.get('quantity')?.valid &&
+                                    (formDetail.get('quantity')?.touched || formDetail.get('quantity')?.dirty)
+                                    ">
+                                        {{formDetail.get('quantity')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+
+                                </div>
+
+
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>Subtotal:</b>
+                                    </label>
+                                    <div class="row">
+                                        <div class="col-10 col-10-optional">
+                                            <input type="text" class="form-control text-center"
+                                                formControlName="subtotal" [class.is-invalid]="
+                                            formDetail.get('subtotal').touched &&
+                                            formDetail.get('subtotal').invalid" readonly>
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                                !formDetail.get('subtotal')?.valid &&
+                                                (formDetail.get('subtotal')?.touched || formDetail.get('subtotal')?.dirty)
+                                            ">
+                                                {{formDetail.get('subtotal')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-2 col-2-optional">
+                                            <button [disabled]="validateTotalDetail" (click)="calculoSubtotalDetail()"
+                                                type="button" class="btn btn-round btn-info btn-sm btn-optional-create">
+                                                <i class="now-ui-icons design-2_ruler-pencil"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+
+                                </div>
+
+                            </div>
+
+                            <hr>
+
+                            <div class="row flex-row-reverse mb-2">
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Descuento:
+                                        </b>
+                                    </label>
+
+                                    <input type="text" class="form-control text-center" formControlName="discount"
+                                        [class.is-invalid]="
+                                            formDetail.get('discount').touched &&
+                                            formDetail.get('discount').invalid" [readOnly]="readonlyDiscount">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                        !formDetail.get('discount')?.valid &&
+                                        (formDetail.get('discount')?.touched || formDetail.get('discount')?.dirty)
+                                        ">
+                                        {{formDetail.get('discount')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.ONLY_NUMBER_DECIMAL}}
+                                    </span>
+
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="controlUserPermissions.assignDiscount !== 'N'">
+                                    <label class="form-label">
+                                        <b>
+                                            Agregar descuento:
+                                        </b>
+                                    </label>
+
+                                    <select class="form-control text-center" (change)="changeCalISV($event)"
+                                        formControlName="selectTax" [class.is-invalid]="
+                                    formDetail.get('selectTax').touched &&
+                                    formDetail.get('selectTax').invalid" >
+                                        <option [value]="0">No</option>
+                                        <option [value]="1">Sí</option>
+
+                                    </select>
+
+                                </div>
+
+
+                            </div>
+
+                            <hr>
+
+                            <div class="row flex-row-reverse mb-2">
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Impuesto:
+                                        </b>
+                                    </label>
+
+                                    <div class="row">
+                                        <div class="col-10 col-10-optional">
+                                            <input readonly type="text" class="form-control text-center"
+                                                formControlName="tax" [class.is-invalid]="
+                                            formDetail.get('tax').touched &&
+                                            formDetail.get('tax').invalid">
+                                        </div>
+
+                                        <div class="col-2 col-2-optional">
+                                            <button (click)="calISV()" [disabled]="formDetail.invalid" type="button"
+                                                class="btn btn-round btn-info btn-sm btn-optional-create">
+                                                <i class="now-ui-icons design-2_ruler-pencil"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <hr>
+
+                            <div class="row flex-row-reverse mb-2">
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Total:
+                                        </b>
+                                    </label>
+
+                                    <div class="row">
+                                        <div class="col-10 col-10-optional">
+                                            <input type="text" class="form-control text-center" readonly
+                                                formControlName="amountTotal" [class.is-invalid]="
+                                            formDetail.get('amountTotal').touched &&
+                                            formDetail.get('amountTotal').invalid">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                                !formDetail.get('amountTotal')?.valid &&
+                                                (formDetail.get('amountTotal')?.touched || formDetail.get('amountTotal')?.dirty)
+                                            ">
+                                                {{formDetail.get('amountTotal')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-2 col-2-optional">
+                                            <button (click)="calTotal()" [disabled]="formDetail.invalid" type="button"
+                                                class="btn btn-round btn-info btn-sm btn-optional-create">
+                                                <i class="now-ui-icons design-2_ruler-pencil"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="row" style="justify-content: end;">
+                            <button [disabled]="formDetail.invalid || totalDetail=='0.00'" (click)="addProduct()"
+                                type="button" class="btn btn-round bg-success mr-1">
+                                Agregar
+                            </button>
+
+                            <button (click)="resetFormDetail()" type="button" class="btn btn-round bg-info mr-3">
+                                Limpiar
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>

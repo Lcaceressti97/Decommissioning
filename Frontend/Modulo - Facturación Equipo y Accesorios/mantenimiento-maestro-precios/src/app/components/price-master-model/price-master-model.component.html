@@ -1,0 +1,575 @@
+<div class="main-content">
+    <form [formGroup]="dataForm">
+
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                {{ button === "see" ? "Detalles del Precio:" :  button === "add" ? "Creación de Precio:" : "Modificación de Precio:"}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="card-container">
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Tipo de Inventario:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="inventoryType" [class.is-invalid]="
+                                dataForm.get('inventoryType').touched &&
+                                dataForm.get('inventoryType').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('inventoryType')?.valid &&
+                                    (dataForm.get('inventoryType')?.touched || dataForm.get('inventoryType')?.dirty)
+                                    ">
+                                        {{dataForm.get('inventoryType')?.hasError('required') ?
+                                        messages.NO_EMPTY : dataForm.get('inventoryType')?.hasError('maxLength') ? messages.MAX_50 : messages.MAX_50}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Modelo:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="model" [class.is-invalid]="
+                                dataForm.get('model').touched &&
+                                dataForm.get('model').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('model')?.valid &&
+                                    (dataForm.get('model')?.touched || dataForm.get('model')?.dirty)
+                                    ">
+                                        {{dataForm.get('model')?.hasError('required') ?
+                                        messages.NO_EMPTY : dataForm.get('model')?.hasError('maxLength') ? messages.MAX_250 : messages.MAX_250}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Descripción:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <textarea type="text" class="form-control text-center" formControlName="description" [class.is-invalid]="
+                                dataForm.get('description').touched &&
+                                dataForm.get('description').invalid" [readOnly]="inputReadOnly"></textarea>
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('description')?.valid &&
+                                    (dataForm.get('description')?.touched || dataForm.get('description')?.dirty)
+                                    ">
+                                        {{dataForm.get('description')?.hasError('required') ?
+                                        messages.NO_EMPTY : dataForm.get('description')?.hasError('maxLength') ? messages.MAX_250 : messages.MAX_250}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Costo Base:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="baseCost" [class.is-invalid]="
+                                dataForm.get('baseCost').touched &&
+                                dataForm.get('baseCost').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('baseCost')?.valid &&
+                                    (dataForm.get('baseCost')?.touched || dataForm.get('baseCost')?.dirty)
+                                    ">
+                                        {{dataForm.get('baseCost')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Costo Temporal:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="costTemporary" [class.is-invalid]="
+                                dataForm.get('costTemporary').touched &&
+                                dataForm.get('costTemporary').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('costTemporary')?.valid &&
+                                    (dataForm.get('costTemporary')?.touched || dataForm.get('costTemporary')?.dirty)
+                                    ">
+                                        {{dataForm.get('costTemporary')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Código Factor:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="factorCode" [class.is-invalid]="
+                                dataForm.get('factorCode').touched &&
+                                dataForm.get('factorCode').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('factorCode')?.valid &&
+                                    (dataForm.get('factorCode')?.touched || dataForm.get('factorCode')?.dirty)
+                                ">
+                                    {{dataForm.get('factorCode')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_FACTOR}}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Precio:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="price"  [class.is-invalid]="
+                                dataForm.get('price').touched &&
+                                dataForm.get('price').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('price')?.valid &&
+                                    (dataForm.get('price')?.touched || dataForm.get('price')?.dirty)
+                                    ">
+                                        {{dataForm.get('price')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2" >
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Moneda:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="currency" [readOnly]="inputReadOnly">
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('currency')?.valid &&
+                                    (dataForm.get('currency')?.touched || dataForm.get('currency')?.dirty)
+                                ">
+                                    {{dataForm.get('currency')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('currency')?.hasError('maxLength') ? messages.MAX_50 : messages.MAX_50}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="row mt-2" >
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Convierte Lempiras:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6" *ngIf="button=='see'">
+                                <input type="text" class="form-control text-center" formControlName="convertLps" [readOnly]="inputReadOnly">
+                            </div>
+
+                            <div class="col-sm-12 col-md-6" *ngIf="button!='see'">
+                                <select type="text" class="form-control text-center" formControlName="convertLps" [class.is-invalid]="
+                                dataForm.get('convertLps').touched &&
+                                dataForm.get('convertLps').invalid" (change)="changeConvertLps($event)">
+                                    <option [value]="'N'">No</option>
+                                    <option [value]="'S'">Sí</option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('convertLps')?.valid &&
+                                    (dataForm.get('convertLps')?.touched || dataForm.get('convertLps')?.dirty)
+                                ">
+                                    {{dataForm.get('convertLps')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Precio Vta Lempiras:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="priceLps" [class.is-invalid]="
+                                dataForm.get('priceLps').touched &&
+                                dataForm.get('priceLps').invalid" [readOnly]="inputReadOnly || inputReadOnlyConvert">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                !dataForm.get('priceLps')?.valid &&
+                                (dataForm.get('priceLps')?.touched || dataForm.get('priceLps')?.dirty)
+                                ">
+                                    {{dataForm.get('priceLps')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Último Costo:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="lastCost" [class.is-invalid]="
+                                dataForm.get('lastCost').touched &&
+                                dataForm.get('lastCost').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                !dataForm.get('lastCost')?.valid &&
+                                (dataForm.get('lastCost')?.touched || dataForm.get('lastCost')?.dirty)
+                                ">
+                                    {{dataForm.get('lastCost')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Precio por ESN:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6" *ngIf="button=='see'">
+                                <input type="text" class="form-control text-center" formControlName="priceChangeEsn" [readOnly]="inputReadOnly">
+                            </div>
+
+                            <div class="col-sm-12 col-md-6" *ngIf="button!='see'">
+                                <select type="text" class="form-control text-center" formControlName="priceChangeEsn" [class.is-invalid]="
+                                dataForm.get('priceChangeEsn').touched &&
+                                dataForm.get('priceChangeEsn').invalid" (change)="changePrecioESN($event)">
+                                    <option [value]="'N'">No</option>
+                                    <option [value]="'S'">Sí</option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                !dataForm.get('priceChangeEsn')?.valid &&
+                                (dataForm.get('priceChangeEsn')?.touched || dataForm.get('priceChangeEsn')?.dirty)
+                                ">
+                                    {{dataForm.get('priceChangeEsn')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div class="row mt-2" [hidden]="inputReadOnlyPriceESN">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>ESN:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="esn" [readOnly]="inputReadOnly" [class.is-invalid]="
+                                dataForm.get('esn').touched &&
+                                dataForm.get('esn').invalid">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('esn')?.valid &&
+                                    (dataForm.get('esn')?.touched || dataForm.get('esn')?.dirty)
+                                    ">
+                                        {{dataForm.get('esn')?.hasError('required') ?
+                                        messages.NO_EMPTY : dataForm.get('esn')?.hasError('maxLength') ? messages.MAX_50 : messages.MAX_50}}
+                                </span>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2" [hidden]="inputReadOnlyPriceESN">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Precio ESN:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="priceEsn" [class.is-invalid]="
+                                dataForm.get('priceEsn').touched &&
+                                dataForm.get('priceEsn').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                !dataForm.get('priceEsn')?.valid &&
+                                (dataForm.get('priceEsn')?.touched || dataForm.get('priceEsn')?.dirty)
+                                ">
+                                    {{dataForm.get('priceEsn')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2" [hidden]="inputReadOnlyPriceESN">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Precio Vta Lempiras ESN:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="priceLpsEsn" [class.is-invalid]="
+                                dataForm.get('priceLpsEsn').touched &&
+                                dataForm.get('priceLpsEsn').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                !dataForm.get('priceLpsEsn')?.valid &&
+                                (dataForm.get('priceLpsEsn')?.touched || dataForm.get('priceLpsEsn')?.dirty)
+                                ">
+                                    {{dataForm.get('priceLpsEsn')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <hr>
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Usuario:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="userCreated" readonly>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Pantalla:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="screen" [class.is-invalid]="
+                                dataForm.get('screen').touched &&
+                                dataForm.get('screen').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('screen')?.valid &&
+                                    (dataForm.get('screen')?.touched || dataForm.get('screen')?.dirty)
+                                ">
+                                    {{dataForm.get('screen')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('screen')?.hasError('maxLength') ? messages.MAX_50 : messages.MAX_50}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2" *ngIf="button!=='add'">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Fecha de Creación:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="created" readonly>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button  *ngIf="button==='add'" (click)="crudPriceMaster()"  type="button" class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+            <button  *ngIf="button==='edit'" (click)="crudPriceMaster()"  type="button" class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+        </div>
+
+    </form>
+</div>

@@ -1,0 +1,190 @@
+<div class="main-content">
+  <div class="row">
+    <div class="col-lg-12 col-md-12 col-sm-12">
+      <div class="card">
+        <div class="card-header">
+          <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+              <h5 class="title">EMISIÓN MASIVA DE FACTURAS</h5>
+            </div>
+          </div>
+        </div>
+
+        <br><br>
+
+        <div class="card-body">
+          <div class="dataTables_wrapper">
+            <div class="row mb-4">
+              <div class="col-12">
+                <form [formGroup]="searchInvoicesForm" (ngSubmit)="onSearch()">
+                  <div class="row g-3 align-items-end filter-row">
+
+                    <!-- Tipo de Consulta -->
+                    <div class="col-12 col-md-2 col-lg-2">
+                      <label class="form-label mb-1">Tipo de Consulta</label>
+                      <div class="form-field">
+                        <angular2-multiselect name="queryTypeDropdown" [data]="queryTypeOptions"
+                          [(ngModel)]="selectedQueryType" [ngModelOptions]="{ standalone: true }"
+                          [settings]="queryTypeSettings" (onSelect)="onQueryTypeChanged()"
+                          (onDeSelect)="onQueryTypeChanged()" (onDeSelectAll)="onQueryTypeChanged()"
+                          (onSelectAll)="onQueryTypeChanged()" class="w-100"></angular2-multiselect>
+                        <div class="field-hint">&nbsp;</div>
+                      </div>
+                    </div>
+
+                    <!-- Valor -->
+                    <div class="col-12 col-md-2 col-lg-2">
+                      <label class="form-label mb-1">Valor</label>
+                      <div class="form-field">
+                        <input class="form-control form-control-sm control-compact" type="text"
+                          formControlName="queryValue" placeholder="Ingrese el valor" [ngClass]="{
+                'is-invalid':
+                  searchInvoicesForm.get('queryValue')?.touched &&
+                  searchInvoicesForm.get('queryValue')?.invalid
+              }" />
+                        <!-- mensaje fijo debajo, no empuja el input -->
+                        <div class="field-hint">
+                          <span class="text-danger" *ngIf="searchInvoicesForm.get('queryValue')?.touched &&
+                       searchInvoicesForm.get('queryValue')?.invalid">
+                            Ingrese al menos 2 caracteres.
+                          </span>
+                          <span *ngIf="!(searchInvoicesForm.get('queryValue')?.touched &&
+                             searchInvoicesForm.get('queryValue')?.invalid)">&nbsp;</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="col-12 col-md-auto d-flex align-items-end mb-2">
+                      <div class="d-flex gap-2 mt-auto">
+                        <button type="submit" class="btn btn-round bg-darkBlue btn-outline-primary btn-compact mr-2"
+                          [disabled]="searchInvoicesForm.invalid" title="Consultar">
+                          <i class="fas fa-search"></i>
+                        </button>
+
+                        <button type="button" class="btn btn-round bg-darkBlue btn-outline-primary btn-compact"
+                          (click)="onRefresh()" title="Refrescar">
+                          <i class="fas fa-sync-alt"></i>
+                        </button>
+                      </div>
+                    </div>
+
+                  </div>
+                </form>
+              </div>
+            </div>
+
+
+
+
+            <!-- Barra superior: tamaño de página / búsqueda local -->
+            <div class="row">
+              <div class="col-sm-12 col-md-6">
+                <div class="dataTables_length" id="datatable_length">
+                  <label>
+                    Se muestran
+                    <select aria-controls="datatable" class="form-control form-control-sm" name="datatable_length"
+                      [(ngModel)]="resultsPerPage" [ngModelOptions]="{ standalone: true }"
+                      (ngModelChange)="onResultsPerPageChange($event)">
+                      <option [value]="20">20</option>
+                      <option [value]="50">50</option>
+                      <option [value]="100">100</option>
+                    </select>
+
+                    resultados
+                  </label>
+                </div>
+              </div>
+
+              <div class="col-sm-12 col-md-6">
+                <div class="dataTables_filter" id="datatable_filter">
+                  <label>
+                    <input aria-controls="datatable" class="form-control form-control-sm" placeholder="Buscar"
+                      type="search" [(ngModel)]="searchedValue" (keyup)="searchInvoices()" />
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Barra de acciones: Autorizar seleccionado -->
+            <div class="row mt-2">
+              <div class="col-12 d-flex justify-content-between align-items-center">
+                <div>
+                  <button class="btn btn-round btn-success" *ngIf="selectedRows.length > 0"
+                    (click)="openEmissionModal()">
+                    Emitir ({{ selectedRows.length }})
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          <!-- Tabla -->
+          <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2" [rows]="rows"
+            [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto" [externalPaging]="true"
+            [count]="totalElements" [offset]="currentPage" [limit]="pageSize" (page)="onPageChange($event)"
+            [footerHeight]="50" [messages]="{
+    emptyMessage: 'No hay facturas disponibles',
+    totalMessage: 'total'
+  }">
+
+            <!-- Columna de selección -->
+            <ngx-datatable-column cellClass="custom-class" [width]="50" [sortable]="false" [canAutoResize]="false"
+              [draggable]="false" [resizeable]="false">
+              <ng-template ngx-datatable-header-template>
+                <input type="checkbox" [checked]="allOnPageSelected()"
+                  (change)="toggleAllOnPage($any($event.target).checked)" />
+              </ng-template>
+
+              <ng-template ngx-datatable-cell-template let-row="row">
+                <input type="checkbox" [checked]="isRowChecked(row)"
+                  (change)="toggleRowChecked(row, $any($event.target).checked)" />
+              </ng-template>
+            </ngx-datatable-column>
+
+            <!-- Resto de columnas -->
+            <ngx-datatable-column name="No. Prefactura" prop="id" cellClass="custom-class"></ngx-datatable-column>
+            <ngx-datatable-column name="Tipo Factura" prop="invoiceType"
+              cellClass="custom-class"></ngx-datatable-column>
+
+            <ngx-datatable-column name="Estado" cellClass="custom-class">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.status }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Cliente" prop="customer" cellClass="custom-class"></ngx-datatable-column>
+            <ngx-datatable-column name="Código Cliente" prop="customerId"
+              cellClass="custom-class"></ngx-datatable-column>
+            <ngx-datatable-column name="Suscriptor" prop="primaryIdentity"
+              cellClass="custom-class"></ngx-datatable-column>
+
+            <ngx-datatable-column name="Bodega" prop="warehouse" cellClass="custom-class"></ngx-datatable-column>
+            <ngx-datatable-column name="Vendedor" prop="seller" cellClass="custom-class"></ngx-datatable-column>
+
+            <ngx-datatable-column name="Fecha Creación" prop="created" cellClass="custom-class">
+              <ng-template ngx-datatable-cell-template let-row="row">
+                {{ row.created | date: 'dd/MM/yyyy HH:mm:ss' }}
+              </ng-template>
+            </ngx-datatable-column>
+
+            <ngx-datatable-column name="Acciones" cellClass="custom-class">
+              <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                <div class="row">
+                  <button type="button" class="btn btn-round bg-darkBlue btn-outline-primary me-2 mr-2"
+                    data-toggle="tooltip" data-placement="top" title="Ver Detalle" (click)="openDetailModal('see',row)">
+                    <i class="fa fa-eye icon"></i>
+
+                  </button>
+
+                </div>
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

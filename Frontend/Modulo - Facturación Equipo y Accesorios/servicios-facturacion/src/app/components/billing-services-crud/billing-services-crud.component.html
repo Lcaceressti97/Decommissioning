@@ -1,0 +1,209 @@
+<div>
+    <form [formGroup]="dataForm">
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                {{ button === "see" ? "Detalles del  Servicio de Facturación:" :  button === "add" ? "Formulario de Creación:" : "Formulario de Modificación:"}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+    
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+    
+        <div class="modal-body">
+            <div class="container">
+                <div class="card shadow">
+
+                    <div class="card-header text-center">
+                        <h5 style="font-weight: bold;"> Datos del servicio</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Código del Servicio:</b> 
+                                    </label>
+                                    <input type="number" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="serviceCode"
+                                    [class.is-invalid]="
+                                    dataForm.get('serviceCode').touched &&
+                                    dataForm.get('serviceCode').invalid">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('serviceCode')?.valid &&
+                                    (dataForm.get('serviceCode')?.touched || dataForm.get('serviceCode')?.dirty)
+                                    ">
+                                        {{dataForm.get('serviceCode')?.hasError('required') ?
+                                        messages.NO_EMPTY  : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Nombre del Servicio:</b> 
+                                    </label>
+
+                                    <input  type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="serviceName"
+                                    [class.is-invalid]="
+                                    dataForm.get('serviceName').touched &&
+                                    dataForm.get('serviceName').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('serviceName')?.valid &&
+                                    (dataForm.get('serviceName')?.touched || dataForm.get('serviceName')?.dirty)
+                                    ">
+                                        {{dataForm.get('serviceName')?.hasError('required') ?
+                                        messages.NO_EMPTY : dataForm.get('serviceName')?.hasError('maxLength') ? messages.MAX_150 : messages.MAX_150}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Precio:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="totalQuantity"
+                                    [class.is-invalid]="
+                                    dataForm.get('totalQuantity').touched &&
+                                    dataForm.get('totalQuantity').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('totalQuantity')?.valid &&
+                                    (dataForm.get('totalQuantity')?.touched || dataForm.get('totalQuantity')?.dirty)
+                                    ">
+                                        {{dataForm.get('totalQuantity')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.ONLY_NUMBERS_DECIMAL }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" *ngIf="button==='see' || button==='edit'">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Estado:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="status"
+                                    [class.is-invalid]="
+                                    dataForm.get('status').touched &&
+                                    dataForm.get('status').invalid">
+                                        <option value="0">Inactivo</option>
+                                        <option value="1">Activo</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('status')?.valid &&
+                                    (dataForm.get('status')?.touched || dataForm.get('status')?.dirty)
+                                    ">
+                                        {{dataForm.get('status')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" *ngIf="button==='see'">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Usuario Creador:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="creationUser"
+                                    [class.is-invalid]="
+                                    dataForm.get('creationUser').touched &&
+                                    dataForm.get('creationUser').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('creationUser')?.valid &&
+                                    (dataForm.get('creationUser')?.touched || dataForm.get('creationUser')?.dirty)
+                                    ">
+                                        {{dataForm.get('creationUser')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" *ngIf="button==='see'">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Fecha de Creación:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="creationDate"
+                                    [class.is-invalid]="
+                                    dataForm.get('creationDate').touched &&
+                                    dataForm.get('creationDate').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('creationDate')?.valid &&
+                                    (dataForm.get('creationDate')?.touched || dataForm.get('creationDate')?.dirty)
+                                    ">
+                                        {{dataForm.get('creationDate')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" *ngIf="button==='see'">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Último Usuario que Modifico:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="modificationUser"
+                                    [class.is-invalid]="
+                                    dataForm.get('modificationUser').touched &&
+                                    dataForm.get('modificationUser').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('modificationUser')?.valid &&
+                                    (dataForm.get('modificationUser')?.touched || dataForm.get('modificationUser')?.dirty)
+                                    ">
+                                        {{dataForm.get('modificationUser')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" *ngIf="button==='see'">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Fecha de Modificación:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" readonly class="form-control text-center" formControlName="modificationDate"
+                                    [class.is-invalid]="
+                                    dataForm.get('modificationDate').touched &&
+                                    dataForm.get('modificationDate').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('modificationDate')?.valid &&
+                                    (dataForm.get('modificationDate')?.touched || dataForm.get('modificationDate')?.dirty)
+                                    ">
+                                        {{dataForm.get('modificationDate')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button  *ngIf="button==='add'" (click)="crudBillingService()" type="button" class="btn btn-round bg-info mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+            <button  *ngIf="button==='edit'" (click)="crudBillingService()" type="button" class="btn btn-round bg-info mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+        </div>
+
+
+    </form>
+    
+</div>

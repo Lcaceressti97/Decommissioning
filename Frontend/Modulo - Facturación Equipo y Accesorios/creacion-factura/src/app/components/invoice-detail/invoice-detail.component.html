@@ -1,0 +1,180 @@
+<div>
+
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            {{"Detalle Factura #" + billing.id}}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+    <div class="modal-body">
+
+        <div class="container">
+            <div class="card">
+                <div class="card-content" style="height: 750px; overflow: auto; max-height: 750px;">
+
+                    <div class="h-80">
+
+                        <div class="detail-list">
+                            <!--
+                            <div class="detail-item">
+                                <div class="detail-label">Usuario:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Número de Factura:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">CAI:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Rango Inicial:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Rango Final:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">No. Coorrelativo Orden de Compra Exenta:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">No. Correlativo Constancia de Registro Exonerados:</div>
+                                <div class="detail-value">Pendiente
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">No. de Carnet Diplomático:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Cajero:</div>
+                                <div class="detail-value">Pendiente</div>
+                            </div>
+                            -->
+                            <div class="detail-item">
+                                <div class="detail-label">Tipo de Factura:</div>
+                                <div class="detail-value">
+                                    {{ billing.invoiceType}}
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Cuenta de facturación:</div>
+                                <div class="detail-value">
+                                    {{ billing.acctCode}}
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Fecha:</div>
+                                <div class="detail-value"> {{ billing.created | date: 'dd/MM/yyyy hh:mm:ss' }}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Teléfono:</div>
+                                <div class="detail-value">{{ billing.primaryIdentity }}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Nombre de Cliente:</div>
+                                <div class="detail-value">{{billing?.customer}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Usuario Vendedor:</div>
+                                <div class="detail-value">{{billing.seller }}</div>
+                            </div>
+                            <div class="detail-item" *ngIf="billing.sellerCode">
+                                <div class="detail-label">Código del Vendedor:</div>
+                                <div class="detail-value">{{billing.sellerCode }}</div>
+                            </div>
+                            <br>
+                            <div class="detail-label">Productos:</div>
+
+                            <div *ngIf="billing.invoiceDetails.length>0">
+                                <!-- Esto es un arreglo ya que representa los detalles de la factura -->
+                                <div *ngFor="let invoice of billing.invoiceDetails">
+
+                                    <div class="detail-item detail-item-optional">
+                                        <div class="detail-label">Cant.</div>
+                                        <div class="detail-value">{{ invoice.quantity }}</div>
+                                        <div class="detail-label">Artic. T</div>
+                                        <div class="detail-value">{{ invoice.model }}</div>
+                                        <div class="detail-label">Precio:</div>
+                                        <div class="detail-value">{{ invoice.unitPrice | number: '1.2-2'}}</div>
+                                        <div class="detail-label">Valor:</div>
+                                        <div class="detail-value">{{ (invoice.unitPrice * invoice.quantity) | number: '1.2-2'}}</div>
+
+                                    </div>
+                                    <div class="detail-item detail-item-optional">
+                                        <div class="detail-label">Descripción:</div>
+                                        <div class="detail-value">{{ invoice.description }}</div>
+                                    </div>
+
+
+                                    <div class="detail-item" *ngIf="invoice.serieOrBoxNumber">
+                                        <div class="detail-label">E.S.N NO.:</div>
+                                        <div class="detail-value">{{ invoice.serieOrBoxNumber }}</div>
+                                    </div>
+                                </div>
+                                <div class="detail-item-optional-two">
+
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <!-- Valores totales -->
+                        <div class="amounts">
+
+                            <div class="amount">
+                                <div class="amount-label">Subtotal:</div>
+                                <div class="amount-value">{{ billing.subtotal | number: '1.2-2'}}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label">Descuentos y Rebajas Otorgados:</div>
+                                <div class="amount-value">{{ billing.discount | number: '1.2-2' }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Porcentaje del Descuento:</div>
+                                <div class="amount-value">
+                                {{ billing.discountPercentage!=null ? ( billing.discountPercentage | number: '1.2-2') + "%": "0.00%"  }}
+                                </div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Monto Exonerado:</div>
+                                <div class="amount-value">{{ billing.amountExo!=null ? ( billing.amountExo | number: '1.2-2'): "0.00" }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Impuesto:</div>
+                                <div class="amount-value">{{ billing.amountTax | number: '1.2-2'}}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Porcentaje del Impuesto:</div>
+                                <div class="amount-value">{{ (billing.taxPercentage | number: '1.2-2') + "%" }}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label">Total:</div>
+                                <div class="amount-value">{{ billing.amountTotal | number: '1.2-2'}}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Aquí va el alto máximo -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+</div>

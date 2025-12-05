@@ -1,0 +1,388 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" style="font-weight: bold;">
+            Detalles de Impresión:
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="card">
+                <div class="card-content" style="height: 60vh; overflow: auto; max-height: 60vh;">
+
+                    <div class="h-55" id="invoices-container">
+
+                        <!-- ===== Todas las facturas seleccionadas ===== -->
+                        <ng-container *ngFor="let b of billings">
+                            <section class="invoice-page">
+                                <div class="invoice-root container">
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="test-font">
+                                                Telefónica Celular S.A. de C.V.\CELTEL
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="test-font">
+                                                Plaza Tigo Colonia Los Almendros al final del Blv. Morazan, Tegucigalpa
+                                                <br>
+                                                PBX:2265-8446, Fax: 2265-8446 <br>
+                                                Rtn: {{ branchOf(b)?.rtn }} Usuario: {{ b.seller!=null ? b.seller : ""
+                                                }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <p class="test-font">No. de Factura</p>
+                                                </div>
+                                                <div class="col-7">
+                                                    <p class="test-font margin-test">{{ b.numberDei }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="test-font">CAI</p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="test-font">
+                                                {{ b.cai!=null ? b.cai : "" }} <br>
+                                                <span>
+                                                    Fec.Limite de Emision:
+                                                    {{ b.deadLine ? (formatDate(b.deadLine) | date: 'dd MM yyyy') : ""
+                                                    }}
+                                                    <br>
+                                                </span>
+                                                <span>
+                                                    Rango Inicial: {{ b.initialRank!=null ? b.initialRank : "" }} <br>
+                                                </span>
+                                                <span>
+                                                    Rango Final..: {{ b.finalRank!=null ? b.finalRank : "" }} <br>
+                                                </span>
+
+                                                Datos del Adquiriente exonerado <br>
+                                                <span>
+                                                    Numero correlativo de la orden de compra Exenta: <br>
+                                                    {{ b.correlativeOrdenExemptNo!=null ? b.correlativeOrdenExemptNo:
+                                                    ""}}
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="test-font">
+                                                Numero correlativo de Constancia del Registro de Exonerados: <br>
+                                                {{ b.correlativeCertificateExoNo!=null ? b.correlativeCertificateExoNo :
+                                                ""}}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="test-font">
+                                                Numero Carnet Diplomatico: <br>
+                                                {{ b.diplomaticCardNo!=null ? b.diplomaticCardNo : "" }} <br>
+                                                Numero identificativo del Registro de la Secretaria de Estado en el
+                                                despacho
+                                                de
+                                                Agricultura y Ganaderia:
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <p class="test-font">
+                                                {{ branchOf(b)?.email }} <br>
+                                                {{ branchOf(b)?.address }} <br>
+                                                PBX:{{ branchOf(b)?.pbx }}, FAX: {{ branchOf(b)?.fax }} <br>
+                                                Cajero: {{ userSystem }} Hora: {{ b.created | date: "hh:mm:ss" }} <br>
+                                                Documento {{ b.invoiceType + " " + b.id}} <br>
+                                                Fecha: {{ b.created | date: "dd MM yyyy" }}
+                                                Vence: {{
+                                                (b.invoiceType === 'FC1' || b.invoiceType === 'FC3' || b.invoiceType ===
+                                                'FS1' ||
+                                                b.invoiceType === 'FS3' || b.invoiceType === 'SHP' || b.invoiceType ===
+                                                'SHO')
+                                                ? (b.created | date: "dd MM yyyy")
+                                                : (b.dueDate | date: "dd MM yyyy")
+                                                }} <br>
+                                                Bodega: {{ b.warehouse!=null ? b.warehouse : "" }} <br>
+                                                Cuenta. : {{ b.acctCode }} Tel: {{ b.primaryIdentity }} <br>
+                                                Nombre. : {{ b.customer }}
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Encabezado de los detalles -->
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            Dirección: {{ b.customerAddress!=null ? b.customerAddress : "" }} <br>
+                                            RTN/ID: {{ b.customerRtnId!=null ? b.customerRtnId : "" }} <br>
+                                            Credito/Contado: {{ creditCashOf(b) }}<br>
+                                            Vendedor: {{ b.cashierName!=null ? b.cashierName : "" }} <br>
+                                            Cuota Inicial .: 0.00 <br>
+                                            1 mes de: {{
+                                            (b.invoiceType == 'FC1' || b.invoiceType == 'FC3' || b.invoiceType == 'FS1'
+                                            ||
+                                            b.invoiceType == 'FS3' || b.invoiceType == 'SHP' || b.invoiceType == 'SHO'
+                                            ||
+                                            b.fiscalProcess == 'Facturación por Reclamo de Seguros')
+                                            ? b.amountTotal
+                                            : '0.00'
+                                            }}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            <div class="row">
+                                                <div class="col-2 test-font without-padding-right">Cant.</div>
+                                                <div class="col-3 test-font without-padding-right">Artic. T</div>
+                                                <div class="col-3 test-font without-padding-right">Precio</div>
+                                                <div class="col-4 test-font without-padding-right">Valor</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-4 test-font without-padding-right">Descripcion</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12 test-font">
+                                                    *-----------------------------------------------------*
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Detalles de los productos -->
+                                    <div *ngFor="let invoice of b.invoiceDetails">
+                                        <div class="row">
+                                            <div class="col-2 test-font">{{ invoice.quantity }}</div>
+                                            <div class="col-3 test-font">{{ invoice.model }}</div>
+                                            <div class="col-3 test-font">{{ invoice.unitPrice | number: '1.2-2' }}</div>
+                                            <div class="col-4 test-font">{{ calculateValue(b, invoice) | number: '1.2-2'
+                                                }}
+                                            </div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 test-font">{{ invoice.description }}</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div class="col-12 test-font">
+                                                E.S.N. NO.: {{ invoice.serieOrBoxNumber!=null ? invoice.serieOrBoxNumber
+                                                :""
+                                                }}<br>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            *-----------------------------------------------------*
+                                        </div>
+                                    </div>
+
+                                    <!-- Descripción de los totales y demás -->
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            <div class="row">
+                                                <div class="col-8">Subtotal.......................: $</div>
+                                                <div class="col-4">{{ b.subtotal | number: '1.2-2' }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            <div class="row">
+                                                <div class="col-8">( - ) Descuentos y Rebajas
+                                                    Otorgados....................:
+                                                    $</div>
+                                                <div class="col-4"><br>{{ b.discount | number: '1.2-2' }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            *-----------------------------------------------------*</div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            <div class="row">
+                                                <div class="col-8">Valores Exento.............: $</div>
+                                                <div class="col-4">{{ b.exemptAmount | number: '1.2-2' }}</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-8">Valores Exonerado.......: $</div>
+                                                <div class="col-4">0.00</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-12">Valores Alicuota</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-8">Tasa Cero.....................: $</div>
+                                                <div class="col-4">0.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            <div class="row">
+                                                <div class="col-9">Valores Gravables</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-8">15% ISV........................: $</div>
+                                                <div class="col-4">{{ taxableValuesOf(b) | number: '1.2-2' }}</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    Impuesto Sobre Venta <br>
+                                                    15% sobre Valores
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-8">Gravables.....................: $</div>
+                                                <div class="col-4">{{ b.amountTax | number: '1.2-2' }}</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-9">
+                                                    Impuesto Sobre Venta <br>
+                                                    15% sobre Valores
+                                                </div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-8">Alicuota Tasa Cero.......: $</div>
+                                                <div class="col-4">0.00</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            <div class="row">
+                                                <div class="col-8">Total Factura................: $</div>
+                                                <div class="col-4">{{ b.amountTotal | number: '1.2-2' }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            <div class="row">
+                                                <div class="col-8">Tasa de Cambio:</div>
+                                                <div class="col-4">{{ b.exchangeRate | number: '1.4-4' }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <br>
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            <div class="row">
+                                                <div class="col-8">Tot.Fact. Lempiras L</div>
+                                                <div class="col-4">{{ totalOf(b) | number: '1.2-2' }}</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-9">Total en Letras:</div>
+                                            </div>
+
+                                            <div class="row">
+                                                <div class="col-9">{{ letterOf(b) }}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Pie de la factura -->
+                                    <br><br>
+                                    <div class="test-font">
+                                        <p>
+                                            "Reconozco y acepto que la unica garantia sobre este equipo es la otorgada
+                                            por
+                                            el
+                                            Fabricante, liberando a CELTEL, S.A. DE C.V. de cualquier responsabilidad".
+                                        </p>
+                                        <p>
+                                            Tiene 5 dias habiles para hacer reclamos por desperfecto de fabrica.
+                                            Recuerda
+                                            presentarte a la agencia con el equipo como fue entregado. Reclamos
+                                            posteriores
+                                            a 5
+                                            dias habiles favor visita CETREL.
+                                        </p>
+                                        <br><br><br><br>
+                                        <div class="row">
+                                            <div class="col-12">
+                                                -------------------------------------------------------
+                                            </div>
+                                        </div>
+                                        <p>
+                                            Firma y sello de recibido<br>
+                                            Original:Cliente <br>
+                                            Copia:Obligado Tributario Emisor
+                                        </p>
+                                    </div>
+
+                                </div>
+                            </section>
+                            <!-- Separador visual entre facturas (opcional) -->
+                            <div class="screen-separator" style="margin:24px 0; border-top:1px dashed #999;"></div>
+                        </ng-container>
+
+                    </div> <!-- /#invoices-container -->
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-success mr-1" (click)="printAll()">
+            Imprimir
+        </button>
+    </div>
+</div>

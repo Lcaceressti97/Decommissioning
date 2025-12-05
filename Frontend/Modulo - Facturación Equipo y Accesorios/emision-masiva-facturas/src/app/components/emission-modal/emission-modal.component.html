@@ -1,0 +1,81 @@
+<div class="modal-header">
+  <h4 class="modal-title" id="modal-basic-title" style="font-weight: bold;">
+    Emisión Masiva
+  </h4>
+  <button type="button" class="btn-close" (click)="close()">
+    <i class="fa fa-times-circle" aria-hidden="true"></i>
+  </button>
+</div>
+
+<div class="modal-divider-container">
+  <hr class="modal-divider" />
+</div>
+
+<div class="modal-body">
+
+  <div class="content-wrap">
+    <!-- Preview -->
+    <div class="preview-card" *ngIf="selected?.length">
+      <div class="preview-header">
+        <div class="col-id text-center">No. Factura</div>
+        <div class="col-customer text-center">Cliente</div>
+        <div class="col-type text-center">Tipo</div>
+      </div>
+
+      <div class="preview-body" [class.scrollable]="showAll && selected.length > previewCount">
+        <div class="preview-row" *ngFor="let r of displayedRows">
+          <div class="col-id text-center">{{ r.id }}</div>
+          <div class="col-customer text-center">
+            <span class="nowrap-ellipses" [title]="r.customer">{{ r.customer }}</span>
+          </div>
+          <div class="col-type text-center">
+            <span class="pill">{{ r.invoiceType }}</span>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="preview-footer" *ngIf="remainingCount > 0">
+        <button type="button" class="btn btn-link more-link p-0" (click)="togglePreview()">
+          {{ showAll ? 'Ver menos' : ('… y ' + remainingCount + ' más · Ver todas') }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" class="mt-3">
+      <div class="row mb-3">
+        <div class="col-12">
+          <label class="amount-label">Tipo de Transacción</label>
+          <input type="text" class="form-control" formControlName="typeApproval" readonly />
+        </div>
+      </div>
+
+      <div class="row mb-3">
+        <div class="col-12">
+          <label class="amount-label">Código de Pago</label>
+          <input type="text" class="form-control" formControlName="paymentCode" />
+        </div>
+      </div>
+      <div class="row mb-2">
+        <div class="col-12">
+          <label class="amount-label">Comentario:</label>
+          <textarea formControlName="description" rows="3" class="form-control"
+            [class.is-invalid]="descCtrl?.touched && descCtrl?.invalid" aria-describedby="descHelp"></textarea>
+
+          <div class="mt-1 text-danger" id="descHelp" *ngIf="descCtrl?.touched && descCtrl?.hasError('required')">
+            El comentario es requerido.
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+
+</div>
+
+<div class="modal-footer">
+  <button type="button" class="btn btn-round bg-danger" (click)="close()">Cerrar</button>
+  <button type="button" class="btn btn-round bg-success" [disabled]="form.invalid || isSubmitting"
+    (click)="issue()">Emitir</button>
+
+</div>
