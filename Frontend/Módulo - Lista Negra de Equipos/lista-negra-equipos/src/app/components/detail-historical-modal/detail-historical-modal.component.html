@@ -1,0 +1,106 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" style="font-weight: bold;">
+            {{getTitle()}}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+    <div class="modal-body">
+        <table class="table table-bordered">
+            <tr>
+                <td colspan="4" class="table-title">Información General</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold">ESN / IMEI:</td>
+                <td>{{rowsHistoricalDetail?.esnImei}}</td>
+                <td style="font-weight:bold">IMEI sin ULT.DIGIT:</td>
+                <td>{{rowsHistoricalDetail?.ivesn}}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold">Operador:</td>
+                <td>{{rowsHistoricalDetail?.operador}}</td>
+                <td style="font-weight:bold">Tipo de Bloqueo:</td>
+                <td>{{rowsHistoricalDetail?.tipobloqueo}}</td>
+            </tr>
+            <tr>
+                <td style="font-weight:bold">Teléfono:</td>
+                <td>{{rowsHistoricalDetail?.telefono}}</td>
+                <!--   <td style="font-weight:bold">Cuenta Facturación:</td>
+                <td>{{rowsHistoricalDetail?.anexo}}</td> -->
+                <td style="font-weight:bold">Tipo de Tecnologia:</td>
+                <td>{{rowsHistoricalDetail?.technologyType}}</td>
+            </tr>
+            <tr>
+
+                <td style="font-weight:bold">SIMCARD:</td>
+                <td>{{rowsHistoricalDetail?.simcard}}</td>
+                <td style="font-weight:bold">Usuario Transacción:</td>
+                <td>{{rowsHistoricalDetail?.usuarioTransaccion}}</td>
+            </tr>
+            <tr>
+
+                <td style="font-weight:bold">Pantalla Transacción:</td>
+                <td>{{rowsHistoricalDetail?.pantallaTransaccion}}</td>
+                <td style="font-weight:bold">Modelo:</td>
+                <td>{{rowsHistoricalDetail?.modelo}}</td>
+            </tr>
+            <ng-container *ngIf="rowsHistoricalDetail?.nombreUsuarioTransaccion !== null">
+                <tr>
+                    <td colspan="4" class="table-title">Información de Bloqueo</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold">Nombre Denunciante:</td>
+                    <td>{{rowsHistoricalDetail?.nombreUsuarioTransaccion}}</td>
+                    <td style="font-weight:bold">Identidad:</td>
+                    <td>{{rowsHistoricalDetail?.identidadUsuarioTransaccion}}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold">Dirección:</td>
+                    <td>{{rowsHistoricalDetail?.direccionUsuarioTransaccion}}</td>
+                    <td style="font-weight:bold">Teléfono:</td>
+                    <td>{{rowsHistoricalDetail?.telefonoUsuarioTransaccion}}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold">Motivo del Bloqueo:</td>
+                    <td>{{rowsHistoricalDetail?.motivoBloqueo}}</td>
+                    <td style="font-weight:bold">Fecha Bloqueo:</td>
+                    <td>{{rowsHistoricalDetail?.fechaBloqueo}}</td>
+                </tr>
+            </ng-container>
+            <ng-container *ngIf="rowsHistoricalDetail?.nombreDesbloqueante !== null">
+                <tr>
+                    <td colspan="4" class="table-title">Información Desbloqueo</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold">Nombre Desbloqueante:</td>
+                    <td>{{rowsHistoricalDetail?.nombreDesbloqueante}}</td>
+                    <td style="font-weight:bold">Identidad:</td>
+                    <td>{{rowsHistoricalDetail?.identidadDesbloqueante}}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold">Dirección:</td>
+                    <td>{{rowsHistoricalDetail?.direccionDesbloqueante}}</td>
+                    <td style="font-weight:bold">Teléfono:</td>
+                    <td>{{rowsHistoricalDetail?.telefonoDesbloqueante}}</td>
+                </tr>
+                <tr>
+                    <td style="font-weight:bold">Motivo de Desbloqueo:</td>
+                    <td>{{rowsHistoricalDetail?.motivoDesbloqueo}}</td>
+                    <td style="font-weight:bold">Fecha Desbloqueo:</td>
+                    <td>{{rowsHistoricalDetail?.fechaDesbloqueo}}</td>
+                </tr>
+            </ng-container>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-success" (click)="generatePdf()">Imprimir
+        </button>
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">Cerrar
+        </button>
+    </div>
+</div>

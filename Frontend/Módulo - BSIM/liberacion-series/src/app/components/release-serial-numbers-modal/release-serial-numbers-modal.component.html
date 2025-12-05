@@ -1,0 +1,156 @@
+<div class="main-content">
+  <form [formGroup]="dataForm">
+
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title" style="font-weight: bold;">
+        {{ button === "see" ? "Detalle Liberación:" : button === "add" ? "Liberación de Series:" : "Liberación de Series:"}}
+      </h4>
+      <button type="button" class="btn-close" (click)="closeModal()">
+        <i class="fa fa-times-circle" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="modal-divider-container">
+      <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+      <div class="card-container">
+
+        <!-- Campos existentes -->
+        <div class="col-sm-12 col-md-12 col-lg-12">
+          <div class="form-group row">
+            <div class="col-sm-12 col-md-6 text-center">
+              <b>Tipo Liberación:</b>
+            </div>
+            <div class="col-sm-12 col-md-6">
+              <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null"
+                formControlName="releaseType" (change)="onReleaseTypeChange()"
+                [class.is-invalid]="dataForm.get('releaseType').touched && dataForm.get('releaseType').invalid">
+                <option value="Unidad">Unidad</option>
+                <option value="Masivo">Masivo</option>
+              </select>
+              <span class="text-danger mt-1" *ngIf="!dataForm.get('releaseType')?.valid && (dataForm.get('releaseType')?.touched || dataForm.get('releaseType')?.dirty)">
+                {{dataForm.get('releaseType')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_6}}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campos que se mostrarán solo si se selecciona "Unidad" -->
+        <div *ngIf="dataForm.get('releaseType').value === 'Unidad'">
+          <div class="row mt-2">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 text-center">
+                  <b>Tipo de Inventario :</b>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <input type="text" class="form-control text-center" formControlName="inventoryType" [class.is-invalid]="dataForm.get('inventoryType').touched && dataForm.get('inventoryType').invalid" [readOnly]="inputReadOnly">
+                  <span class="text-danger mt-1" *ngIf="!dataForm.get('inventoryType')?.valid && (dataForm.get('inventoryType')?.touched || dataForm.get('inventoryType')?.dirty)">
+                    {{dataForm.get('inventoryType')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_1}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 text-center">
+                  <b>Código:</b>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <input type="text" class="form-control text-center" formControlName="itemCode" [class.is-invalid]="dataForm.get('itemCode').touched && dataForm.get('itemCode').invalid" [readOnly]="inputReadOnly">
+                  <span class="text-danger mt-1" *ngIf="!dataForm.get('itemCode')?.valid && (dataForm.get('itemCode')?.touched || dataForm.get('itemCode')?.dirty)">
+                    {{dataForm.get('itemCode')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_6}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 text-center">
+                  <b>Código Bodega:</b>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <input type="text" class="form-control text-center" formControlName="warehouseCode" [class.is-invalid]="dataForm.get('warehouseCode').touched && dataForm.get('warehouseCode').invalid" [readOnly]="inputReadOnly">
+                  <span class="text-danger mt-1" *ngIf="!dataForm.get('warehouseCode')?.valid && (dataForm.get('warehouseCode')?.touched || dataForm.get('warehouseCode')?.dirty)">
+                    {{dataForm.get('warehouseCode')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_6}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row mt-2">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 text-center">
+                  <b>Código Sub Bodega:</b>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <input type="text" class="form-control text-center" formControlName="subWarehouseCode" [class.is-invalid]="dataForm.get('subWarehouseCode').touched && dataForm.get('subWarehouseCode').invalid" [readOnly]="inputReadOnly">
+                  <span class="text-danger mt-1" *ngIf="!dataForm.get('subWarehouseCode')?.valid && (dataForm.get('subWarehouseCode')?.touched || dataForm.get('subWarehouseCode')?.dirty)">
+                    {{dataForm.get('subWarehouseCode')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_6}}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Campo para ingresar números de serie -->
+          <div class="row mt-2">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 text-center">
+                  <b>Números de Serie:</b>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <div formArrayName="serialNumberList">
+                    <div *ngFor="let serial of serialNumberList.controls; let i = index">
+                      <input type="text" class="form-control text-center" [formControlName]="i">
+                      <button type="button" class="btn btn-round btn-sm btn-danger center" (click)="removeSerialNumber(i)">Eliminar</button>
+                    </div>
+                    <button type="button" class="btn btn-round btn-sm btn-info" (click)="addSerialNumber()">Agregar Serie</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campos que se mostrarán solo si se selecciona "Masivo" -->
+        <div *ngIf="dataForm.get('releaseType').value === 'Masivo'">
+          <div class="row mt-2">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+              <div class="form-group row">
+                <div class="col-sm-12 col-md-6 text-center">
+                  <b>Subir archivo CSV:</b>
+                </div>
+                <div class="col-sm-12 col-md-6">
+                  <input type="file" (change)="onFileChange($event)" accept=".csv" class="form-control" #fileInput style="display: none;">
+                  <button type="button" class="btn btn-round btn-sm btn-info" (click)="fileInput.click()">Cargar Archivo</button>
+                  <span *ngIf="selectedFile" class="ml-2">{{ selectedFile.name }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+      <button *ngIf="button==='add'" (click)="crudReleaseSerial()" type="button" class="btn btn-round btn-success mr-1"
+        [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+        Liberar
+      </button>
+    </div>
+
+  </form>
+</div>

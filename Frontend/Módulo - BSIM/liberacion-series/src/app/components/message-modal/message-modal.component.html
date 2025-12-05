@@ -1,0 +1,23 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" style="font-weight: bold;">
+            Mensaje:
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="card-container">
+            <p>{{ message }}</p>
+        </div>
+    </div>
+    <div class="modal-footer" style="justify-content: end;">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">Cerrar</button>
+    </div>
+
+</div>

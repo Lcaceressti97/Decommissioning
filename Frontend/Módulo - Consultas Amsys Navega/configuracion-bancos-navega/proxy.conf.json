@@ -1,0 +1,11 @@
+{
+  "/apiInquiriesAmsysNavega/*": {
+    "target": "http://localhost:8080/inquiriesamsysnavega",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/apiInquiriesAmsysNavega": ""
+    }
+  }
+}

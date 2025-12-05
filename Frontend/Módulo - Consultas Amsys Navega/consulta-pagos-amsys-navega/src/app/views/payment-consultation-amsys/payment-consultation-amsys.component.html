@@ -1,0 +1,179 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">CONSULTA DE PAGOS NAVEGA
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="card-body">
+                    <!--                     <div class="row mb-2 justify-content-center">
+
+                        <div class="col">
+                            <label for="startDate"
+                                class="col-form-label text-dark font-size-large mb-0 font-weight-bold label-long">
+                                Fecha de Inicio:
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input id="startDate" class="form-control form-control-sm ml-2" type="date"
+                                    [(ngModel)]="startDate" (change)="onDateChange()">
+                            </div>
+                        </div>
+
+                        <div class="col">
+                            <label for="endDate"
+                                class="col-form-label text-dark font-size-large mb-0 font-weight-bold label-long">
+                                Fecha de Fin:
+                            </label>
+                            <div class="d-flex align-items-center">
+                                <input id="endDate" class="form-control form-control-sm ml-2" type="date"
+                                    [(ngModel)]="endDate" (change)="onDateChange()">
+                            </div>
+                        </div>
+                    </div> -->
+                    <div class="row mb-2 justify-content-start">
+                        <div class="col-md-6">
+                            <div class="form-group d-flex align-items-center">
+                                <label for="startDate" class="col-form-label text-dark font-size-large mb-0 font-weight-bold label-long mr-2">
+                                    Fecha de Inicio:
+                                </label>
+                                <input id="startDate" class="form-control custom-input" type="date"
+                                    [(ngModel)]="startDate" (change)="onDateChange()">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2 justify-content-start">
+                        <div class="col-md-6">
+                            <div class="form-group d-flex align-items-center">
+                                <label for="endDate" class="col-form-label text-dark font-size-large mb-0 font-weight-bold label-long mr-2">
+                                    Fecha de Fin:
+                                </label>
+                                <input id="endDate" class="form-control custom-input" type="date"
+                                    [(ngModel)]="endDate" (change)="onDateChange()">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+
+
+
+                    <br>
+
+                    <!-- Tabla para Navega -->
+                    <div id="pdfTable">
+
+                        <button class="btn btn-round mr-2 bg-darkBlue btn-outline-primary" (click)="generatePDFNavega()"
+                            [disabled]="!rowsNavega?.length">
+                            Generar PDF
+                        </button>
+                        <br>
+                        <br>
+                        <div class="dataTables_wrapper">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Se muestran
+                                            <select aria-controls="datatable" class="form-control form-control-sm"
+                                                name="datatable_length" [(ngModel)]="resultsPerPage">
+                                                <option [value]="10">10</option>
+                                                <option [value]="15">15</option>
+                                                <option [value]="50">50</option>
+                                            </select>
+                                            resultados
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_filter" id="datatable_filter">
+                                        <label>
+                                            <input aria-controls="datatable" class="form-control form-control-sm"
+                                                placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                                (keyup)="searchPayment()" (search)="reloadRows()" />
+
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                        <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                            [rows]="rowsNavega" [loadingIndicator]="loadingIndicator" columnMode="force"
+                            rowHeight="auto" [limit]="resultsPerPage" [footerHeight]="100"
+                            [messages]="{emptyMessage: 'No hay pagos navega disponibles', totalMessage: getTotalText()}">
+                            <ngx-datatable-column name="Código Navega" prop="navegaCode">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Código Producto" prop="productCode">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Moneda" prop="currency">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Monto Pago" prop="paymentAmount">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Banco" prop="bank">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Autorización Banco" prop="bankAuthorization">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Tasa de Cambio" prop="exchangeRate">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Fecha Pago" prop="paymentDate">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Cuenta del EBS" prop="ebsAccount">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="STS Transacción" prop="transactionSts">
+                                <ng-template let-value="value" ngx-datatable-cell-template>
+                                    <div class="centered-columns">{{ value }}</div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Acciones" [cellClass]="'custom-class'">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+                                    <button type="button" class="btn btn-round btn-sm btn-danger text-white"
+                                        data-toggle="tooltip" data-placement="top" title="Anular Pago"
+                                        (click)="cancellationPayment(row)" [disabled]="row.transactionSts !== 'P'">
+                                        <i class="now-ui-icons ui-1_simple-remove"></i>
+                                    </button>
+                                </ng-template>
+                            </ngx-datatable-column>
+
+
+                        </ngx-datatable>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

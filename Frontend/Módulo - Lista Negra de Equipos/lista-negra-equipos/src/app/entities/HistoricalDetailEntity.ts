@@ -1,0 +1,31 @@
+export interface HistoricalDetailEntity {
+    id?: number;
+    esnImei: string;
+    ivesn: string;
+    operador: number;
+    tipobloqueo: string;
+    telefono: string;
+    anexo: number;
+    technologyType: string;
+    simcard: string;
+    nombreUsuarioTransaccion: string;
+    identidadUsuarioTransaccion: string;
+    direccionUsuarioTransaccion: string;
+    telefonoUsuarioTransaccion: string;
+    motivoBloqueo: string;
+    descriptionReasonBlocking: string;
+    createdDate: string;
+    fechaBloqueo: string;
+    nombreDesbloqueante: string;
+    identidadDesbloqueante: string;
+    direccionDesbloqueante: string;
+    telefonoDesbloqueante: string;
+    motivoDesbloqueo: string;
+    descriptionReasonUnlock: string;
+    fechaDesbloqueo: string;
+    usuarioTransaccion: string;
+    pantallaTransaccion: string;
+    estadoBajaAlta: string;
+    status: number;
+    modelo: string;
+}

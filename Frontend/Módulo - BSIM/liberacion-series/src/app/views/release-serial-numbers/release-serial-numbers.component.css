@@ -1,0 +1,41 @@
+.title {
+    font-size: 25px;
+    background-image: linear-gradient(to right, #00e1ff, #402ee5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+    text-decoration-color: linear-gradient(to right, #00e1ff, rgb(1, 39, 82));
+}
+
+.font-size-large {
+    font-size: 15px;
+}
+
+.blue-text {
+    color: rgb(3, 47, 97);
+    font-weight: bold;
+}
+
+.black-text {
+    color: rgb(7, 7, 7);
+    font-weight: bold;
+}
+
+.green-text {
+    color: rgb(0, 129, 0);
+    font-weight: bold;
+}
+
+.red-text {
+    color: rgb(110, 1, 1);
+    font-weight: bold;
+}
+
+.form-check-input {
+    margin-right: 0; /* Elimina el margen derecho del input */
+}
+
+.form-check-label {
+    margin-left: 0; /* Elimina el margen izquierdo del label */
+}

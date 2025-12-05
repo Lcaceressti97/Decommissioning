@@ -1,0 +1,250 @@
+<div class="main-content">
+    <form [formGroup]="form">
+        <br>
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ action==='add' ? "Creación de Banco:" : action==='update' ? "Modificación del Banco: " +
+                data.bankName :
+                "Detalle del Banco: " + data.bankName}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body ">
+
+            <div class="card-container">
+
+                <!-- Fila 1 -->
+                <div class="row mb-4 ">
+
+                    <div class="col-sm-4 col-md-4 mx-auto">
+                        <label class="form-label"><b>Código:</b> </label>
+                        <input type="text" class="form-control" formControlName="code" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('code')?.valid &&
+                                (form.get('code')?.touched || form.get('code')?.dirty)
+                                ">
+                            {{form.get('code')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            : messages.INVALID
+                            }}
+                        </span>
+                    </div>
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <label class="form-label"><b>Nombre de la Empresa:</b></label>
+                        <input type="text" class="form-control" formControlName="nameCompany" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('nameCompany')?.valid &&
+                                (form.get('nameCompany')?.touched || form.get('nameCompany')?.dirty)
+                                ">
+                            {{form.get('nameCompany')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            : messages.INVALID
+                            }}
+                        </span>
+                    </div>
+
+                </div>
+                <div class="row mb-4">
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Nombre del Banco:</b></label>
+                        <input type="text" class="form-control" formControlName="bankName" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('bankName')?.valid &&
+                                (form.get('bankName')?.touched || form.get('bankName')?.dirty)
+                                ">
+                            {{form.get('bankName')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('bankName')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Nombre Transacción:</b></label>
+                        <input type="text" class="form-control" formControlName="nameTransaction" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('nameTransaction')?.valid &&
+                                (form.get('nameTransaction')?.touched || form.get('nameTransaction')?.dirty)
+                                ">
+                            {{form.get('nameTransaction')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('nameTransaction')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Nombre Cuenta Bancaria:</b></label>
+                        <input type="text" class="form-control" formControlName="bankAccountName" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('bankAccountName')?.valid &&
+                                (form.get('bankAccountName')?.touched || form.get('bankAccountName')?.dirty)
+                                ">
+                            {{form.get('bankAccountName')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('bankAccountName')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Número Cuenta Bancaria:</b></label>
+                        <input type="text" class="form-control" formControlName="bankAccountNum" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('bankAccountNum')?.valid &&
+                                (form.get('bankAccountNum')?.touched || form.get('bankAccountNum')?.dirty)
+                                ">
+                            {{form.get('bankAccountNum')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('bankAccountNum')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+                </div>
+                <div class="row mb-4">
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Código de Moneda:</b></label>
+                        <select class="form-control" formControlName="currencyCode">
+
+                            <option value="HNL">HNL</option>
+                            <option value="USD">USD</option>
+                        </select>
+                        <span class="text-danger" *ngIf="
+                            !form.get('currencyCode')?.valid &&
+                            (form.get('currencyCode')?.touched || form.get('currencyCode')?.dirty)
+                        ">
+                            {{form.get('currencyCode')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('currencyCode')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Letra Identificadora:</b></label>
+                        <input type="text" class="form-control" formControlName="identifyingLetter"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('identifyingLetter')?.valid &&
+                                (form.get('identifyingLetter')?.touched || form.get('identifyingLetter')?.dirty)
+                                ">
+                            {{form.get('identifyingLetter')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('identifyingLetter')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Cuenta Bancaria EBS:</b></label>
+                        <input type="text" class="form-control" formControlName="bankAccountEbs" [readOnly]="readonly">
+<!--                         <span class="text-danger" *ngIf="
+                                !form.get('bankAccountEbs')?.valid &&
+                                (form.get('bankAccountEbs')?.touched || form.get('bankAccountEbs')?.dirty)
+                                ">
+                            {{form.get('bankAccountEbs')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('bankAccountEbs')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span> -->
+                    </div>
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <label class="form-label"><b>Codigo Banco Amsys:</b></label>
+                        <input type="text" class="form-control" formControlName="bankCodeAmsys" [readOnly]="readonly">
+<!--                         <span class="text-danger" *ngIf="
+                                !form.get('bankCodeAmsys')?.valid &&
+                                (form.get('bankCodeAmsys')?.touched || form.get('bankCodeAmsys')?.dirty)
+                                ">
+                            {{form.get('bankCodeAmsys')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('bankCodeAmsys')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span> -->
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-sm-6 col-md-6">
+                        <label class="form-label"><b>Compañia:</b></label>
+                        <select class="form-control" formControlName="company">
+
+                            <option value="Navega">Navega</option>
+                            <option value="Celtel">Celtel</option>
+                        </select>
+                        <span class="text-danger" *ngIf="
+                            !form.get('company')?.valid &&
+                            (form.get('company')?.touched || form.get('company')?.dirty)
+                        ">
+                            {{form.get('company')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('company')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6">
+                        <label class="form-label"><b>Estado:</b></label>
+                        <select class="form-control" formControlName="status">
+
+                            <option value="1">Activo</option>
+                            <option value="0">Inactivo</option>
+                        </select>
+                        <span class="text-danger" *ngIf="
+                            !form.get('status')?.valid &&
+                            (form.get('status')?.touched || form.get('status')?.dirty)
+                        ">
+                            {{form.get('status')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('status')?.hasError('maxLength') ?
+                            messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button (click)="crudBank()" *ngIf="action==='add'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+
+            <button (click)="crudBank()" *ngIf="action==='update'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+
+    </form>
+
+</div>

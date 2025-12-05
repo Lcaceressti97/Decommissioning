@@ -1,0 +1,66 @@
+.button-row {
+    display: flex;
+    justify-content: center;
+}
+
+.button-row button {
+    /* Estilos comunes para todos los botones */
+    margin: 0 5px;
+    padding: 10px 20px;
+    color: white;
+    border: none;
+    cursor: pointer;
+    border-radius: 10px;
+    /* Bordes redondeados */
+}
+
+.btn-green {
+    margin: 0 700px;
+    padding: 10px 20px;
+    justify-content: right;
+    background-color: #00a8b4;
+    /* Botón verde */
+}
+
+.btn-blue {
+    justify-content: right;
+    background-color: #0dad5d;
+    /* Botón azul */
+}
+
+.font-size-large {
+    font-size: 15px;
+}
+
+
+.title-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.title {
+    font-size: 25px;
+    background-image: linear-gradient(to right, #00e1ff, #402ee5);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);
+   
+   
+}
+
+.label-long {
+    width: 150px;
+}
+
+.centered-columns {
+    text-align: center;
+}
+
+.custom-input {
+    width: 300px;
+    height: 32px;
+    font-size: 14px;
+}

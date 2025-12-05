@@ -1,0 +1,111 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">CONTROL DE IMEI
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="card-body">
+                    <div class="row mb-3">
+                        <div class="col-sm-3 col-md-6">
+                            <div class="d-flex align-items-center">
+                                <label for="selectType"
+                                    class="col-form-label text-dark font-size-large mb-0 font-weight-bold label-long">
+                                    Tipo de Consulta:
+                                </label>
+                                <div [classList]="inputClasses">
+                                    <angular2-multiselect [data]="dropdownList" [(ngModel)]="selectedItems"
+                                        (onDeSelect)="OnItemDeSelect($event)" (onSelect)="onItemSelect($event)"
+                                        [settings]="dropdownSettings">
+                                    </angular2-multiselect>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" style="padding-left: 15px;">
+                        <button (click)="reloadRows()" class="btn btn-round btn-info">
+                            Refrescar
+                        </button>
+                    </div>
+                    <br>
+                    <div class="dataTables_wrapper">
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length" id="datatable_length">
+                                    <label>
+                                        Se muestran
+                                        <select aria-controls="datatable" class="form-control form-control-sm"
+                                            name="datatable_length" [(ngModel)]="resultsPerPage">
+                                            <option [value]="10">10</option>
+                                            <option [value]="15">15</option>
+                                            <option [value]="50">50</option>
+                                        </select>
+                                        resultados
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_filter" id="datatable_filter">
+                                    <label>
+                                        <input aria-controls="datatable" class="form-control form-control-sm"
+                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                            (keyup)="searchImeiControlFile()" (search)="reloadRows()" />
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                        [rows]="rowsImeiControl" [loadingIndicator]="loadingIndicator" columnMode="force"
+                        rowHeight="auto" [limit]="resultsPerPage" [footerHeight]="100"
+                        [messages]="{emptyMessage: 'No hay IMEI disponibles', totalMessage: getTotalText()}">
+                        <ngx-datatable-column name="IMEI" prop="imei">
+                            <ng-template ngx-datatable-cell-template let-value="value">
+                                <div class="center-cell">{{ value }}</div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Teléfono" prop="phone">
+                            <ng-template ngx-datatable-cell-template let-value="value">
+                                <div class="center-cell">{{ value }}</div>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Fecha" prop="createdDate">
+                            <ng-template ngx-datatable-cell-template let-value="value">
+                                <div class="center-cell">{{ value }}</div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Estado" prop="status">
+                            <ng-template let-value="value" ngx-datatable-cell-template>
+                                <div class="center-cell font-weight-bold" [ngStyle]="{ color: value === 1 ? 'green' : 'red' }">
+                                    {{ value === 1 ? 'Activo' : 'Inactivo' }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Acciones" prop="Id">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <button type="button"
+                                    class="btn btn-round btn-outline-danger bg-darkBlue smaller-button mr-2 mt-2 mt-md-2 mt-lg-1"
+                                    data-toggle="tooltip" data-placement="top" title="Ver Histórico"
+                                    [disabled]="!utilService.loadGrants('GB')" (click)="see(row)">
+                                    <i class="fa fa-info-circle icon"></i>
+                                </button>
+                            </ng-template>
+                        </ngx-datatable-column>
+                    </ngx-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

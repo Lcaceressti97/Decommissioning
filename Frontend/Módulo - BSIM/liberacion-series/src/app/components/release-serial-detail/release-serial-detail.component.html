@@ -1,0 +1,53 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" style="font-weight: bold;">
+            Detalle Liberación:
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="card-container">
+            <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+            [rows]="dataReleaseSeriesLog.details" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+            [limit]="resultsPerPage" [footerHeight]="60"
+            >
+
+            <ngx-datatable-column name="Tipo Inventario" prop="inventoryType" [cellClass]="'custom-class'">
+            </ngx-datatable-column>
+                <ngx-datatable-column name="Código" prop="itemCode" [cellClass]="'custom-class'"></ngx-datatable-column>
+                <ngx-datatable-column name="Código Bodega" prop="warehouseCode" [cellClass]="'custom-class'"></ngx-datatable-column>
+                <ngx-datatable-column name="Código Sub Bodega" prop="subWarehouseCode" [cellClass]="'custom-class'"></ngx-datatable-column>
+                <ngx-datatable-column name="Serie" prop="serialNumber" [cellClass]="'custom-class'"></ngx-datatable-column>
+                <ngx-datatable-column name="Resultado Mensaje" [cellClass]="'custom-class'">
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        <button class="btn btn-info btn-sm" (click)="showMessage(row.resultMessage)">
+                            <i class="fas fa-eye"></i> Ver
+                        </button>
+                    </ng-template>
+                </ngx-datatable-column>               <ngx-datatable-column name="Estado" prop="status" [cellClass]="'custom-class'">
+                    <ng-template ngx-datatable-cell-template let-row="row" [cellClass]="'custom-class'">
+                        <div [ngClass]="getStatusColorClass(row.status)">
+                            {{ getStatusText(row.status) }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+                <ngx-datatable-column name="Fecha Creación" prop="createdAt">
+                    <ng-template ngx-datatable-cell-template let-row="row">
+                        {{ row.createdAt | date: 'dd/MM/yyyy hh:mm:ss a' }}
+                    </ng-template>
+                </ngx-datatable-column>
+            </ngx-datatable>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">Cerrar</button>
+    </div>
+</div>
