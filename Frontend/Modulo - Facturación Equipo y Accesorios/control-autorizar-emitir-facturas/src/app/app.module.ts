@@ -1,0 +1,45 @@
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
+import { NgxDatatableModule } from "@swimlane/ngx-datatable";
+import { HttpClientModule } from "@angular/common/http";
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
+import { NgxMaskModule, IConfig } from 'ngx-mask'
+
+import { AppRoutingModule } from './app-routing.module';
+import { AppComponent } from './app.component';
+import { AngularMultiSelectModule } from "angular2-multiselect-dropdown";
+
+import { NgbActiveModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { DatePipe } from '@angular/common';
+import { ApprovalControlComponent } from './views/approval-control/approval-control.component';
+import { ApprovalsModalComponent } from './components/approvals-modal/approvals-modal.component';
+import { PrintInvoiceComponent } from './components/print-invoice/print-invoice/print-invoice.component';
+
+@NgModule({
+  declarations: [
+    AppComponent,
+    ApprovalControlComponent,
+    ApprovalsModalComponent,
+    PrintInvoiceComponent
+  ],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    AngularMultiSelectModule,
+    NgxDatatableModule,
+    HttpClientModule,
+    FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    NgxMaskModule.forRoot(),
+    ToastrModule.forRoot(),
+    ColorPickerModule
+  ],
+  providers: [NgbActiveModal, DatePipe],
+  bootstrap: [AppComponent],
+  entryComponents: []
+})
+export class AppModule { }

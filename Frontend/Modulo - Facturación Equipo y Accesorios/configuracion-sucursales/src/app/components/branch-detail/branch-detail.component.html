@@ -1,0 +1,600 @@
+<div>
+    <form [formGroup]="brancheForm">
+
+        <div class="main-content">
+            <div class="modal-header">
+                <h4 class="modal-title" style="font-weight: bold;">
+                    {{ getTitle() }}
+                </h4>
+                <button type="button" class="btn-close" (click)="closeModal()">
+                    <i class="fa fa-times-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="modal-divider-container">
+                <hr class="modal-divider">
+            </div>
+
+            <div class="modal-body">
+
+                <!-- Se define el alto máximo del contenido del modal esto
+                con el fin de evitar un doble scroll -->
+                <div style="height: 100vh; overflow: auto; max-height: 100vh;">
+
+                    <div class="h-90 mt-3">
+
+                        <div class="container">
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                    <div class="container-fluid">
+
+                                        <!-- Datos Generales-->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!-- Datos Generales -->
+                                                <div class="card card-optional card-more-columns shadow">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Generales
+                                                        </h5>
+                                                    </div>
+
+                                                    <div class="card-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Nombre:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="text" formControlName="name"
+                                                                    [class.is-invalid]="
+            brancheForm.get('name').touched &&
+            brancheForm.get('name').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+            !brancheForm.get('name')?.valid &&
+            (brancheForm.get('name')?.touched || brancheForm.get('name')?.dirty)
+            ">
+                                                                    {{brancheForm.get('name')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('name')?.hasError('maxLength') ?
+                                                                    messages.MAX_100 : messages.MAX_100 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Teléfono:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="text" formControlName="phone"
+                                                                    [class.is-invalid]="
+            brancheForm.get('phone').touched &&
+            brancheForm.get('phone').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+            !brancheForm.get('phone')?.valid &&
+            (brancheForm.get('phone')?.touched || brancheForm.get('phone')?.dirty)
+            ">
+                                                                    {{brancheForm.get('phone')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('phone')?.hasError('maxLength') ?
+                                                                    messages.MAX_12 : messages.MAX_12 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Email:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="email" formControlName="email"
+                                                                    [class.is-invalid]="
+                                                                    brancheForm.get('email').touched &&
+                                                                    brancheForm.get('email').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                                    !brancheForm.get('email')?.valid &&
+                                                                    (brancheForm.get('email')?.touched || brancheForm.get('email')?.dirty)
+                                                                ">
+                                                                    {{brancheForm.get('email')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('email')?.hasError('maxLength') ?
+                                                                    messages.MAX_500 : messages.ONLY_MAX_EMAIL }}
+
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Nuevo componente -->
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">Territorio:
+                                                                </label>
+                                                            </div>
+
+                                                            <div class="col-8" *ngIf="hiddenWareHouse">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="text" formControlName="territory"
+                                                                    [class.is-invalid]="
+                                                                     brancheForm.get('territory').touched &&
+                                                                     brancheForm.get('territory').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                                 !brancheForm.get('territory')?.valid &&
+                                                                 (brancheForm.get('territory')?.touched || brancheForm.get('territory')?.dirty)
+                                                                    ">
+                                                                    {{brancheForm.get('territory')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY :  messages.NO_EMPTY}}
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-8" *ngIf="!hiddenWareHouse">
+                                                                <select  class="form-control text-center"
+                                                                    type="text" formControlName="territory"
+                                                                    [class.is-invalid]="
+                                                                     brancheForm.get('territory').touched &&
+                                                                     brancheForm.get('territory').invalid">
+                                                                        <option [value]="'T1'">T1</option>
+                                                                        <option [value]="'T2'">T2</option>
+                                                                        <option [value]="'T3'">T3</option>
+                                                                     </select>
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                                 !brancheForm.get('territory')?.valid &&
+                                                                 (brancheForm.get('territory')?.touched || brancheForm.get('territory')?.dirty)
+                                                                    ">
+                                                                    {{brancheForm.get('territory')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY :  messages.NO_EMPTY}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Dirección:
+                                                                </label>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-12">
+                                                                <textarea [readOnly]="reandOnlyForm"
+                                                                    formControlName="address" [class.is-invalid]="
+                brancheForm.get('address').touched &&
+                brancheForm.get('address').invalid" class="form-control" type="text">
+            </textarea>
+
+                                                                <span class="text-danger mt-1" *ngIf="
+                !brancheForm.get('address')?.valid &&
+                (brancheForm.get('address')?.touched || brancheForm.get('address')?.dirty)
+            ">
+                                                                    {{brancheForm.get('address')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('address')?.hasError('maxLength') ?
+                                                                    messages.MAX_500 : messages.MAX_500 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Datos Fiscales -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!-- Datos Fiscales -->
+                                                <div class="card card-optional card-two-columns mt-4 shadow">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Fiscales
+                                                        </h5>
+                                                    </div>
+
+                                                    <div class="card-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;"> ID
+                                                                    Point:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm"
+                                                                    class="form-control text-center" type="number"
+                                                                    formControlName="idPoint" [class.is-invalid]="
+                                                brancheForm.get('idPoint').touched &&
+                                                brancheForm.get('idPoint').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                !brancheForm.get('idPoint')?.valid &&
+                                                (brancheForm.get('idPoint')?.touched || brancheForm.get('idPoint')?.dirty)
+                                                ">
+                                                                    {{brancheForm.get('idPoint')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;"> ID
+                                                                    Empresa:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm"
+                                                                    class="form-control text-center" type="number"
+                                                                    formControlName="idCompany" [class.is-invalid]="
+                                                brancheForm.get('idCompany').touched &&
+                                                brancheForm.get('idCompany').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                !brancheForm.get('idCompany')?.valid &&
+                                                (brancheForm.get('idCompany')?.touched || brancheForm.get('idCompany')?.dirty)
+                                                ">
+                                                                    {{brancheForm.get('idCompany')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;"> ID
+                                                                    Sistema:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm"
+                                                                    class="form-control text-center" type="number"
+                                                                    formControlName="idSystem" [class.is-invalid]="
+                                                brancheForm.get('idSystem').touched &&
+                                                brancheForm.get('idSystem').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                !brancheForm.get('idSystem')?.valid &&
+                                                (brancheForm.get('idSystem')?.touched || brancheForm.get('idSystem')?.dirty)
+                                                ">
+                                                                    {{brancheForm.get('idSystem')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <!--
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">ID
+                                                                    Bodega:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm"
+                                                                    class="form-control text-center" type="number"
+                                                                    formControlName="idWarehouse" [class.is-invalid]="
+                                                                brancheForm.get('idWarehouse').touched &&
+                                                                brancheForm.get('idWarehouse').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                                !brancheForm.get('idWarehouse')?.valid &&
+                                                                (brancheForm.get('idWarehouse')?.touched || brancheForm.get('idWarehouse')?.dirty)
+                                                                ">
+                                                                    {{brancheForm.get('idWarehouse')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY : messages.NO_EMPTY}}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        -->
+
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                                <!-- Columna 2 -->
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    <div class="container-fluid">
+
+                                        <!-- Datos Legales -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!-- Datos legales -->
+                                                <div class="card card-optional card-more-columns-two mb-5 shadow">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Legales
+                                                        </h5>
+                                                    </div>
+
+                                                    <div class="card-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;"> RTN:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="text" formControlName="rtn"
+                                                                    [class.is-invalid]="
+            brancheForm.get('rtn').touched &&
+            brancheForm.get('rtn').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+            !brancheForm.get('rtn')?.valid &&
+            (brancheForm.get('rtn')?.touched || brancheForm.get('rtn')?.dirty)
+            ">
+                                                                    {{brancheForm.get('rtn')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('rtn')?.hasError('maxLength') ?
+                                                                    messages.MAX_20 : messages.MAX_20 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;"> FAX:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="text" formControlName="fax"
+                                                                    [class.is-invalid]="
+            brancheForm.get('fax').touched &&
+            brancheForm.get('fax').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+            !brancheForm.get('fax')?.valid &&
+            (brancheForm.get('fax')?.touched || brancheForm.get('fax')?.dirty)
+            ">
+                                                                    {{brancheForm.get('fax')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('fax')?.hasError('maxLength') ?
+                                                                    messages.MAX_200 : messages.MAX_200 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;"> PBX:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="text" formControlName="pbx"
+                                                                    [class.is-invalid]="
+            brancheForm.get('pbx').touched &&
+            brancheForm.get('pbx').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+            !brancheForm.get('pbx')?.valid &&
+            (brancheForm.get('pbx')?.touched || brancheForm.get('pbx')?.dirty)
+            ">
+                                                                    {{brancheForm.get('pbx')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('pbx')?.hasError('maxLength') ?
+                                                                    messages.MAX_50 : messages.MAX_50 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">Bodega:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8" *ngIf="hiddenWareHouse">
+                                                                <input [readOnly]="reandOnlyForm" class="form-control text-center"
+                                                                    type="text" formControlName="wineryCode"
+                                                                    [class.is-invalid]="
+                                                                     brancheForm.get('wineryCode').touched &&
+                                                                     brancheForm.get('wineryCode').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                                 !brancheForm.get('wineryCode')?.valid &&
+                                                                 (brancheForm.get('wineryCode')?.touched || brancheForm.get('wineryCode')?.dirty)
+                                                                    ">
+                                                                    {{brancheForm.get('wineryCode')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('wineryCode')?.hasError('maxLength')
+                                                                    ?
+                                                                    messages.MAX_200 : messages.MAX_100 }}
+                                                                </span>
+                                                            </div>
+                                                            <div class="col-8" *ngIf="false">
+                                                                <select  class="form-control"
+                                                                    type="text" formControlName="wineryCode"
+                                                                    [class.is-invalid]="
+                                                                     brancheForm.get('wineryCode').touched &&
+                                                                     brancheForm.get('wineryCode').invalid">
+                                                                        <option *ngFor="let wareHouse of wareHouses, let i  = index" [value]="wareHouses[i].code">
+                                                                            {{ wareHouse.code + " - " + wareHouse.name }}
+                                                                        </option>
+                                                                     </select>
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                                 !brancheForm.get('wineryCode')?.valid &&
+                                                                 (brancheForm.get('wineryCode')?.touched || brancheForm.get('wineryCode')?.dirty)
+                                                                    ">
+                                                                    {{brancheForm.get('wineryCode')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('wineryCode')?.hasError('maxLength')
+                                                                    ?
+                                                                    messages.MAX_200 : messages.MAX_100 }}
+                                                                </span>
+                                                            </div>
+
+                                                            <div class="col-8" *ngIf="!hiddenWareHouse">
+                                                                <div class="col-sm-12 col-md-12 col-lg-12">
+                                                                    <div >
+                                                                        <angular2-multiselect [data]="dropDownListWareHouse" 
+                                                                        [(ngModel)]="selectedItemWareHouse"
+                                                                             (onSelect)="onItemSelectWareHouse($event)"
+                                                                             (onDeSelect)="onItemDeSelectWareHouse($event)"
+                                                                            
+                                                                            [settings]="dropsownSettingsWareHouse" formControlName="wineryCode">
+                                                                        </angular2-multiselect>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                                <span class="text-danger mt-1" *ngIf="
+                                                                 !brancheForm.get('wineryCode')?.valid &&
+                                                                 (brancheForm.get('wineryCode')?.touched || brancheForm.get('wineryCode')?.dirty)
+                                                                    ">
+                                                                    {{brancheForm.get('wineryCode')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('wineryCode')?.hasError('maxLength')
+                                                                    ?
+                                                                    messages.MAX_200 : messages.MAX_100 }}
+                                                                </span>
+                                                            </div>
+
+
+
+                                                        </div>
+
+                                                        <div class="row">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">Encargado de bodega:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input readonly class="form-control text-center"
+                                                                    type="text" formControlName="wareHouseManager"
+                                                                    [class.is-invalid]="
+                                                                     brancheForm.get('wareHouseManager').touched &&
+                                                                     brancheForm.get('wareHouseManager').invalid">
+                                                               
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Datos Facturación -->
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!-- Datos de Facturación -->
+                                                <div class="card card-optional card-three-columns mt-5 shadow">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Facturación
+                                                        </h5>
+                                                    </div>
+
+                                                    <div class="card-body">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Cuenta
+                                                                    Facturación:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm"
+                                                                    class="form-control text-center" type="text"
+                                                                    formControlName="acctCode" [class.is-invalid]="
+                    brancheForm.get('acctCode').touched &&
+                    brancheForm.get('acctCode').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+             !brancheForm.get('acctCode')?.valid &&
+                (brancheForm.get('acctCode')?.touched || brancheForm.get('acctCode')?.dirty)
+                 ">
+                                                                    {{brancheForm.get('acctCode')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('acctCode')?.hasError('maxLength') ?
+                                                                    messages.MAX_200 : messages.MAX_50 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Número
+                                                                    Ficticio:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="reandOnlyForm"
+                                                                    class="form-control text-center" type="number"
+                                                                    formControlName="fictitiousNumber"
+                                                                    [class.is-invalid]="
+                    brancheForm.get('fictitiousNumber').touched &&
+                     brancheForm.get('fictitiousNumber').invalid">
+                                                                <span class="text-danger mt-1" *ngIf="
+             !brancheForm.get('fictitiousNumber')?.valid &&
+                    (brancheForm.get('fictitiousNumber')?.touched || brancheForm.get('fictitiousNumber')?.dirty)
+                      ">
+                                                                    {{brancheForm.get('fictitiousNumber')?.hasError('required')
+                                                                    ?
+                                                                    messages.NO_EMPTY :
+                                                                    brancheForm.get('fictitiousNumber')?.hasError('maxLength')
+                                                                    ?
+                                                                    messages.MAX_200 : messages.MAX_20 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer" style="justify-content: end">
+                <button (click)="actionBranche()" *ngIf="button==='add'" type="button" class="btn btn-round bg-success"
+                    [disabled]="brancheForm.invalid || !utilService.loadGrants('CR')">
+                    Crear
+                </button>
+                <button (click)="actionBranche()" *ngIf="button==='edit'" type="button" class="btn btn-round bg-success"
+                    [disabled]="brancheForm.invalid || !utilService.loadGrants('UP')">
+                    Actualizar
+                </button>
+            </div>
+
+        </div>
+    </form>
+</div>

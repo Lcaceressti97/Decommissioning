@@ -1,0 +1,82 @@
+<div>
+    <form [formGroup]="dataExo">
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                Cargar OCE: Cliente Corporativo
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="card shadow">
+                <h5 class="text-center mt-3" style="font-weight: bold;">Datos Exonerados</h5>
+
+                <div class="container-fluid">
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label" style="font-weight: bold;">
+                                Número Correlativo Orden de Compra Exenta:
+                            </label>
+                        </div>
+
+                        <div class="col-6">
+                            <input type="text" class="form-control text-center" formControlName="correlativeOrdenExemptNo"
+                                [class.is-invalid]="
+                                dataExo.get('correlativeOrdenExemptNo').touched &&
+                                dataExo.get('correlativeOrdenExemptNo').invalid">
+                            <span class="text-danger mt-1" *ngIf="
+                                !dataExo.get('correlativeOrdenExemptNo')?.valid &&
+                                (dataExo.get('correlativeOrdenExemptNo')?.touched || dataExo.get('correlativeOrdenExemptNo')?.dirty)
+                                ">
+                                {{dataExo.get('correlativeOrdenExemptNo')?.hasError('required')
+                                ?
+                                messages.NO_EMPTY  :
+                                messages.NO_EMPTY }}
+                            </span>
+                        </div>
+                    </div>
+
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label" style="font-weight: bold;">
+                                Número Correlativo Constancia de Registro de Exoneración:
+                            </label>
+                        </div>
+
+                        <div class="col-6">
+                            <input type="text" class="form-control text-center" formControlName="correlativeCertificateExoNo"
+                                [class.is-invalid]="
+                                dataExo.get('correlativeCertificateExoNo').touched &&
+                                dataExo.get('correlativeCertificateExoNo').invalid">
+                            <span class="text-danger mt-1" *ngIf="
+                                !dataExo.get('correlativeCertificateExoNo')?.valid &&
+                                (dataExo.get('correlativeCertificateExoNo')?.touched || dataExo.get('correlativeCertificateExoNo')?.dirty)
+                                ">
+                                {{dataExo.get('correlativeCertificateExoNo')?.hasError('required')
+                                ?
+                                messages.NO_EMPTY  :
+                                messages.NO_EMPTY }}
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" (click)="updateDataExonerada()" class="btn btn-round bg-info" [disabled]="dataExo.invalid">
+                Cargar
+            </button>
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+    </form>
+</div>

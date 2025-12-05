@@ -1,0 +1,293 @@
+<div class="main-content">
+    <form [formGroup]="dataForm">
+
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                {{ button === "see" ? "Detalles del  Canal de Facturación:" :  button === "add" ? "Formulario de Creación:" : "Formulario de Modificación:"}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="container">
+
+                <div class="card shadow">
+                    <div class="card-header text-center">
+                        <h5 style="font-weight: bold;"> Datos del Canal</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="container">
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Nombre:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="name"
+                                    [class.is-invalid]="
+                                    dataForm.get('name').touched &&
+                                    dataForm.get('name').invalid">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('name')?.valid &&
+                                    (dataForm.get('name')?.touched || dataForm.get('name')?.dirty)
+                                    ">
+                                        {{dataForm.get('name')?.hasError('required') ?
+                                        messages.NO_EMPTY : dataForm.get('name')?.hasError('maxLength') ? messages.MAX_150 : messages.MAX_150}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Descripción:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="description"
+                                    [class.is-invalid]="
+                                    dataForm.get('description').touched &&
+                                    dataForm.get('description').invalid">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('description')?.valid &&
+                                    (dataForm.get('description')?.touched || dataForm.get('description')?.dirty)
+                                    ">
+                                        {{dataForm.get('description')?.hasError('required') ?
+                                        messages.NO_EMPTY : dataForm.get('description')?.hasError('maxLength') ? messages.MAX_150 : messages.MAX_150}}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3" *ngIf="button==='see' || button==='edit'">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Estado:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="status"
+                                    [class.is-invalid]="
+                                    dataForm.get('status').touched &&
+                                    dataForm.get('status').invalid">
+                                        <option value="0">Inactivo</option>
+                                        <option value="1">Activo</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('status')?.valid &&
+                                    (dataForm.get('status')?.touched || dataForm.get('status')?.dirty)
+                                    ">
+                                        {{dataForm.get('status')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Pago por Adelantado:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="payUpFrontNumber"
+                                    [class.is-invalid]="
+                                    dataForm.get('payUpFrontNumber').touched &&
+                                    dataForm.get('payUpFrontNumber').invalid">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('payUpFrontNumber')?.valid &&
+                                    (dataForm.get('payUpFrontNumber')?.touched || dataForm.get('payUpFrontNumber')?.dirty)
+                                    ">
+                                        {{dataForm.get('payUpFrontNumber')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Nota Fiscal:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="nonFiscalNote"
+                                    [class.is-invalid]="
+                                    dataForm.get('nonFiscalNote').touched &&
+                                    dataForm.get('nonFiscalNote').invalid">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('nonFiscalNote')?.valid &&
+                                    (dataForm.get('nonFiscalNote')?.touched || dataForm.get('nonFiscalNote')?.dirty)
+                                    ">
+                                        {{dataForm.get('nonFiscalNote')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Reservación de Inventario:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="reserveSerialNumber"
+                                    [class.is-invalid]="
+                                    dataForm.get('reserveSerialNumber').touched &&
+                                    dataForm.get('reserveSerialNumber').invalid">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('reserveSerialNumber')?.valid &&
+                                    (dataForm.get('reserveSerialNumber')?.touched || dataForm.get('reserveSerialNumber')?.dirty)
+                                    ">
+                                        {{dataForm.get('reserveSerialNumber')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Liberación de Inventario:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="releaseSerialNumber"
+                                    [class.is-invalid]="
+                                    dataForm.get('releaseSerialNumber').touched &&
+                                    dataForm.get('releaseSerialNumber').invalid">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('releaseSerialNumber')?.valid &&
+                                    (dataForm.get('releaseSerialNumber')?.touched || dataForm.get('releaseSerialNumber')?.dirty)
+                                    ">
+                                        {{dataForm.get('releaseSerialNumber')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Descarga de Inventario:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="inventoryDownload"
+                                    [class.is-invalid]="
+                                    dataForm.get('inventoryDownload').touched &&
+                                    dataForm.get('inventoryDownload').invalid">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('inventoryDownload')?.valid &&
+                                    (dataForm.get('inventoryDownload')?.touched || dataForm.get('inventoryDownload')?.dirty)
+                                    ">
+                                        {{dataForm.get('inventoryDownload')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Generar Trama:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="generateTrama"
+                                    [class.is-invalid]="
+                                    dataForm.get('generateTrama').touched &&
+                                    dataForm.get('generateTrama').invalid">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('generateTrama')?.valid &&
+                                    (dataForm.get('generateTrama')?.touched || dataForm.get('generateTrama')?.dirty)
+                                    ">
+                                        {{dataForm.get('generateTrama')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Logs:</b> 
+                                    </label>
+                                    <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="logs"
+                                    [class.is-invalid]="
+                                    dataForm.get('logs').touched &&
+                                    dataForm.get('logs').invalid">
+                                        <option value="0">No</option>
+                                        <option value="1">Sí</option>
+                                    </select>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('logs')?.valid &&
+                                    (dataForm.get('logs')?.touched || dataForm.get('logs')?.dirty)
+                                    ">
+                                        {{dataForm.get('logs')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+
+                            <div class="row mb-3" *ngIf="button==='see'">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Fecha de Creación:</b> 
+                                    </label>
+                                    <input type="text" [readOnly]="inputReadOnly" class="form-control text-center" formControlName="created"
+                                    [class.is-invalid]="
+                                    dataForm.get('created').touched &&
+                                    dataForm.get('created').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('created')?.valid &&
+                                    (dataForm.get('created')?.touched || dataForm.get('created')?.dirty)
+                                    ">
+                                        {{dataForm.get('created')?.hasError('required') ?
+                                        messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button  *ngIf="button==='add'" (click)="crudChannel()" type="button" class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+            <button  *ngIf="button==='edit'" (click)="crudChannel()" type="button" class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+        </div>
+
+    </form>
+</div>

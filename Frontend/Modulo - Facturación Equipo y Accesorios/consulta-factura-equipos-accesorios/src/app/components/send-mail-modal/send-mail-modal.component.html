@@ -1,0 +1,64 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            {{ getTitle() }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+    <br>
+    <div class="modal-body">
+        <div class="row body-head justify-content-center align-items-center">
+            <div class="col-md-5 body-input">
+                <label class="mb-0">Ingrese Email</label>
+                <input #correo maxlength="50" id="otroMensajero" autocomplete="off" class="form-control" type="text">
+            </div>
+            <div class="col-sm-3 text-center">
+                <button [disabled]="loadingNotify" (click)="addCorreo(correo)" class="btn btn-round btn-outline-darkBlue bg-darkBlue smaller-button text-white">Agregar a lista</button>
+            </div>
+            <div class="col-sm-3 text-center">
+                <button [disabled]="loadingNotify"  class="btn btn-round btn-outline-success bg-success smaller-button text-white">Enviar Notificación</button>
+            </div>
+            <!-- <div class="col-md-2" style="margin-top: 20px;">
+                <i *ngIf="loadingNotify" id="loader_" class="fa fa-sync fa-spin fa-2x"></i>
+            </div> -->
+        </div>
+        
+        <hr>
+        <div class="row">
+            <div class="col-2">
+            </div>
+            <div class="col-8" style="overflow: overlay;height: 250px;">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Email</th>
+                            <th scope="col">Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let email of emails; index as i;">
+                            <td>{{i+1}}</td>
+                            <td>{{email[0]}}</td>
+                            <td><button [disabled]="email[1]" (click)="eliminarCorreo(i)" style="float: right;"
+                                    type="submit" class="btn btn-danger">X</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-2">
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+</div>

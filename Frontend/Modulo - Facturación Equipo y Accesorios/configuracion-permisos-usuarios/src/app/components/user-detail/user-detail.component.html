@@ -1,0 +1,415 @@
+<div>
+
+    <div class="main-content">
+        <div class="modal-header">
+            <h4 class="modal-title" style="font-weight: bold;">
+                {{ getTitle() }}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+        <div class="modal-body">
+            <div style="height: 100%; overflow: auto; max-height: 100%;">
+
+                <div class="h-80 mt-3">
+
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="container">
+                                    <div class="row">
+                                        <div class="col-sm-12 col-md-12 col-lg-4">
+
+                                            <!-- Clic en crear  -->
+                                            <!-- Parte cuando se quiere agregar un usuario -->
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="card card-optional shadow" id="card-create">
+                                                            <div class="card-header text-center">
+                                                                <h5 style="font-weight: bold;"> Datos Usuario </h5>
+                                                            </div>
+
+                                                            <div class="card-body">
+                                                                <div class="container">
+                                                                    <form [formGroup]="searchInvoiceForm">
+                                                                        <div class="row mb-2">
+                                                                            <div class="col-3">
+                                                                                <label class="form-label"
+                                                                                    style="font-weight: bold;">
+                                                                                    Usuario:
+                                                                                </label>
+
+                                                                            </div>
+
+                                                                            <!-- toDo -->
+                                                                            <div class="col-7">
+                                                                                <input type="text" oninput="this.value = this.value.toUpperCase()" class="form-control"
+                                                                                    formControlName="userName"
+                                                                                    [class.is-invalid]="
+                                                                                    searchInvoiceForm.get('userName').touched &&
+                                                                                    searchInvoiceForm.get('userName').invalid"
+                                                                                    [readOnly]="readonlyUser">
+                                                                                <span class="text-danger mt-1" *ngIf="
+                                                                                    !searchInvoiceForm.get('userName')?.valid &&
+                                                                                    (searchInvoiceForm.get('userName')?.touched || searchInvoiceForm.get('userName')?.dirty)
+                                                                                    ">
+                                                                                    {{searchInvoiceForm.get('userName')?.hasError('required')
+                                                                                    ?
+                                                                                    messages.NO_EMPTY :
+                                                                                    searchInvoiceForm.get('userName')?.hasError('maxLength')
+                                                                                    ?
+                                                                                    messages.MAX_100 :
+                                                                                    messages.MAX_100 }}
+                                                                                </span>
+
+                                                                            </div>
+
+                                                                            <div class="col-2 col-2-optional">
+                                                                                <button (click)="validateUser()"
+                                                                                    *ngIf="button==='add'" type="button"
+                                                                                    class="btn btn-round btn-warning btn-sm btn-optional-create"
+                                                                                    [disabled]=" disabledButtonSearch">
+                                                                                    <i
+                                                                                        class="now-ui-icons ui-1_zoom-bold"></i>
+                                                                                </button>
+                                                                            </div>
+
+                                                                        </div>
+
+                                                                        <div class="row mb-3" *ngIf="hiddenNewUser">
+                                                                            <div class="col-3">
+                                                                                <label class="form-label"
+                                                                                    style="font-weight: bold;">
+                                                                                    Nombre:
+                                                                                </label>
+
+                                                                            </div>
+
+                                                                            <!-- toDo -->
+                                                                            <div class="col-9">
+                                                                                <input type="text" class="form-control"
+                                                                                    formControlName="name"
+                                                                                    [class.is-invalid]="
+                                                                            searchInvoiceForm.get('name').touched &&
+                                                                            searchInvoiceForm.get('name').invalid"
+                                                                                    [readOnly]="readonlyDataUser">
+                                                                                <span class="text-danger mt-1" *ngIf="
+                                                                            !searchInvoiceForm.get('name')?.valid &&
+                                                                            (searchInvoiceForm.get('name')?.touched || searchInvoiceForm.get('name')?.dirty)
+                                                                                ">
+                                                                                    {{searchInvoiceForm.get('name')?.hasError('required')
+                                                                                    ?
+                                                                                    messages.NO_EMPTY :
+                                                                                    searchInvoiceForm.get('name')?.hasError('maxLength')
+                                                                                    ?
+                                                                                    messages.MAX_100 :
+                                                                                    messages.MAX_100 }}
+                                                                                </span>
+
+                                                                            </div>
+                                                                        </div>
+
+                                                                        <div class="row mb-3" *ngIf="hiddenNewUser">
+                                                                            <div class="col-3">
+                                                                                <label class="form-label"
+                                                                                    style="font-weight: bold;">
+                                                                                    Email:
+                                                                                </label>
+
+                                                                            </div>
+
+                                                                            <!-- toDo -->
+                                                                            <div class="col-9">
+                                                                                <input type="text" class="form-control"
+                                                                                    formControlName="email"
+                                                                                    [class.is-invalid]="
+                                                                                    searchInvoiceForm.get('email').touched &&
+                                                                                    searchInvoiceForm.get('email').invalid"
+                                                                                    [readOnly]="readonlyEmail">
+                                                                                <span class="text-danger mt-1" *ngIf="
+                                                                                    !searchInvoiceForm.get('email')?.valid &&
+                                                                                    (searchInvoiceForm.get('email')?.touched || searchInvoiceForm.get('email')?.dirty)
+                                                                                    ">
+                                                                                    {{searchInvoiceForm.get('email')?.hasError('required')
+                                                                                    ?
+                                                                                    messages.NO_EMPTY :
+                                                                                    searchInvoiceForm.get('email')?.hasError('maxLength')
+                                                                                    ?
+                                                                                    messages.ONLY_MAX_EMAIL :
+                                                                                    messages.ONLY_MAX_EMAIL }}
+                                                                                </span>
+
+                                                                            </div>
+
+
+
+                                                                        </div>
+
+                                                                        <div class="row mb-3" *ngIf="hiddenNewUser">
+                                                                            <div class="col-3">
+                                                                                <label class="form-label"
+                                                                                    style="font-weight: bold;">
+                                                                                    Tipo:
+                                                                                </label>
+
+                                                                            </div>
+
+                                                                            <!-- toDo -->
+                                                                            <div class="col-9" *ngIf="button!=='see'">
+                                                                                <select class="form-control text-center"
+                                                                                    formControlName="typeUser"
+                                                                                    [class.is-invalid]="
+                                                                                        searchInvoiceForm.get('typeUser').touched &&
+                                                                                        searchInvoiceForm.get('typeUser').invalid">
+                                                                                    <option [value]="user.id"
+                                                                                        *ngFor="let user of typesUser">
+                                                                                        {{ user.typeUser}}
+                                                                                    </option>
+                                                                                </select>
+                                                                                <span class="text-danger mt-1" *ngIf="
+                                                                                    !searchInvoiceForm.get('typeUser')?.valid &&
+                                                                                    (searchInvoiceForm.get('typeUser')?.touched || searchInvoiceForm.get('typeUser')?.dirty)
+                                                                                    ">
+                                                                                    {{searchInvoiceForm.get('typeUser')?.hasError('required')
+                                                                                    ?
+                                                                                    messages.NO_EMPTY :
+                                                                                    messages.NO_EMPTY }}
+                                                                                </span>
+                                                                            </div>
+
+                                                                            <div class="col-9" *ngIf="button==='see'">
+                                                                                <input type="text" class="form-control"
+                                                                                    formControlName="typeUser"
+                                                                                    [readOnly]="readonlyDataUser">
+                                                                            </div>
+
+                                                                        </div>
+
+
+
+                                                                    </form>
+
+                                                                </div>
+                                                                <hr>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-12 col-lg-4">
+                                            <div class="container-fluid">
+                                                <div class="row mb-3">
+                                                    <div class="col-12">
+                                                        <div class="card card-optional shadow card-more-columns">
+                                                            <div class="card-header text-center">
+                                                                <h5 style="font-weight: bold;"> Permisos de Control
+                                                                </h5>
+                                                            </div>
+
+                                                            <div class="card-body">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-8">
+                                                                            <label class="form-label"
+                                                                                style="font-weight: bold;">Autorizar
+                                                                                Facturas:</label>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <input id="authorize" name="authorize"
+                                                                                [(ngModel)]="authorize" type="checkbox"
+                                                                                class="form-control"
+                                                                                [attr.disabled]="disabled===true ? true :null">
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-8">
+                                                                            <label class="form-label"
+                                                                                style="font-weight: bold;">Emitir
+                                                                                Facturas:</label>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <input id="generalBill" name="generalBill"
+                                                                                [(ngModel)]="generalBill"
+                                                                                type="checkbox" class="form-control"
+                                                                                [attr.disabled]="disabled===true ? true :null">
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-8">
+                                                                            <label class="form-label"
+                                                                                style="font-weight: bold;">Emitir
+                                                                                Facturas Sin Ser
+                                                                                Vendedor:</label>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <input id="emitAll" name="emitAll"
+                                                                                [(ngModel)]="emitAll" type="checkbox"
+                                                                                class="form-control"
+                                                                                [attr.disabled]="disabled===true ? true :null">
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-8">
+                                                                            <label class="form-label"
+                                                                                style="font-weight: bold;">Asignar
+                                                                                Descuento:</label>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <input id="assignDiscount"
+                                                                                name="assignDiscount"
+                                                                                [(ngModel)]="assignDiscount"
+                                                                                type="checkbox" class="form-control"
+                                                                                [attr.disabled]="disabled===true ? true :null">
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-12 col-lg-4">
+                                            <div class="container-fluid">
+                                                <div class="row">
+                                                    <div class="col-12">
+                                                        <div class="card card-optional shadow card-more-columns">
+                                                            <div class="card-header text-center">
+                                                                <h5 style="font-weight: bold;"> Permisos de
+                                                                    Anulación</h5>
+                                                            </div>
+
+                                                            <div class="card-body">
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-8">
+                                                                            <label class="form-label"
+                                                                                style="font-weight: bold;">Anular
+                                                                                Facturas sin Emitir:</label>
+
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <input id="cancellationWithOutFn"
+                                                                                name="cancellationWithOutFn"
+                                                                                [(ngModel)]="cancellationWithOutFn"
+                                                                                type="checkbox" class="form-control"
+                                                                                [attr.disabled]="disabled===true ? true :null">
+
+                                                                        </div>
+
+
+                                                                    </div>
+
+                                                                </div>
+                                                                <hr>
+                                                                <div class="container">
+                                                                    <div class="row">
+                                                                        <div class="col-8">
+                                                                            <label class="form-label"
+                                                                                style="font-weight: bold;">Anular
+                                                                                Facturas con Número
+                                                                                Fiscal:</label>
+                                                                        </div>
+                                                                        <div class="col-4">
+                                                                            <input id="cancellationWithFn"
+                                                                                name="cancellationWithFn"
+                                                                                [(ngModel)]="cancellationWithFn"
+                                                                                type="checkbox" class="form-control"
+                                                                                [attr.disabled]="disabled===true ? true :null">
+
+                                                                        </div>
+
+                                                                    </div>
+                                                                </div>
+                                                                <hr>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+
+
+                            </div>
+                        </div>
+
+
+                        <!-- Segunda row del modal 
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    
+                                </div>
+
+
+                                <div class="col-sm-12 col-md-6 col-lg-6">
+                                    
+                                </div>
+                            </div>
+                            -->
+                    </div>
+
+                </div>
+
+            </div>
+            <!-- final-->
+        </div>
+
+        <div class="modal-footer" [hidden]="hiddenAlert">
+            <div class="text-danger">
+                En <b>Datos Usuario</b> se habilitaron dos campos más para continuar con el proceso de asignación de
+                permisos, ya que el usuario ingresado no existe.
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end">
+
+
+            <div>
+                <button (click)="setPermissonsToUser()" *ngIf="button==='add'" type="button"
+                    class="btn btn-round bg-success"
+                    [disabled]="searchInvoiceForm.invalid || !utilService.loadGrants('CR') || !disabledAsignar">
+                    Asignar
+                </button>
+                <button (click)="updatePermissions()" *ngIf="button==='edit'" type="button"
+                    class="btn btn-round bg-success"
+                    [disabled]="!utilService.loadGrants('UP') || searchInvoiceForm.invalid">
+                    Actualizar
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

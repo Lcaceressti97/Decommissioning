@@ -1,0 +1,11 @@
+{
+    "/apiEquipmentAccessoriesBilling/*": {
+        "target": "http://localhost:4437/invoiceequipmentaccessories",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/apiEquipmentAccessoriesBilling": ""
+        }
+    }
+}

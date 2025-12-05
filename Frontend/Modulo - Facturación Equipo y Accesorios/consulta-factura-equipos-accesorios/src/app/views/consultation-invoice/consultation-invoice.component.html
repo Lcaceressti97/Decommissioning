@@ -1,0 +1,234 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12 col-md-12 col-sm-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">CONSULTA DE FACTURA EQUIPOS Y ACCESORIOS
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="card-body">
+                    <div class="dataTables_wrapper">
+                        <div>
+                            <div class="row mb-2" style="padding-left: 40px;">
+                                <label class="form-label font-size-large text-dark mr-3"><b>Tipo de Consulta:</b>
+                                </label>
+                                <div [classList]="inputClasses">
+                                    <angular2-multiselect [data]="dropdownList" [(ngModel)]="selectedItems"
+                                        (onDeSelect)="OnItemDeSelect($event)" (onSelect)="onItemSelect($event)"
+                                        [settings]="dropdownSettings">
+                                    </angular2-multiselect>
+                                </div>
+                            </div>
+                            <form [formGroup]="dateForm">
+
+                                <div class="row mb-2" style="padding-left: 40px;">
+                                    <label for="dateInit" class="form-label font-size-large text-dark  mr-4">
+                                        <b>Fecha de Inicio:</b>
+                                    </label>
+                                    <div [classList]="inputClasses" style="margin-left: 5px;">
+                                        <input class="form-control" type="date" formControlName="dateInit"
+                                            name="dateInit" id="dateInit" (change)="validateDates()">
+                                        <!--                                         <span class="text-danger mt-1" *ngIf="
+                                            !dateForm.get('dateInit')?.valid &&
+                                            (dateForm.get('dateInit')?.touched || dateForm.get('dateInit')?.dirty) ||  invalidDate == true
+                                            ">
+                                            {{dateForm.get('dateInit')?.hasError('required') ?
+                                            messages.NO_EMPTY : (invalidDate == true) ?
+                                            messages.DATE_START_END_ERROR : messages.INVALID }}
+                                        </span> -->
+                                    </div>
+                                </div>
+
+
+                                <div class="row mb-2" style="padding-left: 40px;">
+                                    <label for="dateEnd" class="form-label font-size-large text-dark">
+                                        <b>Fecha Fin:</b>
+                                    </label>
+                                    <div [classList]="inputClasses" style="margin-left: 70px;">
+                                        <input class="form-control" type="date" formControlName="dateEnd" id="dateEnd"
+                                            name="dateEnd" (change)="validateDates()">
+                                        <!--                                  <span class="text-danger mt-1" *ngIf="
+                                            !dateForm.get('dateEnd')?.valid &&
+                                            (dateForm.get('dateEnd')?.touched || dateForm.get('dateEnd')?.dirty) ||  invalidDate == true
+                                            ">
+                                            {{dateForm.get('dateEnd')?.hasError('required') ?
+                                            messages.NO_EMPTY : (invalidDate == true) ?
+                                            messages.DATE_START_END_ERROR : messages.INVALID }}
+                                        </span> -->
+                                    </div>
+                                </div>
+
+                                <div class="row mb-2" style="padding-left: 150px;">
+                                    <div class="col">
+                                        <!-- Botones que reflejan las operaciones -->
+                                        <button
+                                            [disabled]="dateForm.invalid || invalidDate || !utilService.loadGrants('EX')"
+                                            class="btn btn-round mr-2 bg-darkBlue btn-outline-primary"
+                                            (click)="onSubmit()">
+                                            Filtrar Por Fechas
+                                        </button>
+                                        <button [disabled]="!utilService.loadGrants('EX')"
+                                            class="btn btn-round mr-2 bg-darkBlue btn-outline-primary"
+                                            (click)="refreshTable()">
+                                            Refrescar
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </form>
+
+                        </div>
+
+                        <br>
+
+                        <!-- Select Mostrar -->
+                        <div class="row mb-3" style="padding-left: 18px;">
+                            <label class="form-label font-size-large mr-1 label-select">Mostrando las facturas:
+                            </label>
+
+                            <div [classList]="inputClassesTwo" style="width: 30px;">
+                                <angular2-multiselect [data]="dropdownListStatus" [(ngModel)]="selectedItemsStatus"
+                                    (onSelect)="onItemSelectStatus($event)" (onDeSelect)="onDeSelectStatus()"
+                                    [settings]="dropdownSettings">
+                                </angular2-multiselect>
+                            </div>
+
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length" id="datatable_length">
+                                    <label>
+                                        Se muestran
+                                        <select aria-controls="datatable" class="form-control form-control-sm"
+                                            name="datatable_length" [(ngModel)]="resultsPerPage">
+                                            <option [value]="10">10</option>
+                                            <option [value]="15">15</option>
+                                            <option [value]="50">50</option>
+                                        </select>
+                                        resultados
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_filter" id="datatable_filter">
+                                    <label>
+                                        <input aria-controls="datatable" class="form-control form-control-sm"
+                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                            (keyup)="searchInvoice()" />
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                        [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                        [externalPaging]="true" [count]="totalElements" [offset]="currentPage" [limit]="pageSize"
+                        (page)="onPageChange($event)" [footerHeight]="50" [messages]="{
+                        emptyMessage: 'No hay facturas disponibles', 
+                        totalMessage: 'total',
+                        selectedMessage: 'seleccionado'
+                    }">
+                        <ngx-datatable-column name="No. Prefactura" prop="id" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Tipo de Factura" prop="invoiceType" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Estado" cellClass="custom-class">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                {{ row.status}}
+
+                            </ng-template>
+
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Cliente" prop="customer" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Suscriptor" prop="primaryIdentity" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Vendedor" prop="seller" cellClass="custom-class">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Fecha Creación" prop="created" cellClass="custom-class">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                {{ row.created | date: 'dd/MM/yyyy hh:mm:ss' }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+
+                        <ngx-datatable-column name="Acciones">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <div class="center-cell">
+                                    <button type="button" class="btn btn-round btn-info btn-sm" data-toggle="tooltip"
+                                        data-placement="top" title="Ver Detalle"
+                                        [disabled]="!utilService.loadGrants('GB')" (click)="openModal('see',row)">
+                                        <i class="fa fa-info-circle icon"></i>
+                                    </button>
+                                    <!-- btn btn-round btn-outline-danger bg-darkBlue smaller-button mr-2 mt-2 mt-md-2 mt-lg-1 -->
+                                    <!-- Pendiente-->
+                                    <!--                        <button *ngIf="row.buttonExo" (click)="openModalOce(row)" type="button"
+                                        class="btn btn-round btn-success btn-sm" data-toggle="tooltip"
+                                        data-placement="top" title="Cargar OCE"
+                                        [disabled]="!utilService.loadGrants('GB')">
+                                        <i class="now-ui-icons arrows-1_share-66"></i>
+                                    </button> -->
+                                    <button
+                                        *ngIf="(row.buttonExo && (exemption === 1 || (exemption === 0 && row.invoiceType === 'FC2')))"
+                                        (click)="openModalOce(row)" type="button"
+                                        class="btn btn-round btn-success btn-sm" data-toggle="tooltip"
+                                        data-placement="top" title="Cargar OCE"
+                                        [disabled]="!utilService.loadGrants('GB')">
+                                        <i class="now-ui-icons arrows-1_share-66"></i>
+                                    </button>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Enviar">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <div class="center-cell">
+                                    <button type="button" class="btn btn-round btn-info btn-sm" data-toggle="tooltip"
+                                        data-placement="top" title="Abrir modal para enviar email"
+                                        (click)="openModalEmail(row)"
+                                        [attr.disabled]="row.status !== 'Emitida' ? true : null">
+                                        <i class="now-ui-icons ui-1_send"></i>
+                                    </button>
+
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column [sortable]="false" [canAutoResize]="false" [draggable]="false"
+                            [width]="100" [resizeable]="false" name="Imprimir" class="center-cell">
+
+                            <ng-template let-row="row" ngx-datatable-cell-template let-value="value"
+                                style="padding-right: 1cm">
+                                <a (click)="openModalPrint(row)" data-toggle="tooltip" title="Imprimir"
+                                    style="color: rgb(49, 1, 1);" class="btn btn-round btn-info btn-icon btn-sm like"
+                                    [attr.disabled]="row.status !== 'Emitida' ? true : null" #e><img
+                                        src="./assets/img/impresora1.jpg" width="50" height="50"
+                                        style="margin-top: 0px;"></a>
+
+                            </ng-template>
+                        </ngx-datatable-column>
+
+
+                    </ngx-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

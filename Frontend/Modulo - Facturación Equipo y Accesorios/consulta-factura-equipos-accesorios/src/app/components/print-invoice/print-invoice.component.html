@@ -1,0 +1,457 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            Detalles de Impresión:
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+    <div class="modal-body">
+
+
+        <div class="container">
+            <div class="card">
+                <div class="card-content" style="height: 60vh; overflow: auto; max-height: 60vh;">
+
+                    <div class="h-55">
+
+                        <div id="invoice" class="container">
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="test-font">
+                                        Telefónica Celular S.A. de C.V.\CELTEL
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="test-font">
+                                        Plaza Tigo Colonia Los Almendros al final del Blv. Morazan, Tegucigalpa <br>
+                                        PBX:2265-8446, Fax: 2265-8446 <br>
+                                        Rtn: {{ branche.rtn }} Usuario: {{ billing.seller!=null ? billing.seller : "" }}
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <p class="test-font">
+                                                No. de Factura
+                                            </p>
+                                        </div>
+                                        <div class="col-7">
+                                            <p class="test-font margin-test">
+                                                {{ billing.numberDei }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="test-font">
+                                        CAI
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="test-font">
+                                        {{ billing.cai!=null ? billing.cai : "" }} <br>
+
+                                        <span>
+                                            Fec.Limite de Emision: {{ billing.deadLine ? (formatDate(billing.deadLine) | date: 'dd MM yyyy') : ""  }} <br>
+                                        </span>
+                                        <span >
+                                            Rango Inicial: {{ billing.initialRank!=null ? billing.initialRank : ""  }} <br>
+                                        </span>
+                                        <span >
+                                            Rango Final..: {{ billing.finalRank!=null ? billing.finalRank : "" }} <br>
+                                        </span>
+
+                                        Datos del Adquiriente exonerado <br>
+                                        <span>
+                                            Numero correlativo de la orden de compra Exenta: <br>
+                                            {{ billing.correlativeOrdenExemptNo!=null ? billing.correlativeOrdenExemptNo: ""}}
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="row" >
+                                <div class="col-12">
+                                    <p class="test-font">
+                                        Numero correlativo de Constancia del Registro de Exonerados: <br>
+                                        {{ billing.correlativeCertificateExoNo!=null ? billing.correlativeCertificateExoNo : ""}}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="test-font">
+                                        Numero Carnet Diplomatico: <br>
+                                        {{ billing.diplomaticCardNo!=null ? billing.diplomaticCardNo : "" }} <br>
+                                        Numero identificativo del Registro de la Secretaria de Estado en el despacho de
+                                        Agricultura y Ganaderia:
+                                    </p>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <p class="test-font">
+                                        {{ branche.email }} <br>
+                                        {{ branche.address}} <br>
+                                        PBX:{{ branche.pbx }}, FAX: {{ branche.fax }} <br>
+                                        Cajero: {{ userSystem }} Hora: {{ billing.created | date: "hh:mm:ss" }}
+                                        <br>
+                                        Documento {{ billing.invoiceType + " " + billing.id}} <br>
+                                        Fecha: {{ billing.created | date: "dd MM yyyy" }} Vence: {{ (billing.invoiceType === 'FC1' || billing.invoiceType === 'FC3' || billing.invoiceType === 'FS1' || billing.invoiceType === 'FS3' || billing.invoiceType === 'SHP' || billing.invoiceType === 'SHO') ? (billing.created | date: "dd MM yyyy") : (billing.dueDate | date: "dd MM yyyy") }} <br>
+                                        Bodega: {{ billing.warehouse!=null ? billing.warehouse : "" }} <br> Cuenta. : {{ billing.acctCode }} Tel: {{ billing.primaryIdentity }} <br>
+                                        Nombre. : {{ billing.customer }}
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Encabezado de los detalles -->
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    Dirección: {{ billing.customerAddress!=null ? billing.customerAddress : "" }} <br>
+                                    RTN/ID: {{ billing.customerRtnId!=null ? billing.customerRtnId : "" }} <br>
+                                    Credito/Contado:{{ creditoContado }} <br>
+                                    Vendedor: {{ billing.cashierName!=null ? billing.cashierName : "" }} <br>
+                                    Cuota Inicial .: 0.00 <br>
+                                    1 mes de: {{ 
+                                        (billing.invoiceType == 'FC1' || billing.invoiceType == 'FC3' || billing.invoiceType == 'FS1' || billing.invoiceType == 'FS3' || billing.invoiceType == 'SHP' || billing.invoiceType == 'SHO' || billing.fiscalProcess == 'Facturación por Reclamo de Seguros') 
+                                        ? billing.amountTotal 
+                                        : '0.00' 
+                                    }}
+                                    
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="row">
+                                        <div class="col-2 test-font without-padding-right">
+                                            Cant.
+                                        </div>
+                                        <div class="col-3 test-font without-padding-right">
+                                            Artic. T
+                                        </div>
+                                        <div class="col-3 test-font without-padding-right">
+                                            Precio
+                                        </div>
+                                        <div class="col-4 test-font without-padding-right">
+                                            Valor
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-4 test-font without-padding-right">
+                                            Descripcion
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-12 test-font">
+                                            *-----------------------------------------------------*
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+
+                            <!-- Detalles de los productos que se vendieron -->
+                            <div *ngFor="let invoice of billing.invoiceDetails">
+
+                                <div class="row">
+                                    <div class="col-2 test-font">
+                                        {{ invoice.quantity  }}
+                                    </div>
+                                    <div class="col-3 test-font">
+                                        {{ invoice.model }}
+                                    </div>
+                                    <div class="col-3 test-font">
+                                        {{ invoice.unitPrice |  number: '1.2-2'}}
+                                    </div>
+
+                                    <div class="col-4 test-font">
+                                        {{ calculateValue(invoice) | number: '1.2-2' }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 test-font">
+                                        {{ invoice.description }}
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="col-12 test-font">
+                                        E.S.N. NO.: {{ invoice.serieOrBoxNumber!=null ? invoice.serieOrBoxNumber :"" }}
+                                        <br>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    *-----------------------------------------------------*
+                                </div>
+                            </div>
+                            <!-- Descripción de los totales y demás -->
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Subtotal.......................: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ billing.subtotal | number: '1.2-2'}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            ( - ) Descuentos y Rebajas Otorgados....................: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            <br> {{ billing.discount | number: '1.2-2'}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    *-----------------------------------------------------*
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Valores Exento.............: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ billing.exemptAmount | number: '1.2-2'}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Valores Exonerado.......: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ "0.00" }}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-12">
+                                            Valores Alicuota
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Tasa Cero.....................: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            0.00
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    <div class="row">
+                                        <div class="col-9">
+                                            Valores Gravables
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-8">
+                                            15% ISV........................: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ valoresGravables | number: '1.2-2'}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-9">
+                                            Impuesto Sobre Venta <br>
+                                            15% sobre Valores
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Gravables.....................: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ billing.amountTax | number: '1.2-2'}}
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-9">
+                                            Impuesto Sobre Venta <br>
+                                            15% sobre Valores
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Alicuota Tasa Cero.......: $
+                                        </div>
+
+                                        <div class="col-4">
+                                           0.00
+                                        </div>
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Total Factura................: $
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ billing.amountTotal | number: '1.2-2'}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Tasa de Cambio:
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ billing.exchangeRate | number: '1.4-4'}}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br>
+
+                            <div class="row">
+                                <div class="col-12 test-font">
+                                    <div class="row">
+                                        <div class="col-8">
+                                            Tot.Fact. Lempiras L
+                                        </div>
+
+                                        <div class="col-4">
+                                            {{ total | number: '1.2-2'}}
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-9">
+                                            Total en Letras:
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-9">
+                                            {{ totalLetra }}
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pie de la factura -->
+                            <br>
+                            <br>
+                            <div class="test-font">
+                                <p>
+                                    "Reconozco y acepto que la unica garantia sobre este equipo es la otorgada por el
+                                    Fabricante, liberando a CELTEL, S.A. DE C.V. de cualquier responsabilidad".
+                                </p>
+                                <p>
+                                    Tiene 5 dias habiles para hacer reclamos por desperfecto de fabrica. Recuerda
+                                    presentarte a la agencia con el equipo como fue entregado. Reclamos posteriores a 5
+                                    dias habiles favor visita CETREL.
+                                </p>
+                                <br>
+                                <br>
+                                <br>
+                                <br>
+                                <div class="row">
+                                    <div class="col-12">
+                                        -------------------------------------------------------
+                                    </div>
+                                </div>
+                                <p>
+                                    Firma y sello de recibido<br>
+                                    Original:Cliente <br>
+                                    Copia:Obligado Tributario Emisor
+                                </p>
+                            </div>
+
+                        </div>
+
+                    </div>
+                    <!-- Aquí va el alto máximo -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-success mr-1" (click)="printInvoice()"
+            [disabled]="billing.statusCode!==1 && billing.statusCode!==2 && billing.statusCode!==5 && billing.statusCode!==6">
+            Imprimir
+        </button>
+        
+    </div>
+</div>

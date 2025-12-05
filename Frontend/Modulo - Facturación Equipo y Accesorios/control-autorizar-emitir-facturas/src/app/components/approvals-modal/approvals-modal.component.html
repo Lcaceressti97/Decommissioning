@@ -1,0 +1,237 @@
+<div>
+
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            {{getTitle()}}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+
+        <div class="container">
+            <div class="card">
+                <div class="card-content" style="height: 600px; overflow: auto; max-height: 600px;">
+
+                    <div class="h-80">
+
+                        <h5 class="text-center" style="font-weight: bold;">Detalle Factura</h5>
+                        <div class="detail-list">
+                            <div class="detail-item">
+                                <div class="detail-label">Tipo de Factura:</div>
+                                <div class="detail-value">{{billing?.invoiceType}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Cuenta de Facturación:</div>
+                                <div class="detail-value">{{billing?.acctCode}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Nombre de Cliente:</div>
+                                <div class="detail-value">{{billing?.customer}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Teléfono de Cliente:</div>
+                                <div class="detail-value">{{billing?.primaryIdentity}}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Estado:</div>
+                                <div class="detail-value">
+                                    {{ billing.status}}
+                                </div>
+                            </div>
+
+                            <div *ngIf="!showSelect" class="detail-item">
+                                <div class="detail-label">Agencia:</div>
+                                <div class="detail-value">
+                                    {{ billing.agency}}
+                                </div>
+                            </div>
+
+                            <!-- Funcionalidad de cambio de agencia  -->
+                            <div *ngIf="showSelect" class="row" style="border-bottom: 1px solid #e0e0e0;">
+                                <div class="col-3">
+                                    <div class="detail-label" style="padding: 20px 0;">Agencia:</div>
+                                </div>
+
+                                <div class="col-9">
+
+                                    <div class="p-3" style="justify-content: end;">
+                                        <div>
+                                            <angular2-multiselect [data]="dropdownList" [(ngModel)]="selectedItems"
+                                                (onDeSelect)="OnItemDeSelect($event)" (onSelect)="onItemSelect($event)"
+                                                [settings]="dropdownSettings">
+                                            </angular2-multiselect>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+                            <div class="detail-item">
+                                <div class="detail-label">Usuario Vendedor:</div>
+                                <div class="detail-value">{{billing?.seller}}</div>
+                            </div>
+
+                        </div>
+
+                        <div class="detail-label">Productos:</div>
+                        <!-- Esto es un arreglo ya que representa los detalles de la factura -->
+                        <div *ngFor="let invoice of billing.invoiceDetails">
+
+                            <div class="detail-item detail-item-optional">
+                                <div class="detail-label">Cant.</div>
+                                <div class="detail-value">{{ invoice.quantity }}</div>
+                                <div class="detail-label">Artic. T</div>
+                                <div class="detail-value">{{ invoice.model }}</div>
+                                <div class="detail-label">Precio:</div>
+                                <div class="detail-value">{{ invoice.unitPrice | number: '1.2-2'}}</div>
+                                <div class="detail-label">Valor:</div>
+                                <div class="detail-value">{{ calculateValue(invoice) | number: '1.2-2' }}</div>
+
+                            </div>
+                            <div class="detail-item detail-item-optional">
+                                <div class="detail-label">Descripción:</div>
+                                <div class="detail-value">{{ invoice.description }}</div>
+                            </div>
+
+
+                            <div class="detail-item">
+                                <div class="detail-label">E.S.N NO.:</div>
+                                <div class="detail-value">{{ invoice.serieOrBoxNumber }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Valores totales -->
+                        <div class="amounts">
+
+                            <div class="amount">
+                                <div class="amount-label">Subtotal:</div>
+                                <div class="amount-value">{{ billing.subtotal | number: '1.2-2'}}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label">Descuentos y Rebajas Otorgados:</div>
+                                <div class="amount-value">{{ billing.discount | number: '1.2-2' }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Porcentaje del Descuento:</div>
+                                <div class="amount-value">
+                                    {{ billing.discountPercentage!=null ? ( billing.discountPercentage | number:
+                                    '1.2-2') + "%": "0.00%" }}
+                                </div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Monto Exento:</div>
+                                <div class="amount-value">{{ billing.exemptAmount!=null ? ( billing.exemptAmount | number: '1.2-2'): "0.00" }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Monto Exonerado:</div>
+                                <div class="amount-value">{{ billing.amountExo!=null ? ( billing.amountExo | number:
+                                    '1.2-2'): "0.00" }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Impuesto:</div>
+                                <div class="amount-value">{{ billing.amountTax | number: '1.2-2'}}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Porcentaje del Impuesto:</div>
+                                <div class="amount-value">{{ (billing.taxPercentage | number: '1.2-2') + "%" }}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label">Total:</div>
+                                <div class="amount-value">{{ billing.amountTotal | number: '1.2-2'}}</div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <!-- Propiedad del formulario -->
+                        <div *ngIf="button==='add' || button==='emit'">
+                            <form [formGroup]="searchForm">
+                                <h5 class="text-center" style="font-weight: bold;"> {{ button==="add" ? "Proceso
+                                    Autorización" : button==="emit" ? "Proceso Emisión" : "Proceso Autorización" }}
+                                </h5>
+
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <label class="amount-label"> Tipo de Transacción
+                                        </label>
+                                        <input type="text" class="form-control " formControlName="typeApproval"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                                <div class="row mb-3" [hidden]="paymentCodeHidden">
+                                    <div class="col-12">
+                                        <label class="amount-label"> Código de Pago
+                                        </label>
+                                        <input type="text" class="form-control " formControlName="paymentCode"
+                                            [class.is-invalid]="
+                                      searchForm.get('paymentCode').touched &&
+                                      searchForm.get('paymentCode').invalid">
+                                    </div>
+                                </div>
+
+                                <div class="amount-label">Comentario:</div>
+                                <div class="row mb-2">
+
+                                    <div class="col-12 my-auto">
+                                        <textarea formControlName="description" [class.is-invalid]="
+                                      searchForm.get('description').touched &&
+                                      searchForm.get('description').invalid" class="form-control" type="text">
+                                      </textarea>
+                                        <span class="text-danger mt-1" *ngIf="
+                                              !searchForm.get('description')?.valid &&
+                                              (searchForm.get('description')?.touched || searchForm.get('description')?.dirty)
+                                              ">
+                                              {{ messages.NO_EMPTY }}
+                                        </span>
+
+                                    </div>
+                                </div>
+
+                                <!--Boton del formulario -->
+                                <div class="row" style="justify-content: end;">
+                                    <button *ngIf="button==='add'" type="button" class="btn btn-round bg-success mr-3"
+                                        [disabled]="searchForm.invalid" (click)="authorizeInvoice()">
+                                        Autorizar
+                                    </button>
+                                    <button *ngIf="button==='emit'" type="button" class="btn btn-round bg-success mr-3"
+                                        [disabled]="searchForm.invalid" (click)="emitInvoice()">
+                                        Emitir
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+
+
+                        <!-- Final -->
+
+                    </div>
+                    <!-- Final -->
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+
+</div>

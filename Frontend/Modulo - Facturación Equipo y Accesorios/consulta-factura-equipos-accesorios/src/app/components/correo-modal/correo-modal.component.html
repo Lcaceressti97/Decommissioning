@@ -1,0 +1,109 @@
+<div class="main-content">
+    <form [formGroup]="form">
+
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                Envio de Factura: {{ billing.id }}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="card shadow">
+                <div class="container-fluid">
+                    <h5 class="text-center mt-3" style="font-weight: bold;">Datos Generales</h5>
+
+                    <div class="row m-3">
+                        <div class="col-sm-12 col-md-12 col-lg-5">
+                            <label class="form-label" style="font-weight: bold;">
+                                Tipo de Factura:
+                            </label>
+                        </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-7">
+                            <input type="text" class="form-control text-center" formControlName="invoiceType" readonly>
+                        </div>
+
+                    </div>
+
+                    <div class="row m-3">
+                        <div class="col-sm-12 col-md-12 col-lg-5">
+                            <label class="form-label" style="font-weight: bold;">
+                                Estado:
+                            </label>
+                        </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-7">
+                            <input type="text" class="form-control text-center" formControlName="status" readonly>
+                        </div>
+
+                    </div>
+
+                    <div class="row m-3">
+                        <div class="col-sm-12 col-md-12 col-lg-5">
+                            <label class="form-label" style="font-weight: bold;">
+                                Cliente:
+                            </label>
+                        </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-7">
+                            <input type="text" class="form-control text-center" formControlName="customer" readonly>
+                        </div>
+
+                    </div>
+
+                    <div class="row m-3">
+                        <div class="col-sm-12 col-md-12 col-lg-5">
+                            <label class="form-label" style="font-weight: bold;">
+                                Teléfono:
+                            </label>
+                        </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-7">
+                            <input type="text" class="form-control text-center" formControlName="primaryIdentity" readonly>
+                        </div>
+
+                    </div>
+
+                    <div class="row m-3">
+                        <div class="col-sm-12 col-md-12 col-lg-5">
+                            <label class="form-label" style="font-weight: bold;">
+                                Correo electronico:
+                            </label>
+                        </div>
+
+                        <div class="col-sm-12 col-md-12 col-lg-7">
+                            <input type="text" class="form-control text-center" formControlName="email"
+                                [class.is-invalid]="
+                                form.get('email').touched &&
+                                form.get('email').invalid">
+                            <span class="text-danger mt-1" *ngIf="
+                                !form.get('email')?.valid &&
+                                (form.get('email')?.touched || form.get('email')?.dirty)
+                                ">
+                                {{form.get('email')?.hasError('required')
+                                ?
+                                messages.NO_EMPTY  :
+                                form.get('email')?.hasError('email') ? messages.EMAIL : messages.NO_EMPTY }}
+                            </span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" (click)="sendEmail()" class="btn btn-round bg-info" [disabled]="form.invalid">
+                Enviar
+            </button>
+        </div>
+
+    </form>
+</div>

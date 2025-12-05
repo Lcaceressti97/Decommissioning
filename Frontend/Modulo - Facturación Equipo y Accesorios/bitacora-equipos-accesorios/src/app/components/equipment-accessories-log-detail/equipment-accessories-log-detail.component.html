@@ -1,0 +1,113 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            Detalles SRT:
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="card">
+                <div class="card-header">
+
+                </div>
+
+                <div class="card-body">
+
+                    <div class="container-fluid">
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <b>URL:</b> 
+                                </label>
+                                <input type="text" class="form-control readonly-optional" id="idInvoice" name="idInvoice"
+                                    [(ngModel)]="log.url" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label">
+                                    <b>Tipo de Error:</b> 
+                                </label>
+                                <input type="text" class="form-control readonly-optional" id="typeError" name="typeError"
+                                    [(ngModel)]="log.typeError" readonly>
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">
+                                    <b>Referencia:</b> 
+                                </label>
+                                <input type="text" class="form-control readonly-optional" id="reference" name="reference"
+                                    [(ngModel)]="log.reference" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label">
+                                    <b>Usuario:</b> 
+                                </label>
+                                <input type="text" class="form-control readonly-optional" id="userCreate" name="userCreate"
+                                    [(ngModel)]="log.userCreate" readonly>
+                            </div>
+
+                            <div class="col-6">
+                                <label class="form-label">
+                                    <b>Tiempo en milisegundos:</b> 
+                                </label>
+                                <input type="text" class="form-control readonly-optional" id="executionTime" name="executionTime"
+                                    [(ngModel)]="log.executionTime" readonly>
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <b>Mensaje:</b> 
+                                </label>
+                                
+                                <textarea class="form-control readonly-optional" name="message" id="message"
+                                    rows="3" 
+                                    [(ngModel)]="log.message" readonly>
+                       
+                               </textarea>
+
+                            </div>
+                        </div>
+
+                        <div class="row mb-3">
+                            <div class="col-12">
+                                <label class="form-label">
+                                    <b>SRT:</b> 
+                                </label>
+                                <textarea class="form-control textarea-optional readonly-optional" name="srt" id="srt"
+                                     rows="5" style="max-height: 500px;"
+                                     [(ngModel)]="log.srt" readonly>
+                        
+                                </textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+
+    </div>
+
+</div>

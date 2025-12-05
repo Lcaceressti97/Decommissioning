@@ -1,0 +1,264 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title" style="font-weight: bold;">
+            {{ "Asignación de vendedores: " + branche.name }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+
+        <div style="height: 80%; overflow: auto; max-height: 80%;">
+
+                <div class="container">
+                    <div class="row">
+                        <button class="btn btn-info btn-round ml-3" (click)="changeView(1)" [hidden]="hideButton">
+                            Asignar vendedor
+                        </button>
+                    </div>
+                    <div class="row mb-4" [hidden]="hideButton">
+                        <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs" style="padding-bottom: 0px;">
+                            <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                                <a ngbNavLink>
+                                    Activos
+                                </a>
+                            </li>
+                            <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                                <a ngbNavLink>
+                                    Inactivos
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="row">
+                        <div class="col-12">
+
+                            <!-- Formulario de búsqueda -->
+                            <div class="card card-optional mb-4 shadow" [hidden]="hideForm">
+
+                                <div class="card-header text-center">
+                                    <h5 style="font-weight: bold;">
+                                        Formulario de búsqueda
+                                    </h5>
+                                </div>
+
+                                <div class="card-body">
+                                    <form [formGroup]="searchUser" class="mb-3">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <label class="form-label ml-3" style="font-weight: bold;"> Ingrese el
+                                                    usuario:
+                                                </label>
+                                            </div>
+                                            <div class="col-4">
+                                                <input class="form-control" type="text" formControlName="userName"
+                                                    [class.is-invalid]="
+                                                searchUser.get('userName').touched &&
+                                                searchUser.get('userName').invalid">
+                                                <span class="text-danger mt-1" *ngIf="
+                                                !searchUser.get('userName')?.valid &&
+                                                (searchUser.get('userName')?.touched || searchUser.get('userName')?.dirty)
+                                                ">
+                                                    {{searchUser.get('userName')?.hasError('required') ?
+                                                    messages.NO_EMPTY : messages.INVALID }}
+                                                </span>
+                                            </div>
+                                            <div class="col-4">
+                                                <button (click)="findUserByUserName()" class="btn btn-info btn-sm btn-round sin-margen"
+                                                    [disabled]="searchUser.invalid">
+                                                    Buscar
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                    <form [formGroup]="createUserForm">
+                                        <div class="row mb-3" [hidden]="true">
+                                            <div class="col-4">
+                                                <label class="form-label ml-3" style="font-weight: bold;"> ID:
+                                                </label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input  [readOnly]="true" class="form-control" type="number" formControlName="id">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4">
+                                                <label class="form-label ml-3" style="font-weight: bold;"> Nombre:
+                                                </label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input [readOnly]="true" class="form-control text-center" type="text" formControlName="name">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4">
+                                                <label class="form-label ml-3" style="font-weight: bold;"> Usuario:
+                                                </label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input [readOnly]="true" class="form-control text-center" type="text" formControlName="userName">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4">
+                                                <label class="form-label ml-3" style="font-weight: bold;"> Email:
+                                                </label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input [readOnly]="true" class="form-control text-center" type="text" formControlName="email">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4">
+                                                <label class="form-label ml-3" style="font-weight: bold;"> Estado:
+                                                </label>
+                                            </div>
+                                            <div class="col-8">
+                                                <select class="form-control text-center" formControlName="status" [disabled]="readOnlyStatus">
+                                                    <option value="1">Activo</option>
+                                                    <option value="0">Inactivo</option>
+                                                </select>
+                                            </div>
+                                        </div>
+
+
+                                        <div class="d-flex" style="justify-content: end">
+                                            <button (click)="assignUserToBranch()" [disabled]="createUserForm.invalid || !utilService.loadGrants('CR')" type="button" class="btn btn-round bg-success mr-2">
+                                                Asignar
+                                            </button>
+
+                                            <button type="button" class="btn btn-round bg-info" (click)="changeView(0)">
+                                                Volver a la tabla
+                                            </button>
+
+                                        </div>
+
+                                    </form>
+                                </div>
+
+                            </div>
+
+                            <div class="card card-optional mb-4 shadow" [hidden]="hideTables1">
+                                <div class="card-header text-center">
+                                    <h5 style="font-weight: bold;">
+                                        Usuarios Activos
+                                    </h5>
+                                </div>
+
+                                <div class="card-body">
+
+                                    <div class="dataTables_wrapper">
+                                        <div class="d-flex" style="justify-content: end">
+                                            <label>
+                                                <input aria-controls="datatable" class="form-control form-control-sm p-2 w-100"
+                                                    placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                                    (keyup)="search()"  />
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <ngx-datatable
+                                        class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                                        [rows]="rowsUserActive" [loadingIndicator]="loadingIndicator" columnMode="force"
+                                        rowHeight="auto"  [limit]="3"
+                                        [footerHeight]="60" [messages]="{emptyMessage: 'No hay facturas de equipos y accesorios disponibles', totalMessage: getTotalText()}">
+
+                                        <ngx-datatable-column name="Nombre" prop="name" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Usuario" prop="userName" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Email" prop="email" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Acción" [width]="50">
+                                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                let-value="value" let-row="row">
+
+                                                <button [disabled]="!utilService.loadGrants('UP')" (click)="updateStatus(row)" type="button"
+                                                    class="btn btn-round btn-sm btn-danger" data-placement="right"
+                                                    data-toggle="tooltip" title="Dar clic para dar de baja">
+                                                    <i class="now-ui-icons media-1_button-power"></i>
+                                                </button>
+                                            </ng-template>
+
+                                        </ngx-datatable-column>
+
+
+                                    </ngx-datatable>
+                                </div>
+
+                            </div>
+
+                            <!-- Usuarios activos -->
+                            <div class="card card-optional mb-4 shadow" [hidden]="hideTables2">
+                                <div class="card-header text-center">
+                                    <h5 style="font-weight: bold;">
+                                        Usuarios Inactivos
+                                    </h5>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="dataTables_wrapper">
+                                        <div class="d-flex" style="justify-content: end">
+                                            <label>
+                                                <input aria-controls="datatable" class="form-control form-control-sm p-2 w-100"
+                                                    placeholder="Buscar" type="search" [(ngModel)]="searchedValueTwo"
+                                                    (keyup)="searchTwo()"  />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <ngx-datatable
+                                        class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                                        [rows]="rowsUserInactive" [loadingIndicator]="loadingIndicatorTwo" columnMode="force"
+                                        rowHeight="auto"  [limit]="2"
+                                        [footerHeight]="60"[messages]="{emptyMessage: 'No hay facturas de equipos y accesorios disponibles', totalMessage: getTotalTextOne()}">
+
+                                        <ngx-datatable-column name="Nombre" prop="name" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Usuario" prop="userName" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Email" prop="email" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Acción" [width]="50">
+                                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                let-value="value" let-row="row">
+
+                                                <button [disabled]="!utilService.loadGrants('UP')" (click)="updateStatus(row)" type="button"
+                                                    class="btn btn-round btn-sm btn-success" data-placement="right"
+                                                    data-toggle="tooltip" title="Dar clic para dar de alta">
+                                                    <i class="now-ui-icons objects_spaceship"></i>
+                                                </button>
+                                            </ng-template>
+
+                                        </ngx-datatable-column>
+
+
+                                    </ngx-datatable>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
+        </div>
+
+    </div>
+
+    <div class="modal-footer" style="justify-content: end">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+</div>
