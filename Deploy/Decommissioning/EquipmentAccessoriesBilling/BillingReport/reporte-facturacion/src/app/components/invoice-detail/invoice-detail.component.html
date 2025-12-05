@@ -1,0 +1,137 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            Detalle Factura:
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+
+        <div class="container">
+            <div class="card">
+                <div class="card-content" style="height: 650px; overflow: auto; max-height: 650px;">
+
+                    <div class="h-80">
+
+
+
+                        <h5 class="text-center" style="font-weight: bold;">Datos Generales</h5>
+                        <div class="detail-list">
+                            <div class="detail-item">
+                                <div class="detail-label">Tipo de Factura:</div>
+                                <div class="detail-value">{{billing?.invoiceType}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Cuenta de Factura:</div>
+                                <div class="detail-value">{{billing?.acctCode}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Nombre de Cliente:</div>
+                                <div class="detail-value">{{billing?.customer}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Teléfono de Cliente:</div>
+                                <div class="detail-value">{{billing?.primaryIdentity}}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Estado:</div>
+                                <div class="detail-value">
+                                    {{ billing.status}}
+                                </div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Agencia:</div>
+                                <div class="detail-value">{{billing?.warehouse}}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Usuario Vendedor:</div>
+                                <div class="detail-value">{{billing?.seller}}</div>
+                            </div>
+
+                        </div>
+
+
+                        <!-- Detalles de la factura -->
+                        <div class="detail-label">Productos:</div>
+                        <div *ngFor="let invoice of billing.invoiceDetails">
+                                
+                            <div class="detail-item detail-item-optional">
+                                <div class="detail-label">Cantidad:</div>
+                                <div class="detail-value">{{ invoice.quantity }}</div>
+                                <div class="detail-label">Modelo:</div>
+                                <div class="detail-value">{{ invoice.model }}</div>
+                                <div class="detail-label">Precio Unitario:</div>
+                                <div class="detail-value">{{ invoice.unitPrice }}</div>
+                                <div class="detail-label">Total:</div>
+                                <div class="detail-value">{{ invoice.amountTotal }}</div>
+                            </div>
+                            <div class="detail-item detail-item-optional">
+                                <div class="detail-label">Descripción:</div>
+                                <div class="detail-value">{{ invoice.description }}</div>
+                            </div>
+
+
+                            <div class="detail-item" *ngIf="invoice.serieOrBoxNumber">
+                                <div class="detail-label">E.S.N NO.:</div>
+                                <div class="detail-value">{{ invoice.serieOrBoxNumber }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Valores totales -->
+                        <div class="amounts">
+
+                            <div class="amount">
+                                <div class="amount-label-two">Subtotal:</div>
+                                <div class="amount-value">{{ billing.subtotal }}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label-two">Descuentos y Rebajas Otorgados:</div>
+                                <div class="amount-value">{{ billing.discount }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label-two">Porcentaje Descuento:</div>
+                                <div class="amount-value">{{ billing.discountPercentage + "%" }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label-two">Monto Exonerado:</div>
+                                <div class="amount-value">{{ billing.amountExo }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label-two">Impuesto:</div>
+                                <div class="amount-value">{{ billing.amountTax }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label-two">Porcentaje Impuesto:</div>
+                                <div class="amount-value">{{ billing.taxPercentage + "%" }}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label-two">Total:</div>
+                                <div class="amount-value">{{ billing.amountTotal }}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Final -->
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+    </button>
+
+</div>
