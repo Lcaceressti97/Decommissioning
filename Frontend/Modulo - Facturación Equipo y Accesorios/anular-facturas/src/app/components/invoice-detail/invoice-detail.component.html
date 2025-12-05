@@ -1,0 +1,274 @@
+<div>
+
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            {{"Anular Factura #" + billing.id}}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+
+        <div class="container">
+            <div class="card">
+                <div class="card-content" style="height: 600px; overflow: auto; max-height: 600px;">
+
+                    <div class="h-80">
+
+                        <h5 class="text-center" style="font-weight: bold;">Detalle Factura</h5>
+                        <div class="detail-list">
+                            <div class="detail-item">
+                                <div class="detail-label">Tipo de Factura:</div>
+                                <div class="detail-value">{{billing?.invoiceType}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Cuenta de Facturación:</div>
+                                <div class="detail-value">{{billing?.acctCode}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Nombre de Cliente:</div>
+                                <div class="detail-value">{{billing?.customer}}</div>
+                            </div>
+                            <div class="detail-item">
+                                <div class="detail-label">Teléfono de Cliente:</div>
+                                <div class="detail-value">{{billing?.primaryIdentity}}</div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Estado:</div>
+                                <div class="detail-value">
+                                    {{ billing.status}}
+                                </div>
+                            </div>
+
+                            <div class="detail-item">
+                                <div class="detail-label">Agencia:</div>
+                                <div class="detail-value">
+                                    {{ billing.agency}}
+                                </div>
+                            </div>
+
+                            <!-- Funcionalidad de cambio de agencia  -->
+                            <div *ngIf="!hiddenWarehouse" class="detail-item">
+                                <div class="detail-label">Bodega:</div>
+                                <div class="detail-value">
+                                    {{ nameWarehouse}}
+                                </div>
+                            </div>
+                            <div *ngIf="hiddenWarehouse" class="row" style="border-bottom: 1px solid #e0e0e0;">
+                                <div class="col-3">
+                                    <div class="detail-label" style="padding: 20px 0;">Bodega:</div>
+                                </div>
+
+                                <div class="col-9">
+
+                                    <div class="p-3" style="justify-content: end;">
+                                        <div>
+                                            <angular2-multiselect [data]="dropdownListWarehouse"
+                                                [(ngModel)]="selectedItemsWarehouse"
+                                                (onDeSelect)="OnItemDeSelectWarehouse($event)"
+                                                (onSelect)="onItemSelectWarehouse($event)"
+                                                [settings]="dropdownSettingsWarehouse">
+                                            </angular2-multiselect>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+                            <div *ngIf="!hiddenInventory" class="detail-item">
+                                <div class="detail-label">Tipo de Inventario:</div>
+                                <div class="detail-value">
+                                    {{ nameInventory}}
+                                </div>
+                            </div>
+
+                            <div *ngIf="hiddenInventory" class="row" style="border-bottom: 1px solid #e0e0e0;">
+                                <div class="col-3">
+                                    <div class="detail-label" style="padding: 20px 0;">Tipo de Inventario:</div>
+                                </div>
+
+                                <div class="col-9">
+
+                                    <div class="p-3" style="justify-content: end;">
+                                        <div>
+                                            <angular2-multiselect [data]="dropdownListInventory"
+                                                [(ngModel)]="selectedItemsInventory"
+                                                (onDeSelect)="OnItemDeSelectInventory($event)"
+                                                (onSelect)="onItemSelectInventory($event)"
+                                                [settings]="dropdownSettingsInventory">
+                                            </angular2-multiselect>
+                                        </div>
+
+                                    </div>
+
+
+                                </div>
+                            </div>
+
+
+
+
+
+                            <div class="detail-item">
+                                <div class="detail-label">Usuario Vendedor:</div>
+                                <div class="detail-value">{{billing?.seller}}</div>
+                            </div>
+
+                        </div>
+
+                        <div class="detail-label">Productos:</div>
+                        <!-- Esto es un arreglo ya que representa los detalles de la factura -->
+                        <div *ngFor="let invoice of billing.invoiceDetails">
+
+                            <div class="detail-item detail-item-optional">
+                                <div class="detail-label">Cant.</div>
+                                <div class="detail-value">{{ invoice.quantity }}</div>
+                                <div class="detail-label">Artic. T</div>
+                                <div class="detail-value">{{ invoice.model }}</div>
+                                <div class="detail-label">Precio:</div>
+                                <div class="detail-value">{{ invoice.unitPrice | number: '1.2-2'}}</div>
+                                <div class="detail-label">Valor:</div>
+                                <div class="detail-value">{{ calculateValue(invoice) | number: '1.2-2' }}</div>
+
+                            </div>
+                            <div class="detail-item detail-item-optional">
+                                <div class="detail-label">Descripción:</div>
+                                <div class="detail-value">{{ invoice.description }}</div>
+                            </div>
+
+
+                            <div class="detail-item">
+                                <div class="detail-label">E.S.N NO.:</div>
+                                <div class="detail-value">{{ invoice.serieOrBoxNumber }}</div>
+                            </div>
+                        </div>
+
+                        <!-- Valores totales -->
+                        <div class="amounts">
+
+                            <div class="amount">
+                                <div class="amount-label">Subtotal:</div>
+                                <div class="amount-value">{{ billing.subtotal | number: '1.2-2'}}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label">Descuentos y Rebajas Otorgados:</div>
+                                <div class="amount-value">{{ billing.discount | number: '1.2-2' }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Porcentaje del Descuento:</div>
+                                <div class="amount-value">
+                                    {{ billing.discountPercentage!=null ? ( billing.discountPercentage | number:
+                                    '1.2-2') + "%": "0.00%" }}
+                                </div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Monto Exento:</div>
+                                <div class="amount-value">{{ billing.exemptAmount!=null ? ( billing.exemptAmount | number: '1.2-2'): "0.00" }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Monto Exonerado:</div>
+                                <div class="amount-value">{{ billing.amountExo!=null ? ( billing.amountExo | number:
+                                    '1.2-2'): "0.00" }}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Impuesto:</div>
+                                <div class="amount-value">{{ billing.amountTax | number: '1.2-2'}}</div>
+                            </div>
+                            <div class="amount">
+                                <div class="amount-label">Porcentaje del Impuesto:</div>
+                                <div class="amount-value">{{ (billing.taxPercentage | number: '1.2-2') + "%" }}</div>
+                            </div>
+
+                            <div class="amount">
+                                <div class="amount-label">Total:</div>
+                                <div class="amount-value">{{ billing.amountTotal | number: '1.2-2'}}</div>
+                            </div>
+                        </div>
+
+                        <br>
+                        <!-- Propiedad del formulario -->
+                        <div *ngIf="option==='emit'">
+                            <form [formGroup]="searchForm">
+
+
+                                <h5 class="text-center" style="font-weight: bold;">Proceso Anulación</h5>
+                                <div class="row mb-3">
+                                    <div class="col-12">
+                                        <div class="amount-label">Tipo de anulación:</div>
+                                        <input type="text" class="form-control " formControlName="typeCancellation"
+                                            readonly>
+                                    </div>
+                                </div>
+
+                               
+                                <div *ngIf="hiddenReason" class="row mb-3">
+                                    <div class="col-12">
+                                        <div class="amount-label">Motivo:</div>
+                                        <div>
+                                            <angular2-multiselect formControlName="cancelReason" [data]="dropdownListReason" 
+                                                [(ngModel)]="selectedItemsReason"
+                                                (onDeSelect)="OnItemDeSelectReason($event)"
+                                                (onSelect)="onItemSelectReason($event)"
+                                                [settings]="dropdownSettingsReason">
+                                            </angular2-multiselect>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="amount-label">Comentario:</div>
+                                <div class="row mb-2">
+
+                                    <div class="col-12 my-auto">
+                                        <textarea formControlName="description" [class.is-invalid]="
+                                      searchForm.get('description').touched &&
+                                      searchForm.get('description').invalid" class="form-control" type="text">
+                                      </textarea>
+                                        <span class="text-danger mt-1" *ngIf="
+                                      !searchForm.get('description')?.valid &&
+                                      (searchForm.get('description')?.touched || searchForm.get('description')?.dirty) &&
+                                      searchForm.get('description')?.hasError('required')">
+                                            {{ messages.NO_EMPTY }}
+                                        </span>
+                                    </div>
+                                </div>
+
+                                <div class="row" style="justify-content: end;">
+                                    <button class="btn btn-round btn-success mr-3" [disabled]="searchForm.invalid"
+                                        (click)="cancellationInvoice()">
+                                        Anular
+                                    </button>
+                                </div>
+                                <!-- Final form -->
+                            </form>
+                        </div>
+
+
+
+                        <!-- Final -->
+
+                    </div>
+                    <!-- Final -->
+                </div>
+            </div>
+        </div>
+
+
+
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+
+</div>
