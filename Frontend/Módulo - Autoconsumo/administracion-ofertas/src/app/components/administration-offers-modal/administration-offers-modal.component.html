@@ -1,0 +1,104 @@
+<div class="main-content">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ action==='add' ? "Agregar Oferta:" : action==='update' ? "Modificar Oferta: " +
+                data.chargeCode :
+                "Detalle de la Oferta: " + data.chargeCode}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body ">
+
+            <div class="card-container">
+
+   
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Offering ID:</b></label>
+                            <input type="text" class="form-control me-3" formControlName="offeringId" [readOnly]="readonly">
+                            <button type="button" class="btn btn-round btn-sm btn-info" (click)="fetchOfferingInfo(form.get('offeringId')?.value)">
+                                Validar
+                            </button>
+                        </div>
+                        
+                        <span class="text-danger" *ngIf="
+                                !form.get('offeringId')?.valid &&
+                                (form.get('offeringId')?.touched || form.get('offeringId')?.dirty)">
+                            {{form.get('offeringId')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+                
+
+                <br>
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Item Name:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="itemName" disabled>
+                        </div>
+                    </div>
+                </div>
+                
+                
+                
+                <br>
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Charge Code:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="chargeCode" [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('chargeCode')?.valid &&
+                                (form.get('chargeCode')?.touched || form.get('chargeCode')?.dirty)">
+                            {{form.get('chargeCode')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+                <br>
+
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Estado:</b></label>
+                            <input type="checkbox" class="form-control w-100" (change)="onStatusChange($event)" 
+                                   [checked]="action === 'add' || form.get('status').value === '1'" [readOnly]="readonly">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button (click)="crudAdministrationOffers()" *ngIf="action==='add'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('CR')">
+                Guardar
+            </button>
+
+            <button (click)="crudAdministrationOffers()" *ngIf="action==='update'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+
+    </form>
+
+</div>

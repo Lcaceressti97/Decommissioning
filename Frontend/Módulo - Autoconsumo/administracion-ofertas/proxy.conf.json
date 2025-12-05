@@ -1,0 +1,11 @@
+{
+    "/apiSelfconsumption/*": {
+        "target": "http://localhost:8080/selfconsumption",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/apiSelfconsumption": ""
+        }
+    }
+}

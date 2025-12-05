@@ -1,0 +1,243 @@
+<div class="main-content">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ "Detalle Feededuction: " + data.cycle}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body ">
+
+            <div class="card-container">
+
+                <div class="row d-flex justify-content-end">
+                    <button (click)="openSrtModal()" class="btn btn-round btn-info btn-md m-3">
+                        <i class="fas fa-eye"></i> Ver STR
+                    </button>
+                </div>
+                <br>
+                <div class="row mb-12">
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Transaction Id:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="id"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('id')?.valid &&
+                                (form.get('id')?.touched || form.get('id')?.dirty)">
+                            {{form.get('id')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Ciclo:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="cycle" [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('cycle')?.valid &&
+                                (form.get('cycle')?.touched || form.get('cycle')?.dirty)">
+                            {{form.get('cycle')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-12">
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Cuenta de Facturacion:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="acctCode"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('acctCode')?.valid &&
+                                (form.get('acctCode')?.touched || form.get('acctCode')?.dirty)">
+                            {{form.get('acctCode')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Unidad de Negocio:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="businessUnit"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('businessUnit')?.valid &&
+                                (form.get('businessUnit')?.touched || form.get('businessUnit')?.dirty)">
+                            {{form.get('businessUnit')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-12">
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Charge Code:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="chargeCodeType"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('chargeCodeType')?.valid &&
+                                (form.get('chargeCodeType')?.touched || form.get('chargeCode')?.dirty)">
+                            {{form.get('chargeCodeType')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Item:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="item" [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('item')?.valid &&
+                                (form.get('item')?.touched || form.get('item')?.dirty)">
+                            {{form.get('item')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-12">
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Product Id:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="productId"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('productId')?.valid &&
+                                (form.get('productId')?.touched || form.get('productId')?.dirty)">
+                            {{form.get('productId')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Suscriptor:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="priIdentOfSubsc"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('priIdentOfSubsc')?.valid &&
+                                (form.get('priIdentOfSubsc')?.touched || form.get('item')?.dirty)">
+                            {{form.get('priIdentOfSubsc')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-12">
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Monto:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="feeItemAmount"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('feeItemAmount')?.valid &&
+                                (form.get('feeItemAmount')?.touched || form.get('productId')?.dirty)">
+                            {{form.get('feeItemAmount')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Descuento:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="discountedAmount"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('discountedAmount')?.valid &&
+                                (form.get('discountedAmount')?.touched || form.get('discountedAmount')?.dirty)">
+                            {{form.get('discountedAmount')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="row mb-12">
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Estado:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="status"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('status')?.valid &&
+                                (form.get('status')?.touched || form.get('status')?.dirty)">
+                            {{form.get('status')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Charge Code Status:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="chargeCodeStatus"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('chargeCodeStatus')?.valid &&
+                                (form.get('chargeCodeStatus')?.touched || form.get('chargeCodeStatus')?.dirty)">
+                            {{form.get('chargeCodeStatus')?.hasError('required') ? messages.NO_EMPTY :
+                            messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="row mb-12">
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Mensage:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="message"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('message')?.valid &&
+                                (form.get('message')?.touched || form.get('message')?.dirty)">
+                            {{form.get('message')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-6 col-md-6 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Fecha de Creacion:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="created"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('created')?.valid &&
+                                (form.get('created')?.touched || form.get('created')?.dirty)">
+                            {{form.get('created')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+                <br><br>
+
+                <div class="row d-flex justify-content-center">
+                    <button  class="btn btn-round btn-info btn-md m-3">
+                        <i class="fas fa-sync"></i> Reprocesar
+                    </button>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+
+    </form>
+
+</div>

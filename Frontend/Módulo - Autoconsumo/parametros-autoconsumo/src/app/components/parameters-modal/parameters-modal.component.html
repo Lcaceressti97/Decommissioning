@@ -1,0 +1,122 @@
+<div class="main-content">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ action==='add' ? "Agregar Parámetro:" : action==='update' ? "Actualización de Parámetro: " +
+                data.name :
+                "Detalle del Parámetro: " + data.name}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body ">
+
+            <div class="card-container">
+
+
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Nombre:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="name" [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('name')?.valid &&
+                                (form.get('name')?.touched || form.get('name')?.dirty)">
+                            {{form.get('name')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+                <br>
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Valor:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="value" [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('value')?.valid &&
+                                (form.get('value')?.touched || form.get('value')?.dirty)">
+                            {{form.get('value')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+
+                <br>
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Descripción:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="description"
+                                [readOnly]="readonly">
+                        </div>
+                        <span class="text-danger" *ngIf="
+                                !form.get('description')?.valid &&
+                                (form.get('description')?.touched || form.get('description')?.dirty)">
+                            {{form.get('description')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span>
+                    </div>
+                </div>
+                <br>
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Usuario Última Actualización:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="userName"
+                                [readOnly]="readonly" disabled>
+                        </div>
+                        <!--                     <span class="text-danger" *ngIf="
+                                !form.get('userName')?.valid &&
+                                (form.get('userName')?.touched || form.get('userName')?.dirty)">
+                            {{form.get('userName')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span> -->
+                    </div>
+                </div>
+
+                <br>
+                <div class="row mb-12">
+                    <div class="col-sm-8 col-md-8 mx-auto">
+                        <div class="d-flex align-items-center">
+                            <label class="form-label me-2 w-50"><b>Fecha Última Actualización:</b></label>
+                            <input type="text" class="form-control w-100" formControlName="createDate"
+                                [readOnly]="readonly" disabled>
+                        </div>
+                        <!--                     <span class="text-danger" *ngIf="
+                                !form.get('userName')?.valid &&
+                                (form.get('userName')?.touched || form.get('userName')?.dirty)">
+                            {{form.get('userName')?.hasError('required') ? messages.NO_EMPTY : messages.INVALID}}
+                        </span> -->
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button (click)="crudParameter()" *ngIf="action==='add'" type="button"
+                class="btn btn-round bg-success mr-2" [disabled]="form.invalid || !utilService.loadGrants('CR')">
+                Guardar
+            </button>
+
+            <button (click)="crudParameter()" *ngIf="action==='update'" type="button"
+                class="btn btn-round bg-success mr-2" [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+
+    </form>
+
+</div>

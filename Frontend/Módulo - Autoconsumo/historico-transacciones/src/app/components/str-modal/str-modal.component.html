@@ -1,0 +1,61 @@
+<div class="main-content">
+
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            {{
+            "Detalle SRT:"
+            }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="row mb-3" style="justify-content: center;">
+            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs" style="padding-bottom: 0px;">
+                <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                    <a ngbNavLink>
+                        Request
+                    </a>
+                </li>
+                <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                    <a ngbNavLink>
+                        Response
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+<br>
+
+        <!-- Tab de Request -->
+        <div class="container">
+            <div class="card shadow" [hidden]="hiddeRequest">
+
+                <div class="card-body">
+                    <pre>{{ formatJson(requestObj) }}</pre>
+                                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Tab de Response -->
+        <div class="container">
+            <div class="card shadow" [hidden]="hiddeResponse">
+
+                <div class="card-body">
+                    <pre>{{ formatJson(responseObj) }}</pre>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
