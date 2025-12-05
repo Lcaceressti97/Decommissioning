@@ -1,0 +1,136 @@
+
+Lista negra de Equipos:
+docker save -o blacklist.tar decommissioning-blacklist-api decommissioning-lista-negra-equipos decommissioning-archivo-control-imei
+
+Consulta Saldo y Pagos Amsys Navega:
+docker save -o inquirypaymentsbalancenavega.tar decommissioning-inquiry-amsys-navega-api decommissioning-inquiry-balances-amsys-navega decommissioning-inquiry-payments-amsys-navega decommissioning-configuration-banks-navega
+
+Consulta de Simcard:
+docker save -o simcardinquiry.tar decommissioning-simcard-inquiry-api decommissioning-control-file-simcard decommissioning-configuration-suppliers decommissioning-configuration-clients decommissioning-maintenance-parameters decommissioning-consultation-simcard 
+
+Facturacion:
+docker save -o equipmentaccessoriesbilling.tar decommissioning-equipment-accessories-billing-api decommissioning-consult-invoice-equipment-accessories decommissioning-authorize-issue-invoices decommissioning-invoice-cancellation decommissioning-user-permissions-configuration decommissioning-billing-report decommissioning-generation-reports-inv decommissioning-invoice-validation decommissioning-billing-records decommissioning-branche-offices-configuration decommissioning-invoice-graphics decommissioning-warehouse-maintenance decommissioning-logs-invoice-equipment-accessories decommissioning-billing-services decommissioning-price-master  decommissioning-channels decommissioning-invoice-creation decommissioning-models-as-ebs decommissioning-bulk-authorization decommissioning-bulk-emission
+
+Comodatos:
+docker save -o comodatos.tar decommissioning-comodatos-api decommissioning-consult-comodatos decommissioning-moorings-comodatos decommissioning-configuration-parameters-comodatos
+
+Seguro de equipos:
+docker save -o equipmentinsurance.tar decommissioning-equipment-insurance-api decommissioning-insurance-claim decommissioning-insurance-consultation decommissioning-safe-equipment-control decommissioning-insurance-price-master decommissioning-insuranc-rates decommissioning-insurance-claim-consultation decommissioning-insurance-reasons decommissioning-insurance-deductible-rates
+
+Remisiones:
+
+docker save -o remisiones.tar remision-api nexus-da-remision-ubicacion nexus-da-remision-conductor nexus-da-remision-unidad-medida nexus-da-remision-tipo-vehiculo nexus-da-remision-vehiculo nexus-da-remision-motivo nexus-da-remision-agencia-transporte nexus-da-remision-parametro nexus-da-remision-encargado-bodega nexus-da-remision-log nexus-da-remision-guias nexus-da-remision-reporte-guias nexus-da-reporte-guias-remision nexus-da-remision-reprocess-global-inv 
+
+docker save -o remisiones.tar remision-api nexus-da-reprocess-scratch-cards nexus-da-remision-guias nexus-da-reporte-guias-remision
+
+Autoconsumo:
+docker save -o autoconsumo.tar decommissioning-autoconsumo-api decommissioning-administration-offers decommissioning-transaction-history decommissioning-parameters decommissioning-self-control-report
+
+JTeller:
+docker save -o jteller.tar decommissioning-jteller-api
+
+Presupuesto Global:
+
+docker save -o presupuestoglobal.tar rorellanac/nexuspresupuestoglobal
+
+BSIM:
+docker save -o bsim.tar decommissioning-bsim-api decommissioning-release-series
+
+
+contraseña antesedentes penales *.ge6r6qjpAPcza
+
+http://192.168.177.173:4420/blacklist/imeicontrolfile
+
+192.168.78.25:7016
+
+decommissioning-price-master
+
+descuento, meses pendientes, y el costo 
+
+carolinacaceresgalo@gmail.com
+Giovanna29
+Giovanna29$
+
+BAC: acacereg201
+pin: 2929
+Contraseña: Giovanna29
+
+895040237000085220
+
+https://drive.google.com/file/d/1KZf1SE15Cd3Klvp-GxkoWKwS4jxT0mWG/view?usp=sharing
+
+clean package -DskipTests
+
+708020069207754
+895040280450000144
+
+agregar indice sobre el status
+
+docker save -o remisiones.tar remision-api nexus-da-remision-guias
+
+miderware tabla con las apis 
+
+https://localhost:4420/blacklist/swagger-ui/index.html
+
+
+ss -tlnp | grep 8082
+
+kill 501667
+
+ikTQGkKab6
+
+Lcaceresshaver_97
+
+nLEGxVgSW26CtJn - disfruta mas
+
+.28T_AKianXA#6c
+
+contaseña bitbucket: gbYTQf/::zNb87(
+
+12013000022992,12013000023491;12013000023492,12013000023691;12013000023692,12013000024691
+
+Trombone_97
+
+Contraseña gitLab: 7ihWLppf9K5Sw5T
+
+QA
+http://192.168.159.192:7010/CBSQueryCustomerInfoTask/CBSQueryCustomerInfoTaskService?wsdl
+
+PROD
+192.168.128.50:7004
+
+contraseña tigo: Caceres2025$
+				 Lcaceres2025
+
+db-accounting-sti.cnwemce8u0wa.us-east-1.rds.amazonaws.com
+
+remote: 73sfZFyY4@eFpW6
+._bv9b3uy/YrV4k
+
+ tail -f /var/log/accountingService.log
+tail -f /var/log/securityService.log
+
+celaque-social-network-db.postgres.database.azure.com:5432
+
+db-plataformacelaque-sandbox.postgres.database.azure.com:5432
+
+db-accounting-sti.cnwemce8u0wa.us-east-1.rds.amazonaws.com:53306
+
+https://www.celaque.stidev.casa/celaque-net/login
+
+
+CREATE OR REPLACE VIEW public.feed_union_v AS
+
+M7&H?D!?^QDJ
+
+
+Entidades Principales:
+UserProfileEntity - Mantiene los datos del perfil del usuario
+UserProfileCategoryEntity - Define las categorías de campos (Información Personal, Actividades, etc.)
+UserProfileFieldEntity - Define la configuración de cada campo (nombre, tipo, validaciones)
+UserProfileFieldVisibilityEntity - Controla la visibilidad por usuario y campo
+
+	
+E<e&57B6i9O'
+
+https://nexus-2.tigo.com.hn:34490/
