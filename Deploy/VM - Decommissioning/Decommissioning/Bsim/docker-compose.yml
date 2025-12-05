@@ -1,0 +1,33 @@
+services: 
+  bsim-api:
+    build:
+      context: ./BsimApi
+    image: decommissioning-bsim-api
+    container_name: bsim-api
+    ports:
+      - 4490:4490
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+  release-series:
+    build:
+      context: ./ReleaseSeries
+    image: decommissioning-release-series
+    container_name: release-series
+    ports:
+      - 4491:8080
+    depends_on:
+      - bsim-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - bsim-api               
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    

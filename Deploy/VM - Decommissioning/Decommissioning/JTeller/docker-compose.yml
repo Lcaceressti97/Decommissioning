@@ -1,0 +1,18 @@
+version: '3'
+
+services:
+  jteller-api:
+    image: decommissioning-jteller-api
+    container_name: jteller-api
+    ports:
+      - 4230:4230
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf    
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    

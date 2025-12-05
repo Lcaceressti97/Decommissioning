@@ -1,0 +1,57 @@
+version: '3'
+
+services:
+  inquiry-amsys-navega-api:
+    image: decommissioning-inquiry-amsys-navega-api
+    container_name: inquiry-amsys-navega-api
+    ports:
+      - 4430:4430
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+  inquiry-balances-amsys-navega:
+    image: decommissioning-inquiry-balances-amsys-navega
+    container_name: inquiry-balances-amsys-navega
+    ports:
+      - 4431:8080
+    depends_on:
+      - inquiry-amsys-navega-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - inquiry-amsys-navega-api
+  inquiry-payments-amsys-navega:
+    image: decommissioning-inquiry-payments-amsys-navega
+    container_name: inquiry-payments-amsys-navega
+    ports:
+      - 4432:8080
+    depends_on:
+      - inquiry-amsys-navega-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - inquiry-amsys-navega-api
+  configuration-banks-navega:
+    image: decommissioning-configuration-banks-navega
+    container_name: configuration-banks-navega
+    ports:
+      - 4468:8080
+    depends_on:
+      - inquiry-amsys-navega-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - inquiry-amsys-navega-api    
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    

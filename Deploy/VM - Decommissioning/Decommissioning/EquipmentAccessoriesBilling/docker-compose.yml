@@ -1,0 +1,303 @@
+services:
+  equipment-accessories-billing-api:
+    build:
+      context: ./EquipmentAccessoriesBillingApi
+    image: decommissioning-equipment-accessories-billing-api
+    container_name: equipment-accessories-billing-api
+    ports:
+      - 4437:4437
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+  consult-invoice-equipment-accessories:
+    build:
+      context: ./ConsultInvoiceEquipmentAccessories
+    image: decommissioning-consult-invoice-equipment-accessories
+    container_name: consult-invoice-equipment-accessories
+    ports:
+      - 4438:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api    
+  authorize-issue-invoices:
+    build:
+      context: ./AuthorizeIssueInvoices
+    image: decommissioning-authorize-issue-invoices
+    container_name: authorize-issue-invoices
+    ports:
+      - 4439:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  invoice-cancellation:
+    build:
+      context: ./InvoiceCancellation
+    image: decommissioning-invoice-cancellation
+    container_name: invoice-cancellation
+    ports:
+      - 4440:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  user-permissions-configuration:
+    build:
+      context: ./UserPermissionsConfiguration
+    image: decommissioning-user-permissions-configuration
+    container_name: user-permissions-configuration
+    ports:
+      - 4441:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  billing-report:
+    build:
+      context: ./BillingReport
+    image: decommissioning-billing-report
+    container_name: billing-report
+    ports:
+      - 4442:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  generation-reports-inv:
+    build:
+      context: ./GenerationReportsInv
+    image: decommissioning-generation-reports-inv
+    container_name: generation-reports-inv
+    ports:
+      - 4443:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  invoice-validation:
+    build:
+      context: ./InvoiceValidation
+    image: decommissioning-invoice-validation
+    container_name: invoice-validation
+    ports:
+      - 4444:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  billing-records:
+    build:
+      context: ./BillingRecords
+    image: decommissioning-billing-records
+    container_name: billing-records
+    ports:
+      - 4449:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  branche-offices-configuration:
+    build:
+      context: ./BrancheOfficesConfiguration
+    image: decommissioning-branche-offices-configuration
+    container_name: branche-offices-configuration
+    ports:
+      - 4450:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  invoice-graphics:
+    build:
+      context: ./InvoiceGraphics
+    image: decommissioning-invoice-graphics
+    container_name: invoice-graphics
+    ports:
+      - 4451:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  warehouse-maintenance:
+    build:
+      context: ./WarehouseMaintenance
+    image: decommissioning-warehouse-maintenance
+    container_name: warehouse-maintenance
+    ports:
+      - 4452:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  logs-invoice-equipment-accessories:
+    build:
+      context: ./LogsInvoiceEquipmentAccessories
+    image: decommissioning-logs-invoice-equipment-accessories
+    container_name: logs-invoice-equipment-accessories
+    ports:
+      - 4453:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api  
+  billing-services:
+    build:
+      context: ./BillingServices
+    image: decommissioning-billing-services
+    container_name: billing-services
+    ports:
+      - 4454:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  price-master:
+    build:
+      context: ./PriceMaster
+    image: decommissioning-price-master
+    container_name: price-master
+    ports:
+      - 4471:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api        
+  channels:
+    build:
+      context: ./Channels
+    image: decommissioning-channels
+    container_name: channels
+    ports:
+      - 4472:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  invoice-creation:
+    build:
+      context: ./InvoiceCreation
+    image: decommissioning-invoice-creation
+    container_name: invoice-creation
+    ports:
+      - 4473:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  models-as-ebs:
+    build:
+      context: ./ModelAsEbs
+    image: decommissioning-models-as-ebs
+    container_name: models-as-ebs
+    ports:
+      - 4483:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  bulk-authorization:
+    build:
+      context: ./BulkAuthorization
+    image: decommissioning-bulk-authorization
+    container_name: bulk-authorization
+    ports:
+      - 4484:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+  bulk-emission:
+    build:
+      context: ./BulkEmission
+    image: decommissioning-bulk-emission
+    container_name: bulk-emission
+    ports:
+      - 4486:8080
+    depends_on:
+      - equipment-accessories-billing-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-accessories-billing-api
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    
