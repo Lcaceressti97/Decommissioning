@@ -1,0 +1,138 @@
+services:
+  equipment-insurance-api:
+    build:
+      context: ./EquipmentInsuranceApi
+    image: decommissioning-equipment-insurance-api
+    container_name: equipment-insurance-api
+    ports:
+      - 4445:4445
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+  insurance-claim:
+    build:
+      context: ./InsuranceClaim
+    image: decommissioning-insurance-claim
+    container_name: insurance-claim
+    ports:
+      - 4446:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api
+  insurance-consultation:
+    build:
+      context: ./InsuranceConsultation
+    image: decommissioning-insurance-consultation
+    container_name: insurance-consultation
+    ports:
+      - 4447:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api
+  safe-equipment-control:
+    build:
+      context: ./SafeEquipmentControl
+    image: decommissioning-safe-equipment-control
+    container_name: safe-equipment-control
+    ports:
+      - 4448:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api
+  insurance-price-master:
+    build:
+      context: ./InsurancePriceMaster
+    image: decommissioning-insurance-price-master
+    container_name: insurance-price-master
+    ports:
+      - 4480:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api    
+  insurance-rates:
+    build:
+      context: ./InsuranceRates
+    image: decommissioning-insurance-rates
+    container_name: insurance-rates
+    ports:
+      - 4481:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api
+  insurance-claim-consultation:
+    build:
+      context: ./InsuranceClaimConsultation
+    image: decommissioning-insurance-claim-consultation
+    container_name: insurance-claim-consultation
+    ports:
+      - 4482:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api
+  insurance-reasons:
+    build:
+      context: ./InsuranceReasons
+    image: decommissioning-insurance-reasons
+    container_name: insurance-reasons
+    ports:
+      - 4486:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api
+  insurance-deductible-rates:
+    build:
+      context: ./InsuranceDeductibleRates
+    image: decommissioning-insurance-deductible-rates
+    container_name: insurance-deductible-rates
+    ports:
+      - 4487:8080
+    depends_on:
+      - equipment-insurance-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - equipment-insurance-api          
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    

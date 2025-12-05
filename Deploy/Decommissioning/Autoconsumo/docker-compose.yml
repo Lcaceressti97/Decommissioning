@@ -1,0 +1,70 @@
+version: '3'
+
+services: 
+  autoconsumo-api:
+    image: decommissioning-autoconsumo-api
+    container_name: autoconsumo-api
+    ports:
+      - 4475:4475
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+  administration-offers:
+    image: decommissioning-administration-offers
+    container_name: administration-offers
+    ports:
+      - 4476:8080
+    depends_on:
+      - autoconsumo-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - autoconsumo-api
+  transaction-history:
+    image: decommissioning-transaction-history
+    container_name: transaction-history
+    ports:
+      - 4477:8080
+    depends_on:
+      - autoconsumo-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - autoconsumo-api
+  parameters:
+    image: decommissioning-parameters
+    container_name: parameters
+    ports:
+      - 4478:8080
+    depends_on:
+      - autoconsumo-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - autoconsumo-api                  
+  self-control-report:
+    image: decommissioning-self-control-report
+    container_name: self-control-report
+    ports:
+      - 4479:8080
+    depends_on:
+      - autoconsumo-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - autoconsumo-api
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    

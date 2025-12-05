@@ -1,0 +1,57 @@
+version: '3'
+
+services: 
+  comodatos-api:
+    image: decommissioning-comodatos-api
+    container_name: comodatos-api
+    ports:
+      - 4460:4460
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+  consult-comodatos:
+    image: decommissioning-consult-comodatos
+    container_name: consult-comodatos
+    ports:
+      - 4461:8080
+    depends_on:
+      - comodatos-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - comodatos-api
+  moorings-comodatos:
+    image: decommissioning-moorings-comodatos
+    container_name: moorings-comodatos
+    ports:
+      - 4462:8080
+    depends_on:
+      - comodatos-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - comodatos-api
+  configuration-parameters-comodatos:
+    image: decommissioning-configuration-parameters-comodatos
+    container_name: configuration-parameters-comodatos
+    ports:
+      - 4463:8080
+    depends_on:
+      - comodatos-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - comodatos-api                  
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    

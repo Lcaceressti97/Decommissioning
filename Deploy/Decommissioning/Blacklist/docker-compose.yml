@@ -1,0 +1,44 @@
+version: '3'
+
+services:
+  blacklist-api:
+    image: decommissioning-blacklist-api
+    container_name: blacklist-api
+    ports:
+      - 4420:4420
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf        
+  lista-negra-equipos:
+    image: decommissioning-lista-negra-equipos
+    container_name: lista-negra-equipos
+    ports:
+      - 4421:8080
+    depends_on:
+      - blacklist-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - blacklist-api
+  archivo-control-imei:
+    image: decommissioning-archivo-control-imei
+    container_name: archivo-control-imei
+    ports:
+      - 4422:8080
+    depends_on:
+      - blacklist-api
+    networks:
+      - network-decommissioning
+    volumes:
+      - ./nginx-custom.conf:/etc/nginx/conf.d/default.conf
+    links:
+      - blacklist-api
+
+networks:
+  network-decommissioning:
+    external: true
+volumes:
+  decommissioning-data:    
