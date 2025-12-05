@@ -1,0 +1,445 @@
+<div class="main-content">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ action==='add' ? "Agregar Seguro De Equipos:" : action==='update' ? "Modificar Seguro De Equipos: " +
+                data.id :
+                "Detalle Seguro De Equipos: " + data.id}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body ">
+            <div class="card-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <h5>Información del Cliente</h5>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>E.S.N:</b></label>
+                                            <input type="text" class="form-control w-50" formControlName="esn">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('esn')?.valid &&
+                                        (form.get('esn')?.touched || form.get('esn')?.dirty)">
+                                            {{form.get('esn')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_15}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Cuenta Cliente:</b></label>
+                                            <input type="text" class="form-control w-50"
+                                                formControlName="customerAccount">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('customerAccount')?.valid &&
+                                        (form.get('customerAccount')?.touched || form.get('customerAccount')?.dirty)">
+                                            {{form.get('customerAccount')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_30}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Cuenta de Servicio:</b></label>
+                                            <input type="text" class="form-control w-50"
+                                                formControlName="serviceAccount">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('serviceAccount')?.valid &&
+                                        (form.get('serviceAccount')?.touched || form.get('serviceAccount')?.dirty)">
+                                            {{form.get('serviceAccount')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_30}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Cuenta de Facturación:</b></label>
+                                            <input type="text" class="form-control w-50"
+                                                formControlName="billingAccount">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('billingAccount')?.valid &&
+                                        (form.get('billingAccount')?.touched || form.get('billingAccount')?.dirty)">
+                                            {{form.get('billingAccount')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_30}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Número de Subscriptor:</b></label>
+                                            <input type="text" class="form-control w-50" formControlName="subscriber">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('subscriber')?.valid &&
+                                        (form.get('subscriber')?.touched || form.get('subscriber')?.dirty)">
+                                            {{form.get('subscriber')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_30}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="info-box">
+                            <h5>Información del Equipo</h5>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Código Transacción:</b></label>
+                                            <input type="text" class="form-control w-50"
+                                                formControlName="transactionCode">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('transactionCode')?.valid &&
+                                        (form.get('transactionCode')?.touched || form.get('transactionCode')?.dirty)">
+                                            {{form.get('transactionCode')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_5}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Teléfono:</b></label>
+                                            <input type="text" class="form-control w-50" formControlName="phoneNumber">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('phoneNumber')?.valid &&
+                                        (form.get('phoneNumber')?.touched || form.get('phoneNumber')?.dirty)">
+                                            {{form.get('phoneNumber')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_12}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Modelo:</b></label>
+                                            <input type="text" class="form-control w-50"
+                                                formControlName="equipmentModel">
+                                        </div>
+                                        <span class="text-danger" *ngIf="
+                                        !form.get('equipmentModel')?.valid &&
+                                        (form.get('equipmentModel')?.touched || form.get('equipmentModel')?.dirty)">
+                                            {{form.get('equipmentModel')?.hasError('required') ? messages.NO_EMPTY :
+                                            messages.MAX_6}}
+                                        </span>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Origen AS:</b></label>
+                                            <input type="text" class="form-control w-50" formControlName="originAs">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Tipo de Inventario:</b></label>
+                                            <input type="text" class="form-control w-50"
+                                                formControlName="inventoryTypeAs">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </ul>
+                            <ul class="list-unstyled">
+                                <div class="row mb-12">
+                                    <div class="col-sm-12 col-md-12 mx-auto">
+                                        <div class="d-flex align-items-center">
+                                            <label class="form-label me-2 w-50"><b>Tipo de Origen:</b></label>
+                                            <input type="text" class="form-control w-50" formControlName="originTypeAs">
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </ul>
+                        </div>
+                    </div>
+
+
+                </div>
+                <div class="col-md-12 w-200 d-flex justify-content-center">
+                    <div class="info-box">
+                        <h5>Información de Cuotas y Fechas</h5>
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Cuota Seguro:</b></label>
+                                        <input type="text" class="form-control w-50" formControlName="insuranceRate">
+                                    </div>
+                                    <span class="text-danger" *ngIf="
+                                    !form.get('insuranceRate')?.valid &&
+                                    (form.get('insuranceRate')?.touched || form.get('insuranceRate')?.dirty)">
+                                        {{form.get('insuranceRate')?.hasError('required') ? messages.NO_EMPTY :
+                                        messages.ONLY_NUMBERS_DECIMAL}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Período:</b></label>
+                                        <input type="text" class="form-control w-50" formControlName="period">
+                                    </div>
+                                    <span class="text-danger" *ngIf="
+                                    !form.get('period')?.valid &&
+                                    (form.get('period')?.touched || form.get('period')?.dirty)">
+                                        {{form.get('period')?.hasError('required') ? messages.NO_EMPTY :
+                                        messages.MAX_1}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Cuota Seguro 2:</b></label>
+                                        <input type="text" class="form-control w-50" formControlName="insuranceRate2">
+                                    </div>
+                                    <span class="text-danger" *ngIf="
+                                    !form.get('insuranceRate2')?.valid &&
+                                    (form.get('insuranceRate2')?.touched || form.get('insuranceRate2')?.dirty)">
+                                        {{form.get('insuranceRate2')?.hasError('required') ? messages.NO_EMPTY :
+                                        messages.ONLY_NUMBERS_DECIMAL}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Período 2:</b></label>
+                                        <input type="text" class="form-control w-50" formControlName="period2">
+                                    </div>
+                                    <span class="text-danger" *ngIf="
+                                    !form.get('period2')?.valid &&
+                                    (form.get('period2')?.touched || form.get('period2')?.dirty)">
+                                        {{form.get('period2')?.hasError('required') ? messages.NO_EMPTY :
+                                        messages.MAX_1}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Cuota Seguro 3:</b></label>
+                                        <input type="text" class="form-control w-50" formControlName="insuranceRate3">
+                                    </div>
+                                    <span class="text-danger" *ngIf="
+                                    !form.get('insuranceRate3')?.valid &&
+                                    (form.get('insuranceRate3')?.touched || form.get('insuranceRate3')?.dirty)">
+                                        {{form.get('insuranceRate3')?.hasError('required') ? messages.NO_EMPTY :
+                                        messages.ONLY_NUMBERS_DECIMAL}}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Período 3:</b></label>
+                                        <input type="text" class="form-control w-50" formControlName="period3">
+                                    </div>
+                                    <span class="text-danger" *ngIf="
+                                    !form.get('period3')?.valid &&
+                                    (form.get('period3')?.touched || form.get('period3')?.dirty)">
+                                        {{form.get('period3')?.hasError('required') ? messages.NO_EMPTY :
+                                        messages.MAX_1}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Fecha de Contrato:</b></label>
+                                        <input type="datetime-local" class="form-control w-50"
+                                            formControlName="dateContract">
+                                    </div>
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('dateContract')?.valid &&
+                                    (form.get('dateContract')?.touched || form.get('dateContract')?.dirty)
+                                ">
+                                        {{form.get('dateContract')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.INVALID_DATE}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Fecha de Consulta:</b></label>
+                                        <input type="datetime-local" class="form-control w-50"
+                                            formControlName="dateConsultation">
+                                    </div>
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('dateConsultation')?.valid &&
+                                    (form.get('dateConsultation')?.touched || form.get('dateConsultation')?.dirty)
+                                ">
+                                        {{form.get('dateConsultation')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.INVALID_DATE}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Fecha de Inicio:</b></label>
+                                        <input type="datetime-local" class="form-control w-50"
+                                            formControlName="startDate">
+                                    </div>
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('startDate')?.valid &&
+                                    (form.get('startDate')?.touched || form.get('startDate')?.dirty)
+                                ">
+                                        {{form.get('startDate')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.INVALID_DATE}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Fecha de Fin:</b></label>
+                                        <input type="datetime-local" class="form-control w-50"
+                                            formControlName="endDate">
+                                    </div>
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('endDate')?.valid &&
+                                    (form.get('endDate')?.touched || form.get('endDate')?.dirty)
+                                ">
+                                        {{form.get('endDate')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.INVALID_DATE}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+
+                        <ul class="list-unstyled">
+                            <div class="row mb-12">
+                                <div class="col-sm-12 col-md-12 mx-auto">
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label me-2 w-50"><b>Fecha de Inclusión:</b></label>
+                                        <input type="datetime-local" class="form-control w-50"
+                                            formControlName="dateInclusion">
+                                    </div>
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('dateInclusion')?.valid &&
+                                    (form.get('dateInclusion')?.touched || form.get('dateInclusion')?.dirty)
+                                ">
+                                        {{form.get('dateInclusion')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.INVALID_DATE}}
+                                    </span>
+                                </div>
+                            </div>
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button (click)="crudEquipmentInsurance()" *ngIf="action==='add'" type="button"
+                class="btn btn-round bg-success mr-2" [disabled]="form.invalid || !utilService.loadGrants('CR')">
+                Guardar
+            </button>
+
+            <button (click)="crudEquipmentInsurance()" *ngIf="action==='update'" type="button"
+                class="btn btn-round bg-success mr-2" [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+
+    </form>
+
+</div>

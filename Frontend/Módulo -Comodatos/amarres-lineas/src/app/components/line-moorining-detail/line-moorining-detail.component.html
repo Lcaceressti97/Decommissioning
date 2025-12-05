@@ -1,0 +1,884 @@
+<div>
+    <form [formGroup]="dataForm">
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+               {{ option==="see" ? "Detalles Comodato:" : option==="add" ? "Formulario de Creación:" : "Modificar Comodato:" }}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <ngb-carousel [showNavigationArrows]="true"
+                            [showNavigationIndicators]="true" class="custom-carousel">
+                            <ng-template ngbSlide>
+                                <div class="carousel-content">
+
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12">
+
+                                                <div class="card card-with-modal" style="margin-left: 20px; margin-right: 20px;">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Generales
+                                                        </h5>
+                                                    </div>
+
+                                                    <!--Card General -->
+                                                    <div class="card-body mb-2">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Año del Comodato:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="cmdYear"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('cmdYear').touched &&
+                                                                    dataForm.get('cmdYear').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('cmdYear')?.valid &&
+                                                                    (dataForm.get('cmdYear')?.touched || dataForm.get('cmdYear')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('cmdYear')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('cmdYear')?.hasError('pattern') ?
+                                                                    messages.MAX_4 : messages.MAX_4 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Correlativo Comodato:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="correlativeCmd"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('correlativeCmd').touched &&
+                                                                    dataForm.get('correlativeCmd').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('correlativeCmd')?.valid &&
+                                                                    (dataForm.get('correlativeCmd')?.touched || dataForm.get('correlativeCmd')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('correlativeCmd')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('correlativeCmd')?.hasError('pattern') ?
+                                                                    messages.MAX_8 : messages.MAX_8 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Correlativo Amarre:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="correlativeMooringCmd"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('correlativeMooringCmd').touched &&
+                                                                    dataForm.get('correlativeMooringCmd').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('correlativeMooringCmd')?.valid &&
+                                                                    (dataForm.get('correlativeMooringCmd')?.touched || dataForm.get('correlativeMooringCmd')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('correlativeMooringCmd')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('correlativeMooringCmd')?.hasError('pattern') ?
+                                                                    messages.MAX_3 : messages.MAX_3 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Día del Año:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="dayOfTheYear"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('dayOfTheYear').touched &&
+                                                                    dataForm.get('dayOfTheYear').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('dayOfTheYear')?.valid &&
+                                                                    (dataForm.get('dayOfTheYear')?.touched || dataForm.get('dayOfTheYear')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('dayOfTheYear')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('dayOfTheYear')?.hasError('pattern') ?
+                                                                    messages.MAX_2 : messages.MAX_2 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Meses de Permanencia:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="monthsOfPermanence"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('monthsOfPermanence').touched &&
+                                                                    dataForm.get('monthsOfPermanence').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('monthsOfPermanence')?.valid &&
+                                                                    (dataForm.get('monthsOfPermanence')?.touched || dataForm.get('monthsOfPermanence')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('monthsOfPermanence')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('monthsOfPermanence')?.hasError('pattern') ?
+                                                                    messages.MAX_2 : messages.MAX_2 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Estado:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <select class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="cmdStatus"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('cmdStatus').touched &&
+                                                                    dataForm.get('cmdStatus').invalid">
+
+                                                                    <option value="A">Activo</option>
+                                                                    <option value="V">Vencido</option>
+                                                                    <option value="C">Cancelado</option>
+                                                                    </select>
+
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('cmdStatus')?.valid &&
+                                                                    (dataForm.get('cmdStatus')?.touched || dataForm.get('cmdStatus')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('cmdStatus')?.hasError('required') ?
+                                                                    messages.NO_EMPTY : messages.INVALID }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </ng-template>
+
+                             <!-- Parte 2 -->
+                            <ng-template ngbSlide>
+                                <div class="carousel-content">
+
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12">
+
+                                                <div class="card card-with-modal" style="margin-left: 20px; margin-right: 20px;">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos De Cuentas
+                                                        </h5>
+                                                    </div>
+
+                                                    <!--Card General -->
+                                                    <div class="card-body mb-2">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Cuenta Cliente:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="customerAccount"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('customerAccount').touched &&
+                                                                    dataForm.get('customerAccount').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('customerAccount')?.valid &&
+                                                                    (dataForm.get('customerAccount')?.touched || dataForm.get('customerAccount')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('customerAccount')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('customerAccount')?.hasError('maxLength') ?
+                                                                    messages.MAX_30 : messages.MAX_30 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Cuenta Servicio:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="serviceAccount"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('serviceAccount').touched &&
+                                                                    dataForm.get('serviceAccount').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('serviceAccount')?.valid &&
+                                                                    (dataForm.get('serviceAccount')?.touched || dataForm.get('serviceAccount')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('serviceAccount')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('serviceAccount')?.hasError('maxLength') ?
+                                                                    messages.MAX_30 : messages.MAX_30 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Cuenta Facturación:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="billingAccount"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('billingAccount').touched &&
+                                                                    dataForm.get('billingAccount').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('billingAccount')?.valid &&
+                                                                    (dataForm.get('billingAccount')?.touched || dataForm.get('billingAccount')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('billingAccount')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('billingAccount')?.hasError('maxLength') ?
+                                                                    messages.MAX_30 : messages.MAX_30 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Subscriptor:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="subscriberId"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('subscriberId').touched &&
+                                                                    dataForm.get('subscriberId').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('subscriberId')?.valid &&
+                                                                    (dataForm.get('subscriberId')?.touched || dataForm.get('subscriberId')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('subscriberId')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('subscriberId')?.hasError('maxLength') ?
+                                                                    messages.MAX_30 : messages.MAX_30 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Amarre:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <select class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="mooring"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('mooring').touched &&
+                                                                    dataForm.get('mooring').invalid">
+                                                                    <option value="0">No</option>
+                                                                    <option value="1">Sí</option>
+                                                                    </select>
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('mooring')?.valid &&
+                                                                    (dataForm.get('mooring')?.touched || dataForm.get('mooring')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('mooring')?.hasError('required') ?
+                                                                    messages.NO_EMPTY : messages.INVALID }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Observaciones:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <textarea class="form-control from-control-with-modal"
+                                                                    type="text" formControlName="observations"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('observations').touched &&
+                                                                    dataForm.get('observations').invalid">
+                                                                    </textarea>
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('observations')?.valid &&
+                                                                    (dataForm.get('observations')?.touched || dataForm.get('observations')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('observations')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('observations')?.hasError('maxLength') ?
+                                                                    messages.MAX_500 : messages.MAX_500 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </ng-template>
+
+                            <!--Parte 3-->
+                            <ng-template ngbSlide>
+                                <div class="carousel-content">
+
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12">
+
+                                                <div class="card card-with-modal" style="margin-left: 20px; margin-right: 20px;">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Factura
+                                                        </h5>
+                                                    </div>
+
+                                                    <!--Card General -->
+                                                    <div class="card-body mb-2">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Localidad:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="invoiceLocation"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('invoiceLocation').touched &&
+                                                                    dataForm.get('invoiceLocation').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('invoiceLocation')?.valid &&
+                                                                    (dataForm.get('invoiceLocation')?.touched || dataForm.get('invoiceLocation')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('invoiceLocation')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('invoiceLocation')?.hasError('maxLength') ?
+                                                                    messages.MAX_2 : messages.MAX_2 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    SubLocalidad:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="invoiceSubLocity"
+                                                                    >
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Tipo:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="invoiceType"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('invoiceType').touched &&
+                                                                    dataForm.get('invoiceType').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('invoiceType')?.valid &&
+                                                                    (dataForm.get('invoiceType')?.touched || dataForm.get('invoiceType')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('invoiceType')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('invoiceType')?.hasError('maxLength') ?
+                                                                    messages.MAX_3 : messages.MAX_3 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Letra:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="invoiceReading"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('invoiceReading').touched &&
+                                                                    dataForm.get('invoiceReading').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('invoiceReading')?.valid &&
+                                                                    (dataForm.get('invoiceReading')?.touched || dataForm.get('invoiceReading')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('invoiceReading')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('invoiceReading')?.hasError('maxLength') ?
+                                                                    messages.MAX_1 : messages.MAX_1 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Número:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="invoiceNumber"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('invoiceNumber').touched &&
+                                                                    dataForm.get('invoiceNumber').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('invoiceNumber')?.valid &&
+                                                                    (dataForm.get('invoiceNumber')?.touched || dataForm.get('invoiceNumber')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('invoiceNumber')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('invoiceNumber')?.hasError('maxLength') ?
+                                                                    messages.MAX_8 : messages.MAX_8 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Transacción:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="transactionId"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('transactionId').touched &&
+                                                                    dataForm.get('transactionId').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('transactionId')?.valid &&
+                                                                    (dataForm.get('transactionId')?.touched || dataForm.get('transactionId')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('transactionId')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('transactionId')?.hasError('maxLength') ?
+                                                                    messages.MAX_30 : messages.MAX_30 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </ng-template>
+
+                            <!-- Parte 4 -->
+                            <ng-template ngbSlide>
+                                <div class="carousel-content">
+
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12">
+
+                                                <div class="card card-with-modal" style="margin-left: 20px; margin-right: 20px;">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Producto
+                                                        </h5>
+                                                    </div>
+
+                                                    <!--Card General -->
+                                                    <div class="card-body mb-2">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Tipo de Inventario:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="inventoryType"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('inventoryType').touched &&
+                                                                    dataForm.get('inventoryType').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('inventoryType')?.valid &&
+                                                                    (dataForm.get('inventoryType')?.touched || dataForm.get('inventoryType')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('inventoryType')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('inventoryType')?.hasError('maxLength') ?
+                                                                    messages.MAX_1 : messages.MAX_1 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Modelo:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="inventoryModel"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('inventoryModel').touched &&
+                                                                    dataForm.get('inventoryModel').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('inventoryModel')?.valid &&
+                                                                    (dataForm.get('inventoryModel')?.touched || dataForm.get('inventoryModel')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('inventoryModel')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('inventoryModel')?.hasError('maxLength') ?
+                                                                    messages.MAX_6 : messages.MAX_6 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    E.S.N:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="teamSeries"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('teamSeries').touched &&
+                                                                    dataForm.get('teamSeries').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('teamSeries')?.valid &&
+                                                                    (dataForm.get('teamSeries')?.touched || dataForm.get('teamSeries')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('teamSeries')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('teamSeries')?.hasError('maxLength') ?
+                                                                    messages.MAX_25 : messages.MAX_25 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Costo Teléfono:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="phoneCost"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('phoneCost').touched &&
+                                                                    dataForm.get('phoneCost').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('phoneCost')?.valid &&
+                                                                    (dataForm.get('phoneCost')?.touched || dataForm.get('phoneCost')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('phoneCost')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('phoneCost')?.hasError('pattern') ?
+                                                                    messages.MAX_13 : messages.MAX_13 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Descuento:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="number" formControlName="phoneDiscount"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('phoneDiscount').touched &&
+                                                                    dataForm.get('phoneDiscount').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('phoneDiscount')?.valid &&
+                                                                    (dataForm.get('phoneDiscount')?.touched || dataForm.get('phoneDiscount')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('phoneDiscount')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('phoneDiscount')?.hasError('pattern') ?
+                                                                    messages.MAX_13 : messages.MAX_13 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Promoción:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="promotion">
+                                                                    
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </ng-template>
+
+                            <!-- Parte 5-->
+                            <ng-template ngbSlide>
+                                <div class="carousel-content">
+
+                                    <div class="container-fluid">
+                                        <div class="row">
+                                            <div class="col-12">
+
+                                                <div class="card card-with-modal" style="margin-left: 20px; margin-right: 20px;">
+                                                    <div class="card-header text-center">
+                                                        <h5 style="font-weight: bold;">
+                                                            Datos Usuarios
+                                                        </h5>
+                                                    </div>
+
+                                                    <!--Card General -->
+                                                    <div class="card-body mb-2">
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Usuario:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="userName"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('userName').touched &&
+                                                                    dataForm.get('userName').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('userName')?.valid &&
+                                                                    (dataForm.get('userName')?.touched || dataForm.get('userName')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('userName')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('userName')?.hasError('maxLength') ?
+                                                                    messages.MAX_50 : messages.MAX_50 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Usuario Supervisor:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="supervisorUser"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('supervisorUser').touched &&
+                                                                    dataForm.get('supervisorUser').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('supervisorUser')?.valid &&
+                                                                    (dataForm.get('supervisorUser')?.touched || dataForm.get('supervisorUser')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('supervisorUser')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('supervisorUser')?.hasError('maxLength') ?
+                                                                    messages.MAX_50 : messages.MAX_50 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Usuario Amarre:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="userMooring"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('userMooring').touched &&
+                                                                    dataForm.get('userMooring').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('userMooring')?.valid &&
+                                                                    (dataForm.get('userMooring')?.touched || dataForm.get('userMooring')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('userMooring')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('userMooring')?.hasError('maxLength') ?
+                                                                    messages.MAX_50 : messages.MAX_50 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Usuario Canceló:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="text" formControlName="userCancelled"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('userCancelled').touched &&
+                                                                    dataForm.get('userCancelled').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('userCancelled')?.valid &&
+                                                                    (dataForm.get('userCancelled')?.touched || dataForm.get('userCancelled')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('userCancelled')?.hasError('required') ?
+                                                                    messages.NO_EMPTY :
+                                                                    dataForm.get('userCancelled')?.hasError('maxLength') ?
+                                                                    messages.MAX_50 : messages.MAX_50 }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Fecha de Ingreso:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="datetime-local" formControlName="dateOfAdmission"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('dateOfAdmission').touched &&
+                                                                    dataForm.get('dateOfAdmission').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('dateOfAdmission')?.valid &&
+                                                                    (dataForm.get('dateOfAdmission')?.touched || dataForm.get('dateOfAdmission')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('dateOfAdmission')?.hasError('required') ?
+                                                                    messages.NO_EMPTY : messages.INVALID }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="row mb-3">
+                                                            <div class="col-4">
+                                                                <label class="form-label ml-3"
+                                                                    style="font-weight: bold;">
+                                                                    Fecha Cancelación:
+                                                                </label>
+                                                            </div>
+                                                            <div class="col-8">
+                                                                <input [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                                    type="datetime-local" formControlName="dueDate"
+                                                                    [class.is-invalid]="
+                                                                    dataForm.get('dueDate').touched &&
+                                                                    dataForm.get('dueDate').invalid">
+                                                                    <span class="text-danger mt-1" *ngIf="
+                                                                    !dataForm.get('dueDate')?.valid &&
+                                                                    (dataForm.get('dueDate')?.touched || dataForm.get('dueDate')?.dirty)
+                                                                    ">
+                                                                    {{dataForm.get('dueDate')?.hasError('required') ?
+                                                                    messages.NO_EMPTY : messages.INVALID }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </ng-template>
+
+                           
+                            <!-- Añade más ng-templates ngbSlide para más slides -->
+                        </ngb-carousel>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button *ngIf="option==='add'" (click)="test()" type="button" class="btn btn-round bg-success mr-1"
+                [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+            <button *ngIf="option==='edit'" (click)="test()" type="button" class="btn btn-round bg-success mr-1"
+                [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+            
+        </div>
+
+    </form>
+</div>

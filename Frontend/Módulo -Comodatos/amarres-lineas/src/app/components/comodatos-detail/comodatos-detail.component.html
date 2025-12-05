@@ -1,0 +1,442 @@
+<div>
+    <form>
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                Detalles Comodatos:
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <div class="row mb-4" style="justify-content: center;">
+                            <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs"
+                                style="padding-bottom: 0px;">
+                                <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                                    <a ngbNavLink>
+                                        Generales
+                                    </a>
+                                </li>
+                                <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                                    <a ngbNavLink>
+                                        Cuentas
+                                    </a>
+                                </li>
+                                <li (click)="changeTab(3)" id='nav3' [ngbNavItem]="3">
+                                    <a ngbNavLink>
+                                        Factura
+                                    </a>
+                                </li>
+                                <li (click)="changeTab(4)" id='nav4' [ngbNavItem]="4">
+                                    <a ngbNavLink>
+                                        Producto
+                                    </a>
+                                </li>
+                                <li (click)="changeTab(5)" id='nav2' [ngbNavItem]="5">
+                                    <a ngbNavLink>
+                                        Usuarios
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-optional shadow mb-3">
+
+                                    <div class="card-header text-center">
+                                        <h5 style="font-weight: bold;">
+                                            {{ titleCard }}
+                                        </h5>
+                                    </div>
+
+                                    <div class="card-body" *ngIf="active===1">
+
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Correlativo
+                                                    Comodato:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="correlativeCmd" id="correlativeCmd"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.correlativeCmd">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Correlativo de
+                                                    Amarre:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="correlativeMooringCmd"
+                                                    id="correlativeMooringCmd" [readOnly]="readonlyInput"
+                                                    class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.correlativeMooringCmd">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Meses
+                                                    de Permanencia:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="monthsOfPermanence" id="monthsOfPermanence"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.monthsOfPermanence">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Estado:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="cmdStatus" id="cmdStatus"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.cmdStatus">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-body" *ngIf="active===2">
+
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Cuenta del Cliente:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="customerAccount" id="customerAccount"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.customerAccount">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Cuenta del Servicio:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="serviceAccount" id="serviceAccount"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.serviceAccount">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Cuenta de Facturación:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="billingAccount"
+                                                    id="billingAccount" [readOnly]="readonlyInput"
+                                                    class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.billingAccount">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Suscriptor:</label>
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="subscriberId" id="subscriberId"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.subscriberId">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Amarre:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="mooring" id="mooring"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.mooring">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Observaciones:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <textarea type="text" name="observations" id="observations"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.observations"></textarea>
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-body" *ngIf="active===3">
+
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Localidad Factura:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="invoiceLocation" id="invoiceLocation"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.invoiceLocation">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">SubLocalidad Factura:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="invoiceSubLocity" id="invoiceSubLocity"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.invoiceSubLocity">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Tipo de Factura:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="invoiceType"
+                                                    id="invoiceType" [readOnly]="readonlyInput"
+                                                    class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.invoiceType">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Letra de Factura:</label>
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="invoiceReading" id="invoiceReading"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.invoiceReading">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Número de Factura:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="invoiceNumber" id="invoiceNumber"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.invoiceNumber">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Transacción ID:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="transactionId" id="transactionId"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.transactionId">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">VAC:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="vac" id="vac"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.vac">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-body" *ngIf="active===4">
+
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Tipo de Inventario:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="inventoryType" id="inventoryType"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.inventoryType">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Modelo:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="inventoryModel" id="inventoryModel"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.inventoryModel">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">E.S.N:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="teamSeries"
+                                                    id="teamSeries" [readOnly]="readonlyInput"
+                                                    class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.teamSeries">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Costo del Teléfono:</label>
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="phoneCost" id="phoneCost"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.phoneCost">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Descuento:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="phoneDiscount" id="phoneDiscount"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.phoneDiscount">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Promoción:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="promotion" id="promotion"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.promotion">
+                                            </div>
+                                        </div>
+
+                                    </div>
+                                    <div class="card-body" *ngIf="active===5">
+
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Usuario:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="userName" id="userName"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.userName">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Usuario Supervisor:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="supervisorUser" id="supervisorUser"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.supervisorUser">
+                                            </div>
+                                        </div>
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Usuario Amarre:</label>
+                                            </div>
+                                            <div class="col-8">
+                                                <input type="text" name="userMooring"
+                                                    id="userMooring" [readOnly]="readonlyInput"
+                                                    class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.userMooring">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Usuario Canceló:</label>
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="text" name="userCancelled" id="userCancelled"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.userCancelled">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Fecha de Ingreso:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="datetime-local" name="dateOfAdmission" id="dateOfAdmission"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.dateOfAdmission">
+                                            </div>
+                                        </div>
+
+                                        <div class="row mb-3">
+                                            <div class="col-4 text-center">
+                                                <label class="form-label ml-5" style="font-weight: bold;">Fecha de Vencimiento:</label>
+
+                                            </div>
+
+                                            <div class="col-8">
+                                                <input type="datetime-local" name="dueDate" id="dueDate"
+                                                    [readOnly]="readonlyInput" class="form-control from-control-with-modal text-center"
+                                                    [(ngModel)]="data.dueDate">
+                                            </div>
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+            
+        </div>
+
+
+    </form>
+</div>

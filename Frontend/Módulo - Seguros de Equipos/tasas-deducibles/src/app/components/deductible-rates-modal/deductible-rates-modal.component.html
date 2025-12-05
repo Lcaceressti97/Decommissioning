@@ -1,0 +1,220 @@
+<div class="main-content">
+    <form [formGroup]="dataForm">
+
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                {{ button === "see" ? "Detalle Tasa Deducible:" : button === "add" ? "Creación de Tasa Deducible:" :
+                "Modificación
+                de Tasa Deducible:"}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="card-container">
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Modelo :</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="model"
+                                    [class.is-invalid]="
+                                dataForm.get('model').touched &&
+                                dataForm.get('model').invalid" [readOnly]="inputReadOnly">
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('model')?.valid &&
+                                    (dataForm.get('model')?.touched || dataForm.get('model')?.dirty)
+                                    ">
+                                    {{dataForm.get('model')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('model')?.hasError('maxLength') ?
+                                    messages.MAX_1 : messages.MAX_1}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Descripción:</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="description"
+                                    [class.is-invalid]="
+                                dataForm.get('description').touched &&
+                                dataForm.get('description').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('description')?.valid &&
+                                    (dataForm.get('description')?.touched || dataForm.get('description')?.dirty)
+                                    ">
+                                    {{dataForm.get('description')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('description')?.hasError('maxLength') ?
+                                    messages.MAX_6
+                                    : messages.MAX_6}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Motivo :</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null" formControlName="reason"  [class.is-invalid]="
+                                dataForm.get('reason').touched &&
+                                dataForm.get('reason').invalid">
+                                <option [value]="reason.id" *ngFor="let reason of reasonsClaim" > 
+                                  {{ reason.reason }} 
+                                </option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('reason')?.valid &&
+                                    (dataForm.get('reason')?.touched || dataForm.get('reason')?.dirty)
+                                    ">
+                                    {{dataForm.get('reason')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('reason')?.hasError('maxLength') ?
+                                    messages.MAX_1 : messages.MAX_1}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Primer Reclamo :</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <input type="number" class="form-control text-center" formControlName="firstClaim"
+                                    [class.is-invalid]="
+                                dataForm.get('firstClaim').touched &&
+                                dataForm.get('firstClaim').invalid" [readOnly]="inputReadOnly">
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('firstClaim')?.valid &&
+                                    (dataForm.get('firstClaim')?.touched || dataForm.get('firstClaim')?.dirty)
+                                    ">
+                                    {{dataForm.get('firstClaim')?.hasError('required') ?
+                                    messages.ONLY_NUMBERS_POSITIVe : dataForm.get('firstClaim')?.hasError('maxLength') ?
+                                    messages.MAX_1 : messages.MAX_1}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Segundo Reclamo :</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <input type="number" class="form-control text-center" formControlName="secondClaim"
+                                    [class.is-invalid]="
+                                dataForm.get('secondClaim').touched &&
+                                dataForm.get('secondClaim').invalid" [readOnly]="inputReadOnly">
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('secondClaim')?.valid &&
+                                    (dataForm.get('secondClaim')?.touched || dataForm.get('secondClaim')?.dirty)
+                                    ">
+                                    {{dataForm.get('secondClaim')?.hasError('required') ?
+                                    messages.ONLY_NUMBERS_POSITIVe : dataForm.get('secondClaim')?.hasError('maxLength') ?
+                                    messages.MAX_1 : messages.MAX_1}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Tercer Reclamo :</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <input type="number" class="form-control text-center" formControlName="thirdClaim"
+                                    [class.is-invalid]="
+                                dataForm.get('thirdClaim').touched &&
+                                dataForm.get('thirdClaim').invalid" [readOnly]="inputReadOnly">
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('thirdClaim')?.valid &&
+                                    (dataForm.get('thirdClaim')?.touched || dataForm.get('thirdClaim')?.dirty)
+                                    ">
+                                    {{dataForm.get('thirdClaim')?.hasError('required') ?
+                                    messages.ONLY_NUMBERS_POSITIVe : dataForm.get('thirdClaim')?.hasError('maxLength') ?
+                                    messages.MAX_1 : messages.MAX_1}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Estado:</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null"
+                                    formControlName="status" [class.is-invalid]="
+                        dataForm.get('status').touched &&
+                        dataForm.get('status').invalid">
+
+                                    <option value="1">Activo</option>
+                                    <option value="0">Inactivo</option>
+                                </select>
+
+                                <span class="text-danger mt-1" *ngIf="
+                                          !dataForm.get('status')?.valid &&
+                                          (dataForm.get('status')?.touched || dataForm.get('status')?.dirty)
+                                          ">
+                                    {{dataForm.get('status')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('status')?.hasError('maxLength') ?
+                                    messages.MAX_6
+                                    : messages.MAX_6}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="modal-footer" style="justify-content: end;">
+            <button *ngIf="button==='add'" (click)="crudDeductibleRate()" type="button"
+                class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+            <button *ngIf="button==='edit'" (click)="crudDeductibleRate()" type="button"
+                class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+        </div>
+
+    </form>
+</div>

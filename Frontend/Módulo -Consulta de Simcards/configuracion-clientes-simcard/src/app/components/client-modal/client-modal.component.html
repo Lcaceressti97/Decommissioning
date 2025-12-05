@@ -1,0 +1,107 @@
+<div class="main-content">
+    <form [formGroup]="form">
+
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ action==='add' ? "Creación del Cliente:" : action==='update' ? "Modificación de Cliente: " + data.clientName :
+                "Detalles del Cliente: " + data.clientName}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="card-container">
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-md-12">
+                        <label class="form-label"><b>Código:</b> </label>
+                        <input type="number" class="form-control text-center" formControlName="code" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('code')?.valid &&
+                                (form.get('code')?.touched || form.get('code')?.dirty)
+                                ">
+                            {{form.get('code')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            : messages.INVALID
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-md-12">
+                        <label class="form-label"><b>Nombre del Cliente:</b> </label>
+                        <input type="text" class="form-control text-center" formControlName="clientName" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('clientName')?.valid &&
+                                (form.get('clientName')?.touched || form.get('clientName')?.dirty)
+                                ">
+                          {{form.get('clientName')?.hasError('required')
+                          ? messages.NO_EMPTY : form.get('clientName')?.hasError('maxLength') ? messages.INVALID
+                          : messages.MAX_50
+                          }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-md-12">
+                        <label class="form-label"><b>HLR:</b> </label>
+                        <input type="number" class="form-control text-center" formControlName="hlr" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('hlr')?.valid &&
+                                (form.get('hlr')?.touched || form.get('hlr')?.dirty)
+                                ">
+                            {{form.get('hlr')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            : messages.INVALID
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label class="form-label"><b>Descripción HRL:</b></label>
+                        <textarea type="text" class="form-control"
+                            placeholder="Ingresa la descripción" formControlName="descriptionHrl" rows="5" [readOnly]="readonly">
+                                </textarea>
+                                <span class="text-danger" *ngIf="
+                                !form.get('descriptionHrl')?.valid &&
+                                (form.get('descriptionHrl')?.touched || form.get('descriptionHrl')?.dirty)
+                                ">
+                          {{form.get('descriptionHrl')?.hasError('required')
+                          ? messages.NO_EMPTY : form.get('descriptionHrl')?.hasError('maxLength') ? messages.INVALID
+                          : messages.MAX_150
+                          }}
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button *ngIf="action==='add'" (click)="crudArt()" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+
+            <button *ngIf="action==='update'" (click)="crudArt()" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+        </div>
+
+    </form>
+</div>

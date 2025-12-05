@@ -1,0 +1,79 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            {{ 
+            "Archivo del Proveedor: " + data.supplierName}}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="card-container">
+
+            <div class="row">
+                <div class="col-sm-12 col-md-5 col-lg-5">
+                    <button *ngIf="updateShow" type="button" class="btn btn-round btn-info" (click)="updateFile(1)">
+                        Actualizar Archivo
+                    </button>
+
+                    <button *ngIf="!updateShow" type="button" class="btn btn-round btn-info" (click)="updateFile(2)">
+                        Volver a Visualizar Archivo
+                    </button>
+                </div>
+            </div>
+
+
+            <form [hidden]="updateShow" [formGroup]="form">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label clase="form-label"><b>Adjuntar Archivo:</b></label>
+                    </div>
+                </div>
+                <div class="row mb-3">
+
+                    <div class="col-sm-12 col-md-9 col-md-9">
+                        <div class="col mr-2 fileCursor">
+                            <input type="file" class="custom-file-input" placeholder="File" accept=".docx, .pdf"
+                                formControlName="baseFile" (change)="selectFile($event)">
+                            <label class="custom-file-label">{{ fileName }}</label>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-3 col-lg-3">
+                        <button type="button" class="btn btn-round bg-success btn-modal-file"
+                        [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                        Actualizar
+                    </button>
+                    </div>
+
+                </div>
+
+            </form>
+
+            <div class="row" [hidden]="!updateShow">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <form>
+                        <label class="form-label"><b>Contenido del archivo:</b> </label>
+    
+                        <textarea name="baseFile" id="baseFile" cols="30" rows="10" class="form-control textarea-optional" style="max-height: 400px;"></textarea>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+
+</div>

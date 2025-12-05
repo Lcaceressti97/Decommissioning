@@ -1,0 +1,283 @@
+<div class="main-content">
+    <form [formGroup]="form">
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ action==='add' ? "Creación de Proveedor:" : action==='update' ? "Modificación del Proveedor: " +
+                data.supplierName :
+                "Detalles del Proveedor: " + data.supplierName}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+
+            <div class="card-container">
+
+                <!-- Fila 1 -->
+                <div class="row mb-3">
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Código:</b> </label>
+                        <input type="number" class="form-control text-center" formControlName="supplierNo"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('supplierNo')?.valid &&
+                                (form.get('supplierNo')?.touched || form.get('supplierNo')?.dirty)
+                                ">
+                            {{form.get('supplierNo')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            : messages.INVALID
+                            }}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Nombre:</b></label>
+                        <input type="text" class="form-control text-center" formControlName="supplierName"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('supplierName')?.valid &&
+                                (form.get('supplierName')?.touched || form.get('supplierName')?.dirty)
+                                ">
+                            {{form.get('supplierName')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('supplierName')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Fila 1.2 -->
+                <div class="row mb-3" [hidden]="action==='update'">
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>ICCD Inicial:</b></label>
+                        <input type="text" class="form-control text-center" formControlName="initialIccd"
+                            [readOnly]="readonly">
+                            <span class="text-danger" *ngIf="
+                            !form.get('initialIccd')?.valid &&
+                            (form.get('initialIccd')?.touched || form.get('initialIccd')?.dirty)
+                            ">
+                            {{form.get('initialIccd')?.hasError('required')
+                            ? messages.ONLY_NUMBERS_INPUT : messages.ICCD_NUMBER
+                            }}
+                        </span>
+
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Llave:</b> </label>
+                        <input type="text" class="form-control text-center" formControlName="key"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                !form.get('key')?.valid &&
+                (form.get('key')?.touched || form.get('key')?.dirty)
+                ">
+                            {{form.get('key')?.hasError('required')
+                            ? messages.ONLY_NUMBERS_INPUT : messages.ONLY_NUMBERS_INPUT
+                            }}
+                        </span>
+                    </div>
+
+
+                </div>
+
+                <!-- Fila 2 -->
+                <div class="row mb-3">
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Teléfono:</b> </label>
+                        <input type="text" class="form-control text-center" formControlName="phone"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                !form.get('phone')?.valid &&
+                (form.get('phone')?.touched || form.get('phone')?.dirty)
+                ">
+                            {{form.get('phone')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('phone')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_50_NUMBER
+                            }}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Postal Mail:</b></label>
+                        <input type="email" class="form-control text-center" formControlName="postalMail"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                        !form.get('postalMail')?.valid &&
+                        (form.get('postalMail')?.touched || form.get('postalMail')?.dirty)
+                        ">
+                            {{form.get('postalMail')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('postalMail')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_50
+                            }}
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Fila 3 -->
+                <div class="row mb-3">
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Asunto:</b> </label>
+                        <input type="text" class="form-control text-center" formControlName="subject"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                !form.get('subject')?.valid &&
+                (form.get('subject')?.touched || form.get('subject')?.dirty)
+                ">
+                            {{form.get('subject')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('subject')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_100
+                            }}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Email para enviar el correo:</b></label>
+                        <input type="email" class="form-control" formControlName="email" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                        !form.get('email')?.valid &&
+                        (form.get('email')?.touched || form.get('email')?.dirty)
+                        ">
+                            {{form.get('email')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('email')?.hasError('maxLength') ? messages.INVALID
+                            : messages.ONLY_EMAIL
+                            }}
+                        </span>
+                    </div>
+
+                   
+
+                </div>
+
+                <div class="row mb-3">
+
+                    <div class="col-sm-12 col-md-6 col-md-6">
+                        <label class="form-label"><b>Email del Proveedor:</b></label>
+                        <input type="email" class="form-control" formControlName="emailSupplier" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                        !form.get('emailSupplier')?.valid &&
+                        (form.get('emailSupplier')?.touched || form.get('emailSupplier')?.dirty)
+                            ">
+                            {{form.get('emailSupplier')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('emailSupplier')?.hasError('email') ? messages.INVALID
+                            : messages.ONLY_EMAIL
+                            }}
+                        </span>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-md-6" [hidden]="action!=='update'">
+                        <label class="form-label"><b>Llave:</b> </label>
+                        <input type="text" class="form-control text-center" formControlName="key"
+                            [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                        !form.get('key')?.valid &&
+                        (form.get('key')?.touched || form.get('key')?.dirty)
+                             ">
+                            {{form.get('key')?.hasError('required')
+                            ? messages.ONLY_NUMBERS_INPUT : messages.ONLY_NUMBERS_INPUT
+                            }}
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Fila 4 -->
+
+                <div class="row" *ngIf="action!=='see'">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label clase="form-label"><b>Adjuntar Archivo:</b></label>
+                    </div>
+                </div>
+
+                <div class="row mb-3" *ngIf="action!=='see'">
+
+                    <div class="col-sm-12 col-md-12 col-md-12">
+                        <div class="col mr-2 fileCursor">
+                            <input type="file" class="custom-file-input" placeholder="File" accept=".pdf"
+                                formControlName="baseFile" (change)="selectFile($event)" [readOnly]="readonly">
+                            <label class="custom-file-label">{{ fileName }}</label>
+                        </div>
+                        <span class="text-danger" *ngIf="validateFIle">
+                            {{ "El tamaño del archivo no debe pasar más de 10MB" }}
+                        </span>
+                    </div>
+
+
+                </div>
+
+                <!-- Fila 5 -->
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label class="form-label"><b>Dirección:</b></label>
+                        <textarea type="text" class="form-control" placeholder="Ingresa la dirección"
+                            formControlName="address" rows="5" [readOnly]="readonly">
+                                </textarea>
+                        <span class="text-danger" *ngIf="
+                                !form.get('address')?.valid &&
+                                (form.get('address')?.touched || form.get('address')?.dirty)
+                                ">
+                            {{form.get('address')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('address')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_50
+                            }}
+                        </span>
+                    </div>
+
+                </div>
+
+                <!-- Fila 7 -->
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label class="form-label"><b>Texto del email:</b></label>
+                        <textarea type="text" class="form-control" placeholder="Ingresa el texto"
+                            formControlName="textEmail" rows="5" [readOnly]="readonly">
+                                </textarea>
+                        <span class="text-danger" *ngIf="
+                                !form.get('textEmail')?.valid &&
+                                (form.get('textEmail')?.touched || form.get('textEmail')?.dirty)
+                                ">
+                            {{form.get('textEmail')?.hasError('required')
+                            ? messages.NO_EMPTY : form.get('textEmail')?.hasError('maxLength') ? messages.INVALID
+                            : messages.MAX_150
+                            }}
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button (click)="crudArt()" *ngIf="action==='add'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('CR') || validateFIle">
+                Crear
+            </button>
+
+            <button (click)="crudArt()" *ngIf="action==='update'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('UP') || validateFIle">
+                Actualizar
+            </button>
+
+            
+        </div>
+
+    </form>
+
+</div>

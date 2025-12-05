@@ -1,0 +1,72 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            {{  "Detalle Seguro: " + rowsSafeControlEquipment.id}}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <h5>Información del Cliente</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>E.S.N:</strong> {{ rowsSafeControlEquipment.esn }}</li>
+                            <li><strong>Cuenta Cliente:</strong> {{ rowsSafeControlEquipment.customerAccount }}</li>
+                            <li><strong>Cuenta de Servicio:</strong> {{ rowsSafeControlEquipment.serviceAccount }}</li>
+                            <li><strong>Cuenta de Facturación:</strong> {{ rowsSafeControlEquipment.billingAccount }}
+                            </li>
+                            <li><strong>Número de Subscriptor:</strong> {{ rowsSafeControlEquipment.subscriber }}</li>
+                            <li><strong>Estado del Seguro:</strong> {{ rowsSafeControlEquipment.insuranceStatus }}
+                            </li>
+                            
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <h5>Información del Equipo</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Código Transacción:</strong> {{ rowsSafeControlEquipment.transactionCode }}</li>
+                            <li><strong>Teléfono:</strong> {{ rowsSafeControlEquipment.phoneNumber }}</li>
+                            <li><strong>Modelo:</strong> {{ rowsSafeControlEquipment.equipmentModel }}</li>
+                            <li><strong>Origen AS:</strong> {{ rowsSafeControlEquipment.originAs }}</li>
+                            <li><strong>Tipo de Inventario:</strong> {{ rowsSafeControlEquipment.inventoryTypeAs }}
+                            </li>
+                            <li><strong>Tipo de Origen:</strong> {{ rowsSafeControlEquipment.originTypeAs }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h5>Información de Cuotas y Fechas</h5>
+            <ul class="list-unstyled">
+                <li><strong>Cuota Seguro:</strong> {{ rowsSafeControlEquipment.insuranceRate }}</li>
+                <li><strong>Período:</strong> {{ rowsSafeControlEquipment.period }}</li>
+                <li><strong>Cuota Seguro 2:</strong> {{ rowsSafeControlEquipment.insuranceRate2 }}</li>
+                <li><strong>Período 2:</strong> {{ rowsSafeControlEquipment.period2 }}</li>
+                <li><strong>Cuota Seguro 3:</strong> {{ rowsSafeControlEquipment.insuranceRate3 }}</li>
+                <li><strong>Período 3:</strong> {{ rowsSafeControlEquipment.period3 }}</li>
+                <li><strong>Fecha de Consulta:</strong> {{ rowsSafeControlEquipment.dateConsultation | date: 'dd/MM/yyyy hh:mm:ss a'}}</li>
+                <li><strong>Fecha de Inicio:</strong> {{ rowsSafeControlEquipment.startDate | date: 'dd/MM/yyyy hh:mm:ss a'}}</li>
+                <li><strong>Fecha de Fin:</strong> {{ rowsSafeControlEquipment.endDate | date: 'dd/MM/yyyy hh:mm:ss a'}}</li>
+                <li><strong>Fecha de Inclusión:</strong> {{ rowsSafeControlEquipment.dateInclusion | date: 'dd/MM/yyyy hh:mm:ss a'}}</li>
+
+
+            </ul>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+<!--         <button type="button" class="btn btn-round bg-darkBlue">Dar de baja</button>
+ -->        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">Cerrar</button>
+    </div>
+</div>

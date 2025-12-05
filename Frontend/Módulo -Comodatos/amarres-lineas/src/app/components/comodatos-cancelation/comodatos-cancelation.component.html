@@ -1,0 +1,120 @@
+<div>
+    <form [formGroup]="deleteForm">
+
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                Cancelación Comodatos:
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+
+                        <div class="card card-optional mb-5 shadow">
+                            <div class="card-header text-center">
+                                <h5 style="font-weight: bold;">
+                                    Datos Básicos 
+                                </h5>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="row mb-3">
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label" style="font-weight: bold;">
+                                            Correlativo del Comodato:
+                                        </label>
+                                        <input type="text" class="form-control text-center" name="correlativeCmd" id="correlativeCmd"  [value]="data.correlativeCmd" readonly>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label" style="font-weight: bold;">
+                                            Correlativo del Amarre:
+                                        </label>
+                                        <input type="text" class="form-control text-center" name="correlativeMooringCmd" id="correlativeMooringCmd" [value]="data.correlativeMooringCmd" readonly>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label" style="font-weight: bold;">
+                                            Suscriptor:
+                                        </label>
+                                        <input type="text" class="form-control text-center" name="subscriberId" id="subscriberId" [value]="data.subscriberId" readonly>
+                                    </div>
+
+                                </div>
+
+                                <div class="row mb-5">
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label" style="font-weight: bold;">
+                                            Cuenta Cliente:
+                                        </label>
+                                        <input type="text" class="form-control text-center" name="customerAccount" id="customerAccount"  [value]="data.customerAccount" readonly>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label" style="font-weight: bold;">
+                                            Cuenta Facturación:
+                                        </label>
+                                        <input type="text" class="form-control text-center" name="billingAccount" id="billingAccount"  [value]="data.billingAccount" readonly>
+                                    </div>
+
+                                    <div class="col-sm-12 col-md-4 col-lg-4">
+                                        <label class="form-label" style="font-weight: bold;">
+                                            Número de Factura:
+                                        </label>
+                                        <input type="text" class="form-control text-center" name="invoiceNumber" id="invoiceNumber" 
+                                        [value]="data.invoiceNumber" readonly>
+                                    </div>
+                                </div>
+
+                                
+                                <h5 class="text-center mt-1" style="font-weight: bold;">Proceso de Cancelación</h5>
+                                <div class="row">
+                                    <div class="col-12">
+                                        <label class="form-label ml-3" style="font-weight: bold;">
+                                            Comentario:
+                                        </label>
+
+                                        <textarea formControlName="description" [class.is-invalid]="
+                                      deleteForm.get('description').touched &&
+                                      deleteForm.get('description').invalid" class="form-control" type="text">
+                                      </textarea>
+                                    <span class="text-danger mt-1" *ngIf="
+                                              !deleteForm.get('description')?.valid &&
+                                              (deleteForm.get('description')?.touched || deleteForm.get('description')?.dirty)
+                                              ">
+                                        {{deleteForm.get('description')?.hasError('required') ?
+                                        messages.NO_EMPTY :
+                                        deleteForm.get('description')?.hasError('minLength') ?
+                                        messages.MIN_50 : messages.MIN_50 }}
+                                    </span>
+                                    </div>
+                                </div>
+                        
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button  (click)="cancellationComodato()" type="button" class="btn btn-round bg-success mr-2" [disabled]="deleteForm.invalid || !utilService.loadGrants('EX')">
+                Cancelar
+            </button>
+
+        </div>
+    </form>
+</div>

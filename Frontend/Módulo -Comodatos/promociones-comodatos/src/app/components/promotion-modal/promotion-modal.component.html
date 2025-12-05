@@ -1,0 +1,560 @@
+<div class="main-content">
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                {{ action === "see" ? "Detalles de la Promoción: " + data.promotionCode :  action === "add" ? "Nueva Promoción:" : "Modificar Promoción: " + data.promotionCode }}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+
+            <div class="row mb-3" style="justify-content: center;" *ngIf="action!=='add'">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs"
+                    style="padding-bottom: 0px;">
+                    <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                        <a ngbNavLink>
+                            General
+                        </a>
+                    </li>
+                    <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                        <a ngbNavLink>
+                            Detalles
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <br>
+
+            <!-- Card de los datos generales -->
+            <div class="card card-optional shadow" [hidden]="hiddeGeneral">
+
+                <div class="card-header text-center">
+                    <h5 style="font-weight: bold;">
+                        Datos Principales 
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <form [formGroup]="formGroup">
+
+                        <div class="container">
+                            <div class="row mb-3">
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Código de Promoción
+                                        </b>
+                                    </label>
+
+                                    <input type="text" readonly class="form-control text-center" formControlName="promotionCode"
+                                    [class.is-invalid]="
+                                    formGroup.get('promotionCode').touched &&
+                                    formGroup.get('promotionCode').invalid" [readOnly]="inputReadOnly">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formGroup.get('promotionCode')?.valid &&
+                                    (formGroup.get('promotionCode')?.touched || formGroup.get('promotionCode')?.dirty)
+                                    ">
+                                        {{formGroup.get('promotionCode')?.hasError('required') ?
+                                        messages.NO_EMPTY : formGroup.get('promotionCode')?.hasError('maxLength') ?              messages.MAX_50 : messages.MAX_50 }}
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Código de Modelo
+                                        </b>
+                                    </label>
+
+                                    <input type="text" readonly class="form-control text-center" formControlName="modelCode"
+                                    [class.is-invalid]="
+                                    formGroup.get('modelCode').touched &&
+                                    formGroup.get('modelCode').invalid" [readOnly]="inputReadOnly">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formGroup.get('modelCode')?.valid &&
+                                    (formGroup.get('modelCode')?.touched || formGroup.get('modelCode')?.dirty)
+                                    ">
+                                        {{formGroup.get('modelCode')?.hasError('required') ?
+                                        messages.NO_EMPTY : formGroup.get('modelCode')?.hasError('maxLength') ?   messages.MAX_50 : messages.MAX_50 }}
+                                    </span>
+
+                                </div>
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Corporativo
+                                        </b>
+                                    </label>
+
+                                    <input type="text" readonly class="form-control text-center" formControlName="corporate"
+                                    [class.is-invalid]="
+                                    formGroup.get('corporate').touched &&
+                                    formGroup.get('corporate').invalid" [readOnly]="inputReadOnly">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formGroup.get('corporate')?.valid &&
+                                    (formGroup.get('corporate')?.touched || formGroup.get('corporate')?.dirty)
+                                    ">
+                                        {{formGroup.get('corporate')?.hasError('required') ?
+                                        messages.NO_EMPTY : formGroup.get('corporate')?.hasError('maxLength') ?              messages.MAX_50 : messages.MAX_50 }}
+                                    </span>
+
+                                </div>
+
+                            </div>
+
+
+                            <div class="row mb-3">
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Vigencia Permanente
+                                        </b>
+                                    </label>
+
+                                    <input *ngIf="action=='see'" type="text" class="form-control text-center" formControlName="permanentValidity" [readOnly]="inputReadOnly" >
+
+                                    <div *ngIf="action!='see'">
+                                        <select  type="text" class="form-control text-center" formControlName="permanentValidity" [class.is-invalid]="
+                                        formGroup.get('permanentValidity').touched &&
+                                        formGroup.get('permanentValidity').invalid" (change)="changePermanentValidate($event)">
+                                        <option [value]="'N'">No</option>
+                                        <option [value]="'Y'">Sí</option>
+                                        </select>
+                                    </div>
+                                    
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formGroup.get('permanentValidity')?.valid &&
+                                    (formGroup.get('permanentValidity')?.touched || formGroup.get('permanentValidity')?.dirty)
+                                    ">
+                                        {{formGroup.get('permanentValidity')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Fecha de Inicio
+                                        </b>
+                                    </label>
+
+                                    <input type="text" class="form-control text-center" formControlName="startDate" *ngIf="action=='see'" [readOnly]="inputReadOnly">
+
+                                    <input *ngIf="action!='see'" [readOnly]="inputReadOnlyStartDate" type="datetime-local" class="form-control text-center" formControlName="startDate"
+                                    [class.is-invalid]="
+                                    formGroup.get('startDate').touched &&
+                                    formGroup.get('startDate').invalid">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formGroup.get('startDate')?.valid &&
+                                    (formGroup.get('startDate')?.touched || formGroup.get('startDate')?.dirty)
+                                    ">
+                                        {{formGroup.get('startDate')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+
+                                </div>
+
+                                <div class="col-sm-12 col-md-4 col-lg-4">
+                                    <label class="form-label">
+                                        <b>
+                                            Fecha de Finalización
+                                        </b>
+                                    </label>
+
+                                    <input type="text" class="form-control text-center" formControlName="endDate" *ngIf="action=='see'" [readOnly]="inputReadOnly">
+
+                                    <div *ngIf="action!='see'">
+                                        <input type="datetime-local" class="form-control text-center" formControlName="endDate"
+                                        [class.is-invalid]="
+                                        formGroup.get('endDate').touched &&
+                                        formGroup.get('endDate').invalid" [readOnly]="inputReadOnlyEndDate" (change)="validateDates()">
+
+                                        <span class="text-danger mt-1" *ngIf="
+                                        !formGroup.get('endDate')?.valid &&
+                                        (formGroup.get('endDate')?.touched || formGroup.get('endDate')?.dirty)
+                                        ">
+                                            {{formGroup.get('endDate')?.hasError('required') ?
+                                            messages.NO_EMPTY :  messages.NO_EMPTY }}
+                                        </span>
+                                    </div>
+                                    
+
+                                </div>
+
+                            </div>
+
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>
+                                            Descripción
+                                        </b>
+                                    </label>
+
+                                    <textarea class="form-control" formControlName="description" [class.is-invalid]="
+                                    formGroup.get('description').touched &&
+                                    formGroup.get('description').invalid" [readOnly]="inputReadOnly">
+                                    </textarea>
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !formGroup.get('description')?.valid &&
+                                    (formGroup.get('description')?.touched || formGroup.get('description')?.dirty)
+                                    ">
+                                        {{formGroup.get('description')?.hasError('required') ?
+                                        messages.NO_EMPTY : formGroup.get('description')?.hasError('maxLength') ?              messages.MAX_50 : messages.MAX_50 }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+    
+                    </form>
+
+                </div>
+
+                
+            </div>
+
+            <!-- Card de los datos detalles -->
+            <div class="card card-optional shadow" [hidden]="hiddeDetail">
+                <div class="card-header text-center">
+                    <h5 style="font-weight: bold;">
+                        Datos Detallados
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="container">
+
+                        <div class="row">
+                            <div class="col-12">
+
+                                <div class="dataTables_wrapper">
+                                    <div class="d-flex" style="justify-content: end">
+                                        <label>
+                                            <input aria-controls="datatable" class="form-control form-control-sm p-2 w-100"
+                                                placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                                (keyup)="search()"  />
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <ngx-datatable
+                                class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                                [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force"
+                                rowHeight="auto"  [limit]="resultsPerPage"
+                                [footerHeight]="60" [messages]="{emptyMessage: 'No hay registros disponibles', totalMessage: getTotalTextActive()}" >
+
+                                <ngx-datatable-column name="Código Promoción" prop="promotionCode" [cellClass]="'custom-class'" [width]="180">
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column name="Código Modelo" prop="modelCode" [cellClass]="'custom-class'" [width]="180">
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column name="Valor del Plan"  [cellClass]="'custom-class'" [width]="100">
+                                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+        
+                                    {{ row.planValue | number: '1.2-2' }}
+        
+                                    </ng-template>
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column name="Meses" prop="monthsPermanence" [cellClass]="'custom-class'" [width]="100">
+                                </ngx-datatable-column>
+
+                                <ngx-datatable-column name="Acciones" [width]="150">
+                                    <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                        let-value="value" let-row="row">
+
+                                        <button (click)="selectRows(row)" type="button"
+                                            class="btn btn-round btn-sm btn-info" data-placement="right"
+                                            data-toggle="tooltip" title="Dar clic para seleccionar el registro">
+                                            <i class="now-ui-icons gestures_tap-01"></i>
+                                        </button>
+
+                                        <button (click)="updateStatusRow(0,row)" *ngIf="row.status==1" type="button"
+                                            class="btn btn-round btn-sm btn-danger" data-placement="right"
+                                            data-toggle="tooltip" title="Dar clic para inactivar">
+                                            <i class="now-ui-icons  media-1_button-power"></i>
+                                        </button>
+
+                                        <button (click)="updateStatusRow(1,row)" *ngIf="row.status==0" type="button"
+                                            class="btn btn-round btn-sm btn-success" data-placement="right"
+                                            data-toggle="tooltip" title="Dar clic para activar">
+                                            <i class="now-ui-icons  objects_spaceship"></i>
+                                        </button>
+                                    </ng-template>
+
+                                </ngx-datatable-column>
+                                
+
+                            </ngx-datatable>
+                            </div>
+                        </div>
+
+                        <br>
+
+                        <!-- Formulario -->
+                        <div class="row">
+                            <div class="col-12">
+                                <form [formGroup]="formGroupDetail">
+    
+                                    <div class="row" [hidden]="true">
+                                        <div class="col-sm-12 col-md-6 col-lg-6">
+                                            <input type="number" class="form-control" formControlName="id" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row" [hidden]="true">
+                                        <div class="col-sm-12 col-md-6 col-lg-6">
+                                            <input type="number" class="form-control" formControlName="idOptional" readonly>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3" >
+                                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Código de Promoción
+                                                </b>
+                                            </label>
+
+                                            <input type="text" class="form-control" formControlName="promotionCode" [class.is-invalid]="
+                                            formGroupDetail.get('promotionCode').touched &&
+                                            formGroupDetail.get('promotionCode').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('promotionCode')?.valid &&
+                                            (formGroupDetail.get('promotionCode')?.touched || formGroupDetail.get('promotionCode')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('promotionCode')?.hasError('required') ?
+                                                messages.NO_EMPTY : formGroupDetail.get('promotionCode')?.hasError('maxLength') ?  messages.MAX_50 : messages.MAX_50 }}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Código del Modelo
+                                                </b>
+                                            </label>
+
+                                            <input type="text" class="form-control" formControlName="modelCode" [class.is-invalid]="
+                                            formGroupDetail.get('modelCode').touched &&
+                                            formGroupDetail.get('modelCode').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('modelCode')?.valid &&
+                                            (formGroupDetail.get('modelCode')?.touched || formGroupDetail.get('modelCode')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('modelCode')?.hasError('required') ?
+                                                messages.NO_EMPTY : formGroupDetail.get('modelCode')?.hasError('maxLength') ?  messages.MAX_50 : messages.MAX_50 }}
+                                            </span>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row mb-3" >
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Valor del Plan
+                                                </b>
+                                            </label>
+
+                                            <input type="text" class="form-control text-center" formControlName="planValue" [class.is-invalid]="
+                                            formGroupDetail.get('planValue').touched &&
+                                            formGroupDetail.get('planValue').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('planValue')?.valid &&
+                                            (formGroupDetail.get('planValue')?.touched || formGroupDetail.get('planValue')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('planValue')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.ONLY_NUMBERS_OPTIONAL }}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Meses de Permanencia
+                                                </b>
+                                            </label>
+
+                                            <input type="number" class="form-control text-center" formControlName="monthsPermanence" [class.is-invalid]="
+                                            formGroupDetail.get('monthsPermanence').touched &&
+                                            formGroupDetail.get('monthsPermanence').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('monthsPermanence')?.valid &&
+                                            (formGroupDetail.get('monthsPermanence')?.touched || formGroupDetail.get('monthsPermanence')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('monthsPermanence')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.ONLY_NUMBERS_MONTH }}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Fondo Subsidios
+                                                </b>
+                                            </label>
+
+                                            <input type="text" class="form-control text-center" formControlName="subsidyFund" [class.is-invalid]="
+                                            formGroupDetail.get('subsidyFund').touched &&
+                                            formGroupDetail.get('subsidyFund').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('subsidyFund')?.valid &&
+                                            (formGroupDetail.get('subsidyFund')?.touched || formGroupDetail.get('subsidyFund')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('subsidyFund')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.ONLY_NUMBERS_OPTIONAL }}
+                                            </span>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row mb-3" >
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Subsidio Adicional
+                                                </b>
+                                            </label>
+
+                                            <input type="text" class="form-control text-center" formControlName="additionalSubsidy" [class.is-invalid]="
+                                            formGroupDetail.get('additionalSubsidy').touched &&
+                                            formGroupDetail.get('additionalSubsidy').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('additionalSubsidy')?.valid &&
+                                            (formGroupDetail.get('additionalSubsidy')?.touched || formGroupDetail.get('additionalSubsidy')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('additionalSubsidy')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.ONLY_NUMBERS_OPTIONAL }}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Fondos Institucional
+                                                </b>
+                                            </label>
+
+                                            <input type="text" class="form-control text-center" formControlName="institutionalFunds" [class.is-invalid]="
+                                            formGroupDetail.get('institutionalFunds').touched &&
+                                            formGroupDetail.get('institutionalFunds').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('institutionalFunds')?.valid &&
+                                            (formGroupDetail.get('institutionalFunds')?.touched || formGroupDetail.get('institutionalFunds')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('institutionalFunds')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.NO_EMPTY }}
+                                            </span>
+
+                                        </div>
+
+                                        <div class="col-sm-12 col-md-4 col-lg-4">
+
+                                            <label class="form-label">
+                                                <b>
+                                                    Fondo Coops
+                                                </b>
+                                            </label>
+
+                                            <input type="text" class="form-control text-center" formControlName="coopsFund" [class.is-invalid]="
+                                            formGroupDetail.get('coopsFund').touched &&
+                                            formGroupDetail.get('coopsFund').invalid" [readOnly]="inputReadOnly">
+
+                                            <span class="text-danger mt-1" *ngIf="
+                                            !formGroupDetail.get('coopsFund')?.valid &&
+                                            (formGroupDetail.get('coopsFund')?.touched || formGroupDetail.get('coopsFund')?.dirty)
+                                            ">
+                                                {{formGroupDetail.get('coopsFund')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.ONLY_NUMBERS_OPTIONAL }}
+                                            </span>
+
+                                        </div>
+
+
+                                    </div>
+
+                                    <div class="row" style="justify-content: end;" >
+                                        <button (click)="addRowDetail()" [hidden]="!hiddeButton || action=='see'"  type="button"
+                                            class="btn btn-round bg-success mr-1" [disabled]="formGroupDetail.invalid">
+                                            Agregar
+                                        </button>
+
+                                        <button (click)="updateRowDetail()" [hidden]="hiddeButton || action=='see'" type="button"
+                                            class="btn btn-round bg-success mr-1" [disabled]="formGroupDetail.invalid">
+                                            Cambiar
+                                        </button>
+
+                                        <button *ngIf="action!='see'" (click)="resetFormDetail()" type="button"
+                                            class="btn btn-round bg-info mr-3">
+                                            Limpiar
+                                        </button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                    
+                    
+                </div>
+            </div>
+            
+
+
+        </div>
+
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button (click)="crudPromotion()" *ngIf="action==='add'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="formGroup.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+
+            <button (click)="crudPromotion()" *ngIf="action==='edit'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="formGroup.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+        </div>
+</div>

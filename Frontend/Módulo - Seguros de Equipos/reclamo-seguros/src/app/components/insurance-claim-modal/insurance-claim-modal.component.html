@@ -1,0 +1,356 @@
+<div class="main-content">
+  <form [formGroup]="dataForm">
+
+    <div class="modal-header">
+      <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+        {{ button === "see" ? "Detalle Reclamo de Seguro:" : button === "add" ? "Creación Reclamo de Seguro:" :
+        "Modificación
+        Reclamo de Seguro:"}}
+      </h4>
+      <button type="button" class="btn-close" (click)="closeModal()">
+        <i class="fa fa-times-circle" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="modal-divider-container">
+      <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+      <div class="card-container">
+        <div class="col-md-12  justify-content-center">
+          <div class="info-box">
+            <h5>Datos Cliente</h5>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-3 w-50"><b>IMEI:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="actualEsn" [readOnly]="inputReadOnly">
+                  <button (click)="findByEsn()" type="button" class="btn btn-round btn-sm btn-info">
+                    <i class="fas fa-search"></i>
+                  </button>
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('actualEsn')?.valid &&
+                    (dataForm.get('actualEsn')?.touched || dataForm.get('actualEsn')?.dirty)">
+                  {{dataForm.get('actualEsn')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Bandit:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="bandit" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('bandit')?.valid &&
+                  (dataForm.get('bandit')?.touched || dataForm.get('bandit')?.dirty)">
+                  {{dataForm.get('bandit')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Teléfono:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="phone" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('phone')?.valid &&
+                    (dataForm.get('phone')?.touched || dataForm.get('phone')?.dirty)">
+                  {{dataForm.get('phone')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Motivo:</b></label>
+                  <select class="form-control text-center" formControlName="reasonClaim"
+                    [ngClass]="{'disabled-multiselect': inputReadOnly}" [class.is-invalid]="
+                  dataForm.get('reasonClaim').touched &&
+                  dataForm.get('reasonClaim').invalid" (change)="onReasonChange()">
+                    <option [value]="reason.id" *ngFor="let reason of reasonsClaim">
+                      {{ reason.reason }}
+                    </option>
+                  </select>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('reasonClaim')?.valid &&
+                  (dataForm.get('reasonClaim')?.touched || dataForm.get('reasonClaim')?.dirty)">
+                  {{dataForm.get('reasonClaim')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Estado Tel:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="phoneStatus" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('phoneStatus')?.valid &&
+                    (dataForm.get('phoneStatus')?.touched || dataForm.get('phoneStatus')?.dirty)" disabled>
+                  {{dataForm.get('phoneStatus')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Estado Seguro:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="statusClaim" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('statusClaim')?.valid &&
+                  (dataForm.get('statusClaim')?.touched || dataForm.get('statusClaim')?.dirty)">
+                  {{dataForm.get('statusClaim')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Cuenta Cliente:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="customerAccount" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('customerAccount')?.valid &&
+                    (dataForm.get('customerAccount')?.touched || dataForm.get('customerAccount')?.dirty)">
+                  {{dataForm.get('customerAccount')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Nombre Cliente:</b></label>
+                  <input type="text" class="form-control" formControlName="customerName" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('customerName')?.valid &&
+                  (dataForm.get('customerName')?.touched || dataForm.get('customerName')?.dirty)">
+                  {{dataForm.get('customerName')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Cuenta Facturación:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="billingAccount" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('billingAccount')?.valid &&
+                    (dataForm.get('billingAccount')?.touched || dataForm.get('billingAccount')?.dirty)">
+                  {{dataForm.get('billingAccount')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Cuenta Servicio:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="serviceAccount" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('serviceAccount')?.valid &&
+                  (dataForm.get('serviceAccount')?.touched || dataForm.get('serviceAccount')?.dirty)">
+                  {{dataForm.get('serviceAccount')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Número Orden Taller:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="workshopOrderNumber"
+                    [readOnly]="inputReadOnly">
+                </div>
+                <span class="text-danger" *ngIf="
+                    dataForm.get('workshopOrderNumber')?.invalid &&
+                    (dataForm.get('workshopOrderNumber')?.touched || dataForm.get('workshopOrderNumber')?.dirty)">
+                  <ng-container *ngIf="dataForm.get('workshopOrderNumber')?.hasError('required')">
+                    {{ messages.NO_EMPTY }}
+                  </ng-container>
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Suma Asegurada:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="insuredSum" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('insuredSum')?.valid &&
+                  (dataForm.get('insuredSum')?.touched || dataForm.get('insuredSum')?.dirty)">
+                  {{dataForm.get('insuredSum')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12  justify-content-center">
+          <div class="info-box">
+            <h5>Datos Teléfono </h5>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Bodega:</b></label>
+                  <angular2-multiselect [data]="warehouseModel" formControlName="warehouse"
+                    [settings]="dropdownSettings" (onSelect)="changeWarehouseAndInventory($event)" displayByKey="name"
+                    (change)="changeWarehouseAndInventory($event)" class="custom-multiselect"
+                    [ngClass]="{'disabled-multiselect': inputReadOnly}">
+                  </angular2-multiselect>
+                </div>
+              </div>
+
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Tipo Inventario:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="newInvType" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('newInvType')?.valid &&
+                  (dataForm.get('newInvType')?.touched || dataForm.get('newInvType')?.dirty)">
+                  {{dataForm.get('newInvType')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Modelo:</b></label>
+
+                  <ng-container *ngIf="button === 'see'; else selectTemplate">
+                    <input type="text" formControlName="newModel" class="form-control" readonly />
+                  </ng-container>
+
+                  <ng-template #selectTemplate>
+                    <select class="form-control" formControlName="newModel" [class.is-invalid]="
+                    dataForm.get('newModel').touched &&
+                    dataForm.get('newModel').invalid" (change)="changeCodeService($event)">
+                      <option *ngFor="let existence of existencesModel" [value]="existence.modelCode">
+                        {{ existence.modelCode }} - {{ existence.description }}
+                      </option>
+                    </select>
+                  </ng-template>
+
+                  <span class="text-danger" *ngIf="
+                      !dataForm.get('newModel')?.valid &&
+                      (dataForm.get('newModel')?.touched || dataForm.get('newModel')?.dirty)">
+                    {{dataForm.get('newModel')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                  </span>
+                </div>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Precio:</b></label>
+                  <input type="number" class="form-control me-3" formControlName="actualPrice" step="0.01" disabled>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('actualPrice')?.valid &&
+                  (dataForm.get('actualPrice')?.touched || dataForm.get('actualPrice')?.dirty)">
+                  {{dataForm.get('actualPrice')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Deducible:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="deductible" disabled>
+
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('deductible')?.valid &&
+                    (dataForm.get('deductible')?.touched || dataForm.get('deductible')?.dirty)">
+                  {{dataForm.get('deductible')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Primas de Seguro (Adeudadas):</b></label>
+                  <input type="number" class="form-control me-3" formControlName="insurancePremium" step="0.01"
+                    disabled>
+
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('insurancePremium')?.valid &&
+                    (dataForm.get('insurancePremium')?.touched || dataForm.get('insurancePremium')?.dirty)">
+                  {{dataForm.get('insurancePremium')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Ajuste por Precio:</b></label>
+                  <input type="text" class="form-control me-3" formControlName="priceAdjustment"
+                    [readOnly]="inputReadOnly">
+
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('priceAdjustment')?.valid &&
+                    (dataForm.get('priceAdjustment')?.touched || dataForm.get('priceAdjustment')?.dirty)">
+                  {{dataForm.get('priceAdjustment')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+
+              <div class="col-sm-6 col-md-6 mx-auto">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Ajuste por Primas:</b></label>
+                  <input type="number" class="form-control me-3" formControlName="adjustmentPremiums"
+                    [readOnly]="inputReadOnly" step="0.01">
+
+                </div>
+                <span class="text-danger" *ngIf="
+                    !dataForm.get('adjustmentPremiums')?.valid &&
+                    (dataForm.get('adjustmentPremiums')?.touched || dataForm.get('adjustmentPremiums')?.dirty)">
+                  {{dataForm.get('adjustmentPremiums')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+            <div class="row mb-3">
+
+
+              <div class="col-sm-6 col-md-6 ">
+                <div class="d-flex align-items-center">
+                  <label class="form-label me-2 w-50"><b>Comentario:</b></label>
+                  <textarea class="form-control me-3" formControlName="observations" rows="4"
+                    placeholder="Escribe tu comentario aquí..." [readOnly]="inputReadOnly"></textarea>
+                </div>
+                <span class="text-danger" *ngIf="
+                  !dataForm.get('observations')?.valid &&
+                  (dataForm.get('observations')?.touched || dataForm.get('observations')?.dirty)">
+                  {{dataForm.get('observations')?.hasError('required') ? messages.NO_EMPTY : messages.MAX_15}}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+      <button *ngIf="button==='add'" (click)="crudInsuranceClaim()" type="button" class="btn btn-round btn-success mr-1"
+        [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+        Crear
+      </button>
+      <button *ngIf="button==='edit'" (click)="crudInsuranceClaim()" type="button"
+        class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+        Actualizar
+      </button>
+    </div>
+
+  </form>
+</div>

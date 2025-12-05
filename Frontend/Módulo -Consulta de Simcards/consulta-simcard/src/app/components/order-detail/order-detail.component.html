@@ -1,0 +1,214 @@
+<div class="main-content">
+
+    
+    <form>
+        <div class="card-container">
+
+            <!-- Fila 1 -->
+            <div class="row mb-2">
+                
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                    <div class="form-group row mt-2">
+
+                        <label class="col-sm-12 col-md-4 col-lg-4">
+                            <b>ICC:</b>
+                        </label>
+
+                        <div class="col-sm-12 col-md-8 col-lg-8" >
+                            <input type="text" class="form-control text-center" id="icc" name="icc" [(ngModel)]="orderDetail.icc"
+                                readonly>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6 col-lg-6">
+                    <div class="form-group row mt-3">
+                        <label class="col-sm-4"><b>IMSI:</b></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control text-center" id="imsi" name="imsi" [(ngModel)]="orderDetail.imsi" readonly />
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Fila 2 -->
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <div class="form-group row mt-2">
+                        <label class="col-sm-4"><b>IMSIB:</b></label>
+
+                        <div class="col-sm-12 col-md-8 col-lg-8">
+                            <input type="text" class="form-control text-center" id="imsib" name="imsib" 
+                                readonly [(ngModel)]="orderDetail.imsib">
+
+                        </div>
+
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row mt-2">
+                        <label class="col-sm-4"><b>KI:</b></label>
+                        <div class="col-sm-8">
+                            <input type="text" class="form-control text-center" id="ki" name="ki" 
+                                readonly [(ngModel)]="orderDetail.ki"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <br>
+        <!-- Card 2 -->
+        <div class="card-container">
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <h6 class="text-center font-weight-bold">DATOS PIN</h6>
+                </div>
+            </div>
+            <br>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group row mt-1">
+                        <label class="col-sm-4"><b>PIN 1:</b></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control text-center" id="pin1" name="pin1"
+                            readonly [(ngModel)]="orderDetail.pin1"/>
+                                 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row mt-1">
+                        <label class="col-sm-4"><b>PIN 2:</b></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control text-center" id="pin2" name="pin2" 
+                            readonly [(ngModel)]="orderDetail.pin2"/>
+                                 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <br>
+        <!-- Card 2 -->
+        <div class="card-container">
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <h6 class="text-center font-weight-bold">DATOS PUK</h6>
+                </div>
+            </div>
+            <br>
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="form-group row mt-1">
+                        <label class="col-sm-4"><b>PUK 1:</b></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control text-center" id="puk1" name="puk1"
+                            readonly [(ngModel)]="orderDetail.puk1"/>
+                                 
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row mt-1">
+                        <label class="col-sm-4"><b>PUK 2:</b></label>
+                        <div class="col-sm-8">
+                            <input type="number" class="form-control text-center" id="puk2" name="puk2" 
+                            readonly [(ngModel)]="orderDetail.puk2"/>
+                                 
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+        <!-- Card 4 -->
+        <div class="card-container">
+            <div class="row mt-3">
+                <div class="col-md-12">
+                    <h6 class="text-center font-weight-bold">DATOS ADM</h6>
+                </div>
+            </div>
+            <br>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <div class="form-group row mt-2">
+                        <label class="col-sm-4"><b>ADM 1:</b></label>
+
+                        <div class="col-sm-12 col-md-8 col-lg-8">
+                            <input type="text" class="form-control text-center"  id="adm1" name="adm1" readonly [(ngModel)]="orderDetail.adm1">
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group row mt-2">
+                        <label class="col-sm-4"><b>ADM 2:</b></label>
+
+                        <div class="col-sm-12 col-md-8 col-lg-8">
+                            <input type="text" class="form-control text-center"  id="adm2" name="adm2" readonly [(ngModel)]="orderDetail.adm2">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <div class="form-group row mt-2">
+                        <label class="col-sm-4"><b>ADM 3:</b></label>
+
+                        <div class="col-sm-12 col-md-8 col-lg-8">
+                            <input type="text" class="form-control text-center" id="adm3" name="adm3" readonly [(ngModel)]="orderDetail.adm3">
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <br>
+
+        <!-- Card Last -->
+        <div class="card-container">
+            <div class="row mt-2">
+                <div class="col-md-12">
+                    <h6 class="text-center font-weight-bold">ACC</h6>
+                </div>
+            </div>
+            <br>
+            <div class="row mb-2">
+                <div class="col-md-6">
+                    <div class="form-group row mt-1">
+                        <label class="col-sm-4"><b>ACC:</b></label>
+
+                        <div class="col-sm-12 col-md-8 col-lg-8">
+                            <input type="text" class="form-control text-center" id="acc" name="acc"  readonly [(ngModel)]="orderDetail.acc">
+
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+
+            <br>
+
+        </div>
+
+        
+    </form>
+    
+
+</div>

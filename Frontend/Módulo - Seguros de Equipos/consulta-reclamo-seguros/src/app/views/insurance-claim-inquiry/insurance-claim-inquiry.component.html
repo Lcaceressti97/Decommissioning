@@ -1,0 +1,159 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                <div class="card">
+
+                    <!-- Card Header -->
+                    <div class="card-header">
+                        <div class="row mt-3">
+                            <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                                <h5 _ngcontent-c9="" class="title">CONSULTA RECLAMO DE SEGUROS</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <br>
+                    <div class="card-body">
+                        <div class="d-flex w-30">
+                            <div class="col-sm-1 col-md-1">
+                                <div class="form-check form-check-inline mb-0">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                        id="inlineRadio1" value="option1" [(ngModel)]="selectedOption">
+                                    <label class="form-check-label" for="inlineRadio1">IMEI</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-1 col-md-1">
+                                <div class="form-check form-check-inline mb-0">
+                                    <input class="form-check-input" type="radio" name="inlineRadioOptions"
+                                        id="inlineRadio2" value="option2" [(ngModel)]="selectedOption">
+                                    <label class="form-check-label" for="inlineRadio2">Teléfono</label>
+                                </div>
+                            </div>
+                            <div class="col-sm-2 col-md-2">
+                                <div class="d-flex align-items-center">
+                                    <input type="text" class="form-control me-2" [(ngModel)]="inputText">
+                                    <button (click)="findByEsnOrPhone()" type="button"
+                                        class="btn btn-round btn-sm btn-info me-2">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+
+                        <!-- Controladores de la tabla -->
+                        <div class="dataTables_wrapper">
+
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Se muestran
+                                            <select aria-controls="datatable" class="form-control form-control-sm"
+                                                name="datatable_length" [(ngModel)]="resultsPerPage">
+                                                <option [value]="5">5</option>
+                                                <option [value]="10">10</option>
+                                                <option [value]="15">15</option>
+                                            </select>
+                                            resultados
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_filter" id="datatable_filter">
+                                        <label>
+                                            <input aria-controls="datatable" class="form-control form-control-sm"
+                                                placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                                (keyup)="search()" />
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+
+                        <!-- Tabla de contenido -->
+                        <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                            [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                            [externalPaging]="true" [count]="totalElements" [offset]="currentPage" [limit]="pageSize"
+                            (page)="onPageChange($event)" [footerHeight]="50" [messages]="{
+                  emptyMessage: 'No hay reclamos disponibles', 
+                  totalMessage: 'total',
+                  selectedMessage: 'seleccionado'
+              }">
+                            <ngx-datatable-column name="Teléfono" prop="phone" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="IMEI" prop="actualEsn" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Modelo" prop="newModel" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Fecha Inicio" prop="dateCreate" [cellClass]="'custom-class'">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+
+                                    {{ row.dateCreate | date: 'dd/MM/yyyy hh:mm:ss a' }}
+
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Fecha Resolución" prop="dateResolution"
+                                [cellClass]="'custom-class'">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+
+                                    {{ row.dateResolution | date: 'dd/MM/yyyy hh:mm:ss a' }}
+
+                                </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Estado" prop="statusClaim" [cellClass]="'custom-class'"
+                                [width]="100">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+                                    <div class="centered-columns" [ngClass]="getStatusColorClass(row?.statusClaim)">
+                                        {{ getStatusText(row.statusClaim) }}
+                                    </div>
+                                </ng-template>
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="Acciones" [width]="200">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+                                    <button (click)="openModal('see',row)" type="button"
+                                        class="btn btn-round btn-sm btn-info" data-placement="right"
+                                        data-toggle="tooltip" title="Dar clic para visualizar los detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button (click)="openModal('edit', row)" type="button"
+                                        class="btn btn-round btn-sm btn-success" data-placement="right"
+                                        data-toggle="tooltip" title="Dar clic para confirmar"
+                                        [disabled]="row.statusClaim === 'E' || row.statusClaim === 'C' || row.statusClaim === 'A'">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+
+                                    <button (click)="deleteInsuranceClaim(row)" type="button"
+                                        class="btn btn-round btn-sm btn-danger" data-placement="right"
+                                        data-toggle="tooltip" title="Dar clic para anular"
+                                        [disabled]="row.statusClaim === 'E' || row.statusClaim === 'A'">
+                                        <i class="fas fa-ban"></i>
+                                    </button>
+                                </ng-template>
+                            </ngx-datatable-column>
+
+                        </ngx-datatable>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

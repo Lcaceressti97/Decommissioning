@@ -1,0 +1,295 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+            Amarre Comodatos: {{ data.correlativeMooringCmd }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+
+                    <div class="card card-optional mb-5 shadow" *ngIf="disabledButton">
+                        <div class="card-header text-center">
+                            <h5 style="font-weight: bold;">
+                                Proceso de Amarre: 
+                            </h5>
+                        </div>
+
+                        <div class="card-body">
+
+                            <!-- Formulario de búsqueda -->
+                            <form [formGroup]="searchData" class="mb-3" >
+                                <div class="row">
+                                    <div class="col-sm-12 col-md-2 col-lg-2">
+                                        <label class="form-label ml-3" style="font-weight: bold;"> Ingrese el
+                                            número:
+                                        </label>
+                                    </div>
+                                    <div class="col-sm-12 col-md-3 col-lg-3">
+                                        <input class="form-control text-center" type="number" formControlName="subscriberId"
+                                            >
+                                        
+                                    </div>
+                                    <div class="col-sm-12 col-md-2 col-lg-2">
+                                        <button  (click)="findDataBySubscriber()" class="btn btn-info btn-sm btn-round sin-margen"
+                                            [disabled]="searchData.invalid || !utilService.loadGrants('EX')">
+                                            Buscar
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+
+                            <div class="row">
+                                <div class="col-12">
+
+                                    <div class="dataTables_wrapper">
+                                        <div class="d-flex" style="justify-content: end">
+                                            <label>
+                                                <input aria-controls="datatable" class="form-control form-control-sm p-2 w-100"
+                                                    placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                                    (keyup)="search()"  />
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <ngx-datatable
+                                        class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                                        [rows]="mooringModel" [loadingIndicator]="loadingIndicator" columnMode="force"
+                                        rowHeight="auto"  [limit]="maxComodatos"
+                                        [footerHeight]="60" [messages]="{emptyMessage: 'No hay registros disponibles', totalMessage: getTotalText()}">
+
+                                        <ngx-datatable-column name="Cuenta Cliente" prop="customerAccount" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Cuenta Facturación" prop="billingAccount" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Suscriptor" prop="subscriberId" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+                                        <ngx-datatable-column name="Usuario" prop="userName" [cellClass]="'custom-class'">
+                                        </ngx-datatable-column>
+
+                                        <ngx-datatable-column name="Remover" prop="dateOfEntry" [cellClass]="'custom-class'" [width]="150">
+                                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+    
+                                                    <button (click)="remove(rowIndex)" type="button"
+                                                        class="btn btn-round btn-sm btn-danger" data-placement="right"
+                                                        data-toggle="tooltip" title="Dar clic para dar de alta">
+                                                        <i class="now-ui-icons ui-1_simple-remove"></i>
+                                                    </button>
+                                                </ng-template>
+
+                                        </ngx-datatable-column>
+
+                        
+                                    </ngx-datatable>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-footer" >
+                            <div class="row ml-2" style="justify-content: start">
+                                <button *ngIf="disabledButton" (click)="insertMooring()" [disabled]="!utilService.loadGrants('CR') || !(mooringModel.length>0)" class="btn btn-round btn-success mb-3">
+                                    Amarrar
+                                </button>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- Tabs para mostrar las tablas de activo e inactivo -->
+                    <div class="row">
+                        <div class="col-12">
+
+                            <div class="card card-optional shadow">
+
+                                <div class="card-header text-center">
+                                    <h5 style="font-weight: bold;">
+                                        Lineas Comodatos: 
+                                    </h5>
+                                </div>
+
+                                <div class="card-body">
+
+                                    <!-- Tabs -->
+                                    <div class="row mb-3" style="justify-content: center;">
+                                        <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs"
+                                            style="padding-bottom: 0px;">
+                                            <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                                                <a ngbNavLink>
+                                                    Activos
+                                                </a>
+                                            </li>
+                                            <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                                                <a ngbNavLink>
+                                                    Inactivos
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Tablas -->
+                                    <div class="row" [hidden]="hideActive">
+                                        <div class="col-12">
+
+                                            <div class="dataTables_wrapper">
+                                                <div class="d-flex" style="justify-content: end">
+                                                    <label>
+                                                        <input aria-controls="datatable" class="form-control form-control-sm p-2 w-100"
+                                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValueTwo"
+                                                            (keyup)="searchActive()"  />
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <ngx-datatable
+                                            class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                                            [rows]="mooringModelActive" [loadingIndicator]="loadingIndicatorTwo" columnMode="force"
+                                            rowHeight="auto"  [limit]="maxComodatos"
+                                            [footerHeight]="60" [messages]="{emptyMessage: 'No hay registros activos disponibles', totalMessage: getTotalTextActive()}" >
+    
+                                            <ngx-datatable-column name="Cuenta Cliente" prop="customerAccount" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column name="Cuenta Facturación" prop="billingAccount" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column name="Suscriptor" prop="subscriberId" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column name="Usuario" prop="userName" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column name="Fecha Ingreso" prop="dateOfEntry" [cellClass]="'custom-class'" [width]="150">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                                let-row="row">
+                    
+                                                {{ row.dateOfEntry | date: 'dd/MM/yyyy hh:mm:ss' }}
+                    
+                                                </ng-template>
+    
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column *ngIf="(data.cmdStatus==='Activo' || data.cmdStatus==='A') && disabledButton===true" name="Acción" [width]="80">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+    
+                                                    <button  [disabled]="!utilService.loadGrants('UP')" (click)="updateStatus(0,row)" type="button"
+                                                        class="btn btn-round btn-sm btn-danger" data-placement="right"
+                                                        data-toggle="tooltip" title="Dar clic para dar de baja">
+                                                        <i class="now-ui-icons media-1_button-power"></i>
+                                                    </button>
+                                                </ng-template>
+    
+                                            </ngx-datatable-column>
+                                            
+
+                                        </ngx-datatable>
+
+
+                                        </div>
+                                    </div>
+                                    <div class="row" [hidden]="hideInactive">
+                                        <div class="col-12">
+
+                                            <div class="dataTables_wrapper">
+                                                <div class="d-flex" style="justify-content: end">
+                                                    <label>
+                                                        <input aria-controls="datatable" class="form-control form-control-sm p-2 w-100"
+                                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValueThree"
+                                                            (keyup)="searchInactive()"  />
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <ngx-datatable
+                                            class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                                            [rows]="mooringModelInactive" [loadingIndicator]="loadingIndicatorThree" columnMode="force"
+                                            rowHeight="auto"  [limit]="maxComodatos"
+                                            [footerHeight]="60" [messages]="{emptyMessage: 'No hay registros inactivos disponibles', totalMessage: getTotalTextInactive()}">
+    
+                                            <ngx-datatable-column name="Cuenta Cliente" prop="customerAccount" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column name="Cuenta Facturación" prop="billingAccount" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column name="Suscriptor" prop="subscriberId" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+                                            <ngx-datatable-column *ngIf="!hideCancel" name="Usuario" prop="userName" [cellClass]="'custom-class'" [width]="150">
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column name="Fecha Ingreso" prop="dateOfEntry" [cellClass]="'custom-class'" [width]="150">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                                let-row="row">
+                    
+                                                {{ row.dateOfEntry | date: 'dd/MM/yyyy hh:mm:ss' }}
+                    
+                                                </ng-template>
+    
+                                            </ngx-datatable-column>
+    
+                                            <ngx-datatable-column *ngIf="(data.cmdStatus==='Activo' || data.cmdStatus==='A') && disabledButton===true" name="Acción" [width]="80">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex"
+                                                    let-value="value" let-row="row">
+    
+                                                    <button [disabled]="!utilService.loadGrants('UP')" (click)="updateStatus(1,row)" type="button"
+                                                        class="btn btn-round btn-sm btn-success" data-placement="right"
+                                                        data-toggle="tooltip" title="Dar clic para dar de alta">
+                                                        <i class="now-ui-icons objects_spaceship"></i>
+                                                    </button>
+                                                </ng-template>
+    
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column *ngIf="hideCancel" name="Usuario Canceló" prop="unmooringUser" [width]="100" [cellClass]="'custom-class'">
+    
+                                            </ngx-datatable-column>
+
+                                            <ngx-datatable-column *ngIf="hideCancel" name="Fecha Cancelación"  [cellClass]="'custom-class'" [width]="150">
+                                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                                let-row="row">
+                    
+                                                {{ row.unmooringDate | date: 'dd/MM/yyyy hh:mm:ss' }}
+                    
+                                                </ng-template>
+    
+                                            </ngx-datatable-column>
+    
+    
+                                        </ngx-datatable>
+
+
+                                        </div>
+                                    </div>
+
+                                </div>
+
+                            </div>
+
+                           
+
+
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+        
+    </div>
+
+</div>

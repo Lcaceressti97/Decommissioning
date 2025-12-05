@@ -1,0 +1,29 @@
+.modal-divider-container {
+    margin: 0 1rem;
+    /* Márgenes izquierdo y derecho */
+}
+
+.modal-divider {
+    border: none;
+    border-top: 1px solid #022649;
+    /* Color de la línea */
+    margin: 5;
+    /* Restablecer margen para la línea */
+}
+
+.btn-close {
+    border: none !important;
+    background: transparent;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+}
+
+.fa {
+    color: #ff3636 !important;
+}
+
+.icon {
+    color: #ffffff !important;
+}

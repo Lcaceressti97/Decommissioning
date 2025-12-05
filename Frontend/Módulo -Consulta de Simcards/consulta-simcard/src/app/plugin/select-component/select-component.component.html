@@ -1,0 +1,51 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+
+            {{ "Detalles Simcard:" }}
+
+
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <!-- Tab de gráficos  -->
+        <div class="d-flex" style="justify-content: center;">
+
+            <div class="row">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                    <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                        <a ngbNavLink>
+                            General
+                        </a>
+                    </li>
+                    <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                        <a ngbNavLink>
+                            Detalles
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
+
+        <div *ngIf="active==1">
+            <app-order-control [orderControl]="orderControl"></app-order-control>
+        </div>
+
+        <div *ngIf="active==2">
+            <app-order-detail [orderDetail]="orderDetail"></app-order-detail>
+        </div>
+
+    </div>
+
+    
+
+</div>

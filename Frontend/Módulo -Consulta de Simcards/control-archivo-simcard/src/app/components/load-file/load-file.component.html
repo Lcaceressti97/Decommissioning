@@ -1,0 +1,70 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            {{"Subir Archivo del Pedido Batch: " + data.batch }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+        <div class="card-container">
+
+            <div class="row mb-2">
+                <div class="col-sm-12 col-md-6">
+                    <p><b>IMSI: </b>  {{ data.initialImsi }}</p>
+                    <p><b>Proveedor: </b> {{ data.supplierName }}</p>
+                    <p><b>Cliente: </b> {{ data.customerName }}</p>
+
+                </div>
+            </div>
+
+            <form [formGroup]="form">
+                <div class="row">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label clase="form-label"><b>Adjuntar Archivo de la Respuesta del Proveedor:</b></label>
+                    </div>
+                </div>
+                <div class="row mb-3">
+
+                    <div class="col-sm-12 col-md-9 col-md-9">
+                        <div class="col mr-2 fileCursor">
+                            <input type="file" class="custom-file-input" placeholder="File" accept=".out"
+                                formControlName="baseFile" (change)="selectFile($event)">
+                            <label class="custom-file-label">{{ fileName }}</label>
+                        </div>
+                    </div>
+
+                </div>
+
+            </form>
+            <div class="row" *ngIf="showContent">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <form>
+                        <label class="form-label"><b>Contenido del archivo:</b> </label>
+    
+                        <textarea name="baseFile" id="baseFile" cols="30" rows="10" class="form-control textarea-optional" style="max-height: 400px;" [(ngModel)]="contentFile"></textarea>
+                    </form>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+        
+            <button type="button" (click)="postFile()" class="btn btn-round bg-success btn-modal-file"
+                [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                Subir Archivo
+            </button>
+        
+
+    </div>
+
+</div>

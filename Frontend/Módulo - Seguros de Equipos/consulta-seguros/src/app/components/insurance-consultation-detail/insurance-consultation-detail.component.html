@@ -1,0 +1,70 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title" style="font-weight: bold;">
+            {{getTitle()}}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider"> <!-- Línea divisoria -->
+    </div>
+    <div class="modal-body">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <h5>Información del Cliente</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>E.S.N:</strong> {{ rowsSafeControlEquipment.esn }}</li>
+                            <li><strong>Cuenta Cliente:</strong> {{ rowsSafeControlEquipment.customerAccount }}</li>
+                            <li><strong>Cuenta de Servicio:</strong> {{ rowsSafeControlEquipment.serviceAccount }}</li>
+                            <li><strong>Cuenta de Facturación:</strong> {{ rowsSafeControlEquipment.billingAccount }}
+                            </li>
+                            <li><strong>Estado del Seguro:</strong> {{ rowsSafeControlEquipment.insuranceStatus }}
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="info-box">
+                        <h5>Información del Equipo</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Teléfono:</strong> {{ rowsSafeControlEquipment.phone }}</li>
+                            <li><strong>Modelo Teléfono:</strong> {{ rowsSafeControlEquipment.phoneModel }}</li>
+                            <li><strong>Origen del Teléfono:</strong> {{ rowsSafeControlEquipment.originPhone }}</li>
+                            <li><strong>Tipo de Inventario:</strong> {{ rowsSafeControlEquipment.inventoryType }}
+                            </li>
+                            <li><strong>Tipo de Origen:</strong> {{ rowsSafeControlEquipment.originType }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h5>Información de Cuotas y Fechas</h5>
+            <ul class="list-unstyled">
+                <li><strong>Cuota Mensual:</strong> {{ rowsSafeControlEquipment.monthlyFee }}</li>
+                <li><strong>Período Actual:</strong> {{ rowsSafeControlEquipment.currentPeriod }}</li>
+                <li><strong>Cuota Mensual 2:</strong> {{ rowsSafeControlEquipment.monthlyFee2 }}</li>
+                <li><strong>Período 2:</strong> {{ rowsSafeControlEquipment.period2 }}</li>
+                <li><strong>Cuota Mensual 3:</strong> {{ rowsSafeControlEquipment.monthlyFee3 }}</li>
+                <li><strong>Período 3:</strong> {{ rowsSafeControlEquipment.period3 }}</li>
+                <li><strong>Fecha de Servicio:</strong> {{ rowsSafeControlEquipment.dateStartService }}</li>
+                <li><strong>Fecha de Inicio:</strong> {{ rowsSafeControlEquipment.dateInit }}</li>
+                <li><strong>Fecha de Fin:</strong> {{ rowsSafeControlEquipment.dateEnd }}</li>
+                <li><strong>Fecha de Inclusión:</strong> {{ rowsSafeControlEquipment.dateInclusion }}</li>
+                <li><strong>Fecha de Operación:</strong> {{ rowsSafeControlEquipment.dateTransaction }}</li>
+
+
+            </ul>
+        </div>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-success" (click)="generatePdf()">Imprimir</button>
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">Cerrar</button>
+    </div>
+</div>

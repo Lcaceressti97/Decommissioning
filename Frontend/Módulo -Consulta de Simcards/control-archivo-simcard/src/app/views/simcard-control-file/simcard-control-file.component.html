@@ -1,0 +1,172 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">CONTROL DE PEDIDOS
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+                <br><br>
+                <div class="card-body">
+                    <div class="dataTables_wrapper">
+                        <input type="file" #fileInput style="display: none" (change)="onFileSelected($event)" />
+
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button class="btn btn-round mr-2 bg-darkBlue btn-outline-primary"
+                                    (click)="fileInput.click()">
+                                    <i class="fa fa-arrow-up icon"></i> Subir Archivo
+                                </button>
+
+
+                                <button class="btn btn-round mr-2 bg-darkBlue btn-outline-primary"
+                                    (click)="refrescar()">
+                                    Refrescar
+                                </button>
+                            </div>
+
+                            <!--                   <div class="col-md-5 d-flex justify-content-end align-items-center">
+                                
+                                <button class="btn btn-round bg-darkBlue btn-outline-primary"
+                                        title="Control de Pedidos" [disabled]="!utilService.loadGrants('GB')"
+                                        (click)="openModalControlOrder()">
+                                    <i class="fa fa-list-alt"></i> Control de Pedidos
+                                </button>
+                            </div> -->
+                        </div>
+
+
+
+
+                        <br>
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_length" id="datatable_length">
+                                    <label>
+                                        Se muestran
+                                        <select aria-controls="datatable" class="form-control form-control-sm"
+                                            name="datatable_length" [(ngModel)]="resultsPerPage">
+                                            <option [value]="10">10</option>
+                                            <option [value]="15">15</option>
+                                            <option [value]="50">50</option>
+                                        </select>
+                                        resultados
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_filter" id="datatable_filter">
+                                    <label>
+                                        <input aria-controls="datatable" class="form-control form-control-sm"
+                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                            (keyup)="searchSimcardControl()" (search)="reloadRows()" />
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                        [rows]="rowsSimcardControl" [loadingIndicator]="loadingIndicator" columnMode="force"
+                        rowHeight="auto" [limit]="resultsPerPage" [footerHeight]="100"
+                        [messages]="{emptyMessage: 'No hay archivos disponibles', totalMessage: getTotalText()}">
+                        <ngx-datatable-column name="ID" prop="id">
+                            <ng-template let-value="value" ngx-datatable-cell-template>
+                                <div class="centered-columns">{{ value }}</div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Nombre del Archivo" prop="nameFile">
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Estado" prop="status">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <div class="centered-columns" [ngClass]="getStatusColorClass(row?.statusColor)">
+                                    {{ row?.status }}
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Fecha" prop="created">
+                            <ng-template let-value="value" ngx-datatable-cell-template>
+                                <div class="centered-columns">{{ value }}</div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Detalle Archivo" prop="Id">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <div class="text-center">
+                                    <button type="button"
+                                        class="btn btn-round btn-outline-danger bg-darkBlue smaller-button mr-2 mt-2 mt-md-2 mt-lg-1"
+                                        data-toggle="tooltip" data-placement="top" title="Ver contenido del archivo"
+                                        [disabled]="!utilService.loadGrants('GB') || row.status === 'Pendiente'"
+                                        (click)="openDetailModal($event, row)">
+                                        <i class="fa fa-eye"></i>
+                                    </button>
+
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <!--
+                        <ngx-datatable-column name="Proveedores" prop="Id">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <div class="text-center">
+                                    <button type="button"
+                                        class="btn btn-round btn-outline-danger bg-darkBlue smaller-button mr-2 mt-2 mt-md-2 mt-lg-1"
+                                        data-toggle="tooltip" data-placement="top" title="Seleccionar Proveedor"
+                                        [disabled]="!utilService.loadGrants('GB') || row.status === 'Pendiente' || row.suppliersId !== null"
+
+                                        (click)="openModalSuppliers($event, row)">
+                                        <i class="fa fa-user-circle"></i>
+                                    </button>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column>
+                        -->
+
+                        <ngx-datatable-column name="Pedido" prop="Id">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <button type="button"
+                                    class="btn btn-round btn-outline-danger bg-darkBlue smaller-button mr-2 mt-2 mt-md-2 mt-lg-1"
+                                    data-toggle="tooltip" data-placement="top" title="Crear Pedido"
+                                    [disabled]="!utilService.loadGrants('GB') || row.status === 'Pendiente' || row.idSimcardOrder !== null"
+                                    (click)="openModalOrderControl(row)">
+                                    <i class="fa fa-cart-plus"></i>
+                                </button>
+
+
+                                <button type="button"
+                                    class="btn btn-round btn-outline-danger bg-darkBlue smaller-button mr-2 mt-2 mt-md-2 mt-lg-1"
+                                    data-toggle="tooltip" data-placement="top" title="Procesar Pedido"
+                                    [disabled]="!utilService.loadGrants('GB') || row.status === 'Pendiente' || row.idSimcardOrder === null"
+                                    (click)="openModalSeeOrder($event, row)">
+                                    <i class="fa fa-cogs"></i>
+                                </button>
+
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <!--                         <ngx-datatable-column name="Ver-Procesar Pedido" prop="Id">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                <div class="text-center">
+                                    <button type="button"
+                                        class="btn btn-round btn-outline-danger bg-darkBlue smaller-button mr-2 mt-2 mt-md-2 mt-lg-1"
+                                        data-toggle="tooltip" data-placement="top" title="Ver / Procesar Pedido"
+                                        [disabled]="!utilService.loadGrants('GB') || row.status === 'Pendiente'"
+                                        (click)="openModalSeeOrder($event, row)">
+                                        <i class="fa fa-cogs"></i>
+                                    </button>
+                                </div>
+                            </ng-template>
+                        </ngx-datatable-column> -->
+                    </ngx-datatable>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

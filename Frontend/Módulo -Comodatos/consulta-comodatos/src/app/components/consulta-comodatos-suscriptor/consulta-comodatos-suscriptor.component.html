@@ -1,0 +1,114 @@
+<div class="main-content">
+    <div class="row">
+        <div class="col-12">
+
+            <div class="card">
+
+                <div class="card-header card-header-optional mt-3">
+                    <div class="row">
+                        <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                            <h5 _ngcontent-c9="" class="title">CONSULTA DE COMODATOS
+                            </h5>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body">
+                    <br>
+                    <div>
+                        <div class="row mb-3" style="padding-left: 20px;">
+                            <label class="form-label font-size-large text-dark mr-3"><b>Tipo de Consulta:</b>
+                            </label>
+                            <div [classList]="inputClasses">
+                                <angular2-multiselect [data]="dropDownList" [(ngModel)]="selectedItem"
+                                    (onDeSelect)="onItemDeSelect($event)" (onSelect)="onItemSelect($event)"
+                                    [settings]="dropsownSettings">
+                                </angular2-multiselect>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+
+                    <div class="dataTables_wrapper">
+                        <div class="row">
+                            <div class="col-sm-12 col-md-6 col-lg-6">
+                                <div class="dataTables_length" id="datatable_length">
+                                    <label>
+                                        Se muestran
+                                        <select aria-controls="datatable" class="form-control form-control-sm"
+                                            name="datatable_length" [(ngModel)]="resultsPerPage">
+                                            <option [value]="10">10</option>
+                                            <option [value]="15">15</option>
+                                            <option [value]="50">50</option>
+                                        </select>
+                                        resultados
+                                    </label>
+                                </div>
+                            </div>
+
+
+                            <div class="col-sm-12 col-md-6">
+                                <div class="dataTables_filter" id="datatable_filter">
+                                    <label>
+                                        <input aria-controls="datatable" class="form-control form-control-sm"
+                                            placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                            (keyup)="search()" />
+                                    </label>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div>
+                        <!-- Tabla de contenido -->
+                        <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                            [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                            [limit]="resultsPerPage" [footerHeight]="60"
+                            [messages]="{emptyMessage: 'No hay registros disponibles', totalMessage: getTotalText()}">
+
+                            <ngx-datatable-column name="Correlativo Comodato" prop="correlativeCmd"
+                                [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Correlativo Amarre" prop="correlativeMooringCmd"
+                                [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Suscriptor" prop="subscriberId" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Estado" prop="cmdStatus" [cellClass]="'custom-class'">
+
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Fecha Creación" [cellClass]="'custom-class'">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+                                    {{ row.createDate | date: 'dd/MM/yyyy hh:mm:ss' }}
+                                </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Acción" [width]="200">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+                                    <button (click)="openModal(row)" type="button" class="btn btn-round btn-sm btn-info"
+                                        data-placement="right" data-toggle="tooltip"
+                                        title="Dar clic para visualizar los detalles">
+                                        <i class="now-ui-icons design_bullet-list-67"></i>
+                                    </button>
+
+                                    <!-- TODO: Add validations and permissions to buttons -->
+                                </ng-template>
+                            </ngx-datatable-column>
+
+                        </ngx-datatable>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>

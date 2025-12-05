@@ -1,0 +1,151 @@
+.modal-divider-container {
+    margin: 0 1rem;
+    /* Márgenes izquierdo y derecho */
+}
+
+.modal-divider {
+    border: none;
+    border-top: 1px solid #022649;
+    /* Color de la línea */
+    margin: 5;
+    /* Restablecer margen para la línea */
+}
+
+.card-container {
+    border: 1px solid #ddd;
+    /* Añade un borde de 1 píxel sólido */
+    border-radius: 8px;
+    /* Añade esquinas redondeadas */
+    padding: 15px;
+    /* Añade relleno interno */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    /* Añade una suave sombra */
+    margin-bottom: 15px;
+    /* Añade espacio en la parte inferior para separar de otros elementos */
+}
+
+.btn-close {
+    border: none !important;
+    background: transparent;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+}
+
+.fa {
+    color: #ff3636 !important;
+}
+
+.icon {
+    color: #ffffff !important;
+}
+
+.btn-close {
+    border: none !important;
+    background: transparent;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+}
+
+.fa {
+    color: #ff3636 !important;
+}
+
+.icon {
+    color: #ffffff !important;
+}
+
+.modal-footer {
+    justify-content: end;
+}
+
+.modal-footer button {
+    justify-content: end;
+    margin-left: 10px;
+}
+
+/* Importar Bootstrap */
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+/* Estilos personalizados para el modal */
+.modal-body {
+    padding: 20px;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th {
+    background-color: #f8f9fa;
+}
+
+.form-check-input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.table-title {
+    font-weight: bold;
+    background-color: #f8f9fa;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.modal-divider-container {
+    margin: 0 1rem;
+    /* Márgenes izquierdo y derecho */
+}
+
+.modal-divider {
+    border: none;
+    border-top: 1px solid #022649;
+    /* Color de la línea */
+    margin: 0;
+    /* Restablecer margen para la línea */
+}
+
+/* Estilo para los rectángulos de información */
+.info-box {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    /* Bordes redondeados */
+    padding: 10px;
+    margin-bottom: 20px;
+    text-align: center;
+    background-color: #fff;
+    /* Fondo blanco */
+    color: #333;
+    /* Texto gris oscuro */
+    box-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    /* Sombra */
+}
+
+/* Estilo para el título en los rectángulos de información */
+.info-box h5 {
+    padding: 5px;
+    background-color: #063b66;
+    /* Fondo azul turquesa oscuro */
+    color: white;
+    /* Texto blanco */
+    font-weight: bold;
+    /* Texto en negrita */
+}
+
+/* Estilo para la lista sin viñetas */
+.info-box ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+/* Estilo para los elementos de la lista en los rectángulos de información */
+.info-box li {
+    margin-bottom: 5px;
+}
+
+.container-center {
+    justify-content: center;
+}

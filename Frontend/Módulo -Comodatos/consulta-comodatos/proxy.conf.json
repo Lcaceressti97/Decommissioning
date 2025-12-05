@@ -1,0 +1,11 @@
+{
+    "/apiComodatos": {
+        "target": "http://192.168.162.15:4460/comodatos",
+        "secure": false,
+        "changeOrigin": false,
+        "logLevel": "debug",
+        "pathRewrite": {
+            "^/apiComodatos": ""
+        }
+    }
+}

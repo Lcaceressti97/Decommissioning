@@ -1,0 +1,117 @@
+<div class="main-content">
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12">
+
+        <div class="card">
+
+          <!-- Card Header -->
+          <div class="card-header">
+            <div class="row mt-3">
+              <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                <h5 _ngcontent-c9="" class="title">MOTIVOS SEGUROS</h5>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+
+            <div class="row">
+              <div class="col">
+                <button (click)="openModal('add',null)" class="btn btn-success btn-round mr-1">
+                  <i class="fas fa-plus"></i> Crear Motivo
+                </button>
+              </div>
+            </div>
+            <br>
+
+            <!-- Controladores de la tabla -->
+            <div class="dataTables_wrapper">
+
+              <div class="row">
+                <div class="col-sm-12 col-md-6">
+                  <div class="dataTables_length" id="datatable_length">
+                    <label>
+                      Se muestran
+                      <select aria-controls="datatable" class="form-control form-control-sm" name="datatable_length"
+                        [(ngModel)]="resultsPerPage">
+                        <option [value]="5">5</option>
+                        <option [value]="10">10</option>
+                        <option [value]="15">15</option>
+                      </select>
+                      resultados
+                    </label>
+                  </div>
+                </div>
+
+                <div class="col-sm-12 col-md-6">
+                  <div class="dataTables_filter" id="datatable_filter">
+                    <label>
+                      <input aria-controls="datatable" class="form-control form-control-sm" placeholder="Buscar"
+                        type="search" [(ngModel)]="searchedValue" (keyup)="search()" />
+                    </label>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <!-- Table -->
+
+            <!-- Tabla de contenido -->
+            <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2" [rows]="rows"
+              [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto" [limit]="resultsPerPage"
+              [footerHeight]="60"
+              [messages]="{emptyMessage: 'No hay registros disponibles', totalMessage: getTotalText()}">
+
+              <ngx-datatable-column name="ID" prop="id" [cellClass]="'custom-class'">
+              </ngx-datatable-column>
+              <ngx-datatable-column name="Motivo" prop="reason" [cellClass]="'custom-class'">
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Descripción" prop="description" [cellClass]="'custom-class'">
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Estado" prop="status" [cellClass]="'custom-class'">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                  <div class="centered-columns" [ngClass]="getStatusColorClass(row?.status)">
+                    {{ getStatusText(row.status) }}
+                  </div>
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Fecha Creación" [cellClass]="'custom-class'">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+
+                  {{ row.createdDate | date: 'dd/MM/yyyy hh:mm:ss a' }}
+
+                </ng-template>
+              </ngx-datatable-column>
+
+              <ngx-datatable-column name="Acciones" [width]="200">
+                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value" let-row="row">
+                  <button (click)="openModal('see',row)" type="button" class="btn btn-round btn-sm btn-info"
+                    data-placement="right" data-toggle="tooltip" title="Dar clic para visualizar los detalles">
+                    <i class="now-ui-icons design_bullet-list-67"></i>
+                  </button>
+                  <button (click)="openModal('edit',row)" type="button" class="btn btn-round btn-sm btn-warning"
+                    data-placement="right" data-toggle="tooltip" title="Dar clic para editar">
+                    <i class="now-ui-icons ui-2_settings-90"></i>
+                  </button>
+
+
+                  <!-- TODO: Add validations and permissions to buttons -->
+                </ng-template>
+              </ngx-datatable-column>
+
+            </ngx-datatable>
+
+
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,121 @@
+<div class="main-content">
+  <form [formGroup]="dataForm">
+
+    <div class="modal-header">
+      <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+        {{ button === "see" ? "Detalle Motivo:" : button === "add" ? "Creación de Motivo:" : "Modificación
+        de Motivo:"}}
+      </h4>
+      <button type="button" class="btn-close" (click)="closeModal()">
+        <i class="fa fa-times-circle" aria-hidden="true"></i>
+      </button>
+    </div>
+
+    <div class="modal-divider-container">
+      <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+      <div class="card-container">
+
+        <div class="row mt-2">
+
+          <div class="col-sm-12 col-md-12 col-lg-12">
+
+            <div class="form-group row">
+
+              <div class="col-sm-12 col-md-6 text-center">
+                <b>Motivo :</b>
+              </div>
+
+              <div class="col-sm-12 col-md-6">
+                <input type="text" class="form-control text-center" formControlName="reason" [class.is-invalid]="
+                              dataForm.get('reason').touched &&
+                              dataForm.get('reason').invalid" [readOnly]="inputReadOnly">
+
+                <span class="text-danger mt-1" *ngIf="
+                                  !dataForm.get('reason')?.valid &&
+                                  (dataForm.get('reason')?.touched || dataForm.get('reason')?.dirty)
+                                  ">
+                  {{dataForm.get('reason')?.hasError('required') ?
+                  messages.NO_EMPTY : dataForm.get('reason')?.hasError('maxLength') ?
+                  messages.MAX_1 : messages.MAX_1}}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        <div class="row mt-2">
+
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 text-center">
+                <b>Descripción:</b>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <input type="text" class="form-control text-center" formControlName="description" [class.is-invalid]="
+                              dataForm.get('description').touched &&
+                              dataForm.get('description').invalid" [readOnly]="inputReadOnly">
+
+                <span class="text-danger mt-1" *ngIf="
+                                  !dataForm.get('description')?.valid &&
+                                  (dataForm.get('description')?.touched || dataForm.get('description')?.dirty)
+                                  ">
+                  {{dataForm.get('description')?.hasError('required') ?
+                  messages.NO_EMPTY : dataForm.get('description')?.hasError('maxLength') ? messages.MAX_6
+                  : messages.MAX_6}}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+
+          <div class="col-sm-12 col-md-12 col-lg-12">
+            <div class="form-group row">
+              <div class="col-sm-12 col-md-6 text-center">
+                <b>Estado:</b>
+              </div>
+              <div class="col-sm-12 col-md-6">
+                <select class="form-control text-center" [attr.disabled]="button==='see' ? true : null"
+                  formControlName="status" [class.is-invalid]="
+                dataForm.get('status').touched &&
+                dataForm.get('status').invalid">
+                
+                  <option value="1">Activo</option>
+                  <option value="0">Inactivo</option>
+                </select>
+
+                <span class="text-danger mt-1" *ngIf="
+                                  !dataForm.get('status')?.valid &&
+                                  (dataForm.get('status')?.touched || dataForm.get('status')?.dirty)
+                                  ">
+                  {{dataForm.get('status')?.hasError('required') ?
+                  messages.NO_EMPTY : dataForm.get('status')?.hasError('maxLength') ? messages.MAX_6
+                  : messages.MAX_6}}
+                </span>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer" style="justify-content: end;">
+      <button *ngIf="button==='add'" (click)="crudReasons()" type="button" class="btn btn-round btn-success mr-1"
+        [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+        Crear
+      </button>
+      <button *ngIf="button==='edit'" (click)="crudReasons()" type="button" class="btn btn-round btn-success mr-1"
+        [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+        Actualizar
+      </button>
+    </div>
+
+  </form>
+</div>

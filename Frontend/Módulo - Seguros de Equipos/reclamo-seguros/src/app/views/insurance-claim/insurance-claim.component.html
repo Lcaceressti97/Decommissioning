@@ -1,0 +1,155 @@
+<div class="main-content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 col-md-12 col-sm-12">
+
+                <div class="card">
+
+                    <!-- Card Header -->
+                    <div class="card-header">
+                        <div class="row mt-3">
+                            <div class="col-sm-12 col-md-12 col-lg-12" style="text-align: center;">
+                                <h5 _ngcontent-c9="" class="title">RECLAMO DE SEGUROS</h5>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+
+                        <form [formGroup]="consultForm">
+
+                            <div class="row mb-2" style="padding-left: 20px;">
+                                <div [classList]="inputClasses" style="margin-right: 20px;"> <label for="dateInit"
+                                        class="form-label font-size-large text-dark" style="font-size: 15px;">
+                                        <b>IMEI:</b>
+                                    </label>
+                                </div>
+                                <div [classList]="inputClasses" style="margin-right: 20px;"> <input
+                                        class="form-control font-size-large" type="text" formControlName="esn"
+                                        placeholder="Ingrese la IMEI">
+                                </div>
+
+                                <div [classList]="inputClasses" style="margin-right: 20px;"> <button
+                                        (click)="getInsuranceClaimByEsn(consultForm.value.esn)"
+                                        [disabled]="consultForm.invalid"
+                                        class="btn btn-round mr-2 bg-darkBlue btn-outline-primary">
+                                        <i class="fas fa-search"></i>
+                                    </button>
+                                </div>
+                                <div [classList]="inputClasses" style="margin-right: 10px;"> <button
+                                        (click)="refreshTable()" title="Refrescar"
+                                        class="btn btn-round mr-2 bg-darkBlue btn-outline-primary">
+                                        <i class="fas fa-sync"></i>
+                                    </button>
+                                </div>
+                            </div>
+
+                        </form>
+
+                        <div class="row">
+                            <div class="col">
+                                <button (click)="openModal('add',null)" class="btn btn-success btn-round mr-1">
+                                    <i class="fas fa-plus"></i> Crear Reclamo
+                                </button>
+                            </div>
+                        </div>
+                        <br>
+
+                        <!-- Controladores de la tabla -->
+                        <div class="dataTables_wrapper">
+
+                            <div class="row">
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_length" id="datatable_length">
+                                        <label>
+                                            Se muestran
+                                            <select aria-controls="datatable" class="form-control form-control-sm"
+                                                name="datatable_length" [(ngModel)]="resultsPerPage">
+                                                <option [value]="5">5</option>
+                                                <option [value]="10">10</option>
+                                                <option [value]="15">15</option>
+                                            </select>
+                                            resultados
+                                        </label>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-12 col-md-6">
+                                    <div class="dataTables_filter" id="datatable_filter">
+                                        <label>
+                                            <input aria-controls="datatable" class="form-control form-control-sm"
+                                                placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                                (keyup)="search()" />
+                                        </label>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Table -->
+
+                        <!-- Tabla de contenido -->
+                        <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                            [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                            [externalPaging]="true" [count]="totalElements" [offset]="currentPage" [limit]="pageSize"
+                            (page)="onPageChange($event)" [footerHeight]="50" [messages]="{
+                      emptyMessage: 'No hay reclamos disponibles', 
+                      totalMessage: 'total',
+                      selectedMessage: 'seleccionado'
+                  }">
+
+                            <ngx-datatable-column name="Teléfono" prop="phone" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+                            <ngx-datatable-column name="IMEI" prop="actualEsn" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Modelo" prop="newModel" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Cuenta Facturación" prop="billingAccount"
+                                [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Usuario" prop="userCreate" [cellClass]="'custom-class'">
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Fecha Creación" prop="dateCreate" [cellClass]="'custom-class'">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+
+                                    {{ row.dateCreate | date: 'dd/MM/yyyy hh:mm:ss a' }}
+
+                                </ng-template>
+                            </ngx-datatable-column>
+
+                            <ngx-datatable-column name="Acciones" [width]="200">
+                                <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                    let-row="row">
+                                    <button (click)="openModal('see',row)" type="button"
+                                        class="btn btn-round btn-sm btn-info" data-placement="right"
+                                        data-toggle="tooltip" title="Dar clic para visualizar los detalles">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button (click)="openModal('edit',row)" type="button"
+                                        class="btn btn-round btn-sm btn-warning" data-placement="right"
+                                        data-toggle="tooltip" title="Dar clic para editar"
+                                        [disabled]="row.statusClaim === 'E' || row.statusClaim === 'C' || row.statusClaim === 'A'">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+
+
+                                </ng-template>
+                            </ngx-datatable-column>
+
+                        </ngx-datatable>
+
+
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

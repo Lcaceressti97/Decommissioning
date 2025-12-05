@@ -1,0 +1,337 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            {{ " Detalles de Lotes Modelo: " + data.model }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+
+        <div class="row m-2" >
+            <button [hidden]="!showForm" (click)="changeForm(false)" type="button" class="btn btn-round bg-success">
+                Nuevo Lote
+            </button>
+
+            <button [hidden]="showForm" (click)="changeForm(true)" type="button" class="btn btn-round bg-info">
+                Ocultar Formulario
+            </button>
+        </div>
+
+        <!-- Formulario de creación -->
+
+        <div class="card card-container" [hidden]="showForm">
+            <div class="card-header">
+                <h5 class="text-center"><b>Datos del Lote</b></h5>
+            </div>
+
+            <div class="card-body">
+                <form [formGroup]="form">
+                    <div class="row mb-2">
+
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-4 col-lg-4">
+                                    <b>Serie:</b>
+                                </label>
+
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <input type="number" class="form-control text-center" formControlName="serie"
+                                    [class.is-invalid]="
+                                    form.get('serie').touched &&
+                                    form.get('serie').invalid"
+                                    >
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('serie')?.valid &&
+                                    (form.get('serie')?.touched || form.get('serie')?.dirty)
+                                    ">
+                                        {{form.get('serie')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-4 col-lg-4">
+                                    <b>Rango Inicial:</b>
+                                </label>
+
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <input type="number" class="form-control text-center" formControlName="rangeInitial"
+                                    [class.is-invalid]="
+                                    form.get('rangeInitial').touched &&
+                                    form.get('rangeInitial').invalid"
+                                    >
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('rangeInitial')?.valid &&
+                                    (form.get('rangeInitial')?.touched || form.get('rangeInitial')?.dirty)
+                                    ">
+                                        {{form.get('rangeInitial')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+   
+                    </div>
+
+
+                    <!-- Row Two -->
+                    <div class="row mb-2">
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-4 col-lg-4">
+                                    <b>Cantidad:</b>
+                                </label>
+
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <input type="number" class="form-control text-center" formControlName="quantity"
+                                    [class.is-invalid]="
+                                    form.get('quantity').touched &&
+                                    form.get('quantity').invalid"
+                                    >
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('quantity')?.valid &&
+                                    (form.get('quantity')?.touched || form.get('quantity')?.dirty)
+                                    ">
+                                        {{form.get('quantity')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Row Four -->
+                    <div class="row mb-2">
+
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-4 col-lg-4">
+                                    <b>Fecha Creación:</b>
+                                </label>
+
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <input type="date" class="form-control text-center" formControlName="createdDate"
+                                    [class.is-invalid]="
+                                    form.get('createdDate').touched &&
+                                    form.get('createdDate').invalid"
+                                    (change)="validateDates()"
+                                    >
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('createdDate')?.valid &&
+                                    (form.get('createdDate')?.touched || form.get('createdDate')?.dirty)
+                                    ">
+                                        {{form.get('createdDate')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-4 col-lg-4">
+                                    <b>Fecha Expiración:</b>
+                                </label>
+
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <input type="date" class="form-control text-center" formControlName="dueDate"
+                                    [class.is-invalid]="
+                                    form.get('dueDate').touched &&
+                                    form.get('dueDate').invalid"
+                                    (change)="validateDates()"
+                                    >
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('dueDate')?.valid &&
+                                    (form.get('dueDate')?.touched || form.get('dueDate')?.dirty)
+                                    ">
+                                        {{form.get('dueDate')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- Row Three -->
+                    <div class="row mb-2">
+
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-4 col-lg-4">
+                                    <b>Días:</b>
+                                </label>
+
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <input type="number" class="form-control text-center" formControlName="days"
+                                    [class.is-invalid]="
+                                    form.get('days').touched &&
+                                    form.get('days').invalid"
+                                    >
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('days')?.valid &&
+                                    (form.get('days')?.touched || form.get('days')?.dirty)
+                                    ">
+                                        {{form.get('days')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="col-sm-12 col-md-6 col-lg-6">
+
+                            <div class="form-group row">
+                                <label class="col-sm-12 col-md-4 col-lg-4">
+                                    <b>Valor:</b>
+                                </label>
+
+                                <div class="col-sm-12 col-md-8 col-lg-8">
+                                    <input type="number" class="form-control text-center" formControlName="value"
+                                    [class.is-invalid]="
+                                    form.get('value').touched &&
+                                    form.get('value').invalid"
+                                    >
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !form.get('value')?.valid &&
+                                    (form.get('value')?.touched || form.get('value')?.dirty)
+                                    ">
+                                        {{form.get('value')?.hasError('required') ?
+                                        messages.NO_EMPTY : messages.NO_EMPTY }}
+                                    </span>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="row mb-1" style="justify-content: end;">
+                        <button [disabled]="!utilService.loadGrants('CR') || form.invalid" type="button" class="btn btn-round bg-success mr-3">
+                            Crear Lote
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+
+        </div>
+
+        <br [hidden]="showForm"><br [hidden]="showForm">
+
+        <div class="dataTables_wrapper">
+
+            <div class="row">
+
+                <div class="col-sm-12 col-md-6">
+                    
+
+                    <div class="dataTables_length" id="datatable_length">
+                        <label>
+                            Se muestran
+                            <select aria-controls="datatable" class="form-control form-control-sm"
+                                name="datatable_length" [(ngModel)]="resultsPerPage">
+                                <option [value]="5">5</option>
+                                <option [value]="10">10</option>
+                                <option [value]="15">15</option>
+                            </select>
+                            resultados
+                        </label>
+                    </div>
+
+                </div>
+                
+                <div class="col-sm-12 col-md-6">
+                    <div class="dataTables_filter" id="datatable_filter">
+                        <label>
+                            <input aria-controls="datatable" class="form-control form-control-sm "
+                                placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                (keyup)="search()" />
+                        </label>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="container">
+            <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                        [rows]="rows" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                        [limit]="resultsPerPage" [footerHeight]="100"
+                        [messages]="{emptyMessage: 'No hay archivos disponibles', totalMessage: getTotalText()}">
+
+                        <ngx-datatable-column name="Serie" prop="serie" [cellClass]="'custom-class'">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Rango Inicial" prop="rangeInitial" [cellClass]="'custom-class'">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Cantidad" prop="quantity" [cellClass]="'custom-class'">
+                        </ngx-datatable-column>
+
+                       
+                        
+
+                        <ngx-datatable-column name="Fecha Efectiva" [cellClass]="'custom-class'">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                {{ row.createdDate | date: 'dd/MM/yyyy hh:mm:ss a' }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Fecha Expiración" [cellClass]="'custom-class'">
+                            <ng-template ngx-datatable-cell-template let-rowIndex="rowIndex" let-value="value"
+                                let-row="row">
+                                {{ row.dueDate | date: 'dd/MM/yyyy hh:mm:ss a' }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Días" prop="days" [cellClass]="'custom-class'" [width]="50">
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Valor" prop="value" [cellClass]="'custom-class'" [width]="50">
+                        </ngx-datatable-column>
+
+                    </ngx-datatable>
+        </div>
+
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+
+</div>

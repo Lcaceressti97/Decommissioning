@@ -1,0 +1,79 @@
+.btn-close {
+    border: none !important;
+    background: transparent;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+}
+
+.fa {
+    color: #ff3636 !important;
+}
+
+.icon {
+    color: #ffffff !important;
+}
+
+.modal-footer {
+    justify-content: end;
+}
+
+.modal-footer button {
+    justify-content: end;
+    margin-left: 10px;
+}
+
+.modal-divider-container {
+    margin: 0 1rem;
+}
+
+.modal-divider {
+    border: none;
+    border-top: 1px solid #022649;
+    margin: 0;
+}
+
+.nav-tabs .nav-item .nav-link.active {
+    color: #ffffff;
+    background-color: #002e6e;
+    border: 1px solid #ffffff;
+}
+
+.nav-tabs .nav-item .nav-link.active:hover {
+    color: #ffffff !important;
+    background-color: #002e6e;
+    border: 1px solid #ffffff;
+}
+
+.btn-optional-create {
+    padding: 5px 15px !important;
+    margin: 0 !important;
+}
+
+.col-2-optional {
+    padding: 0 !important;
+}
+
+.col-10-optional {
+    padding-right: 0 !important;
+}
+
+.col-8-optional {
+    padding-right: 0 !important;
+}
+
+.card-optional {
+    border-radius: 10px !important;
+    box-shadow: 0 0px 2px rgba(0, 0, 0, 0.1) !important;
+}
+
+.btn-optional {
+    margin: 0 !important;
+}
+
+.custom-label {
+    color: #222121; /* Cambia este valor al color que desees */
+    font-size: 1rem; /* Ajusta el tamaño de la fuente según sea necesario */
+   
+}

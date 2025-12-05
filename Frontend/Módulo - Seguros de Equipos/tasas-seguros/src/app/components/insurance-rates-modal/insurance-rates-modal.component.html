@@ -1,0 +1,248 @@
+<div class="main-content">
+    <form [formGroup]="dataForm">
+
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                {{ button === "see" ? "Detalles de la Tasa:" : button === "add" ? "Creación Tasa de Seguro:" :
+                "Modificación
+                Tasa de Seguro:"}}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="card-container">
+
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Modelo:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="model"
+                                    [class.is-invalid]="
+                                dataForm.get('model').touched &&
+                                dataForm.get('model').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('model')?.valid &&
+                                    (dataForm.get('model')?.touched || dataForm.get('model')?.dirty)
+                                    ">
+                                    {{dataForm.get('model')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('model')?.hasError('maxLength') ? messages.MAX_6
+                                    : messages.MAX_6}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Texto Cobertura:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="textCoverage"
+                                    [class.is-invalid]="
+                                dataForm.get('textCoverage').touched &&
+                                dataForm.get('textCoverage').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('textCoverage')?.valid &&
+                                    (dataForm.get('textCoverage')?.touched || dataForm.get('textCoverage')?.dirty)
+                                    ">
+                                    {{dataForm.get('textCoverage')?.hasError('required') ?
+                                    messages.NO_EMPTY : dataForm.get('textCoverage')?.hasError('maxLength') ?
+                                    messages.MAX_80
+                                    : messages.MAX_80}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <div class="form-group row">
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Fecha Efectivo:</b>
+                            </div>
+                            <div class="col-sm-12 col-md-6">
+                                <input type="datetime-local" class="form-control text-center" formControlName="efectiveDate"
+                                    [class.is-invalid]="dataForm.get('efectiveDate').touched && dataForm.get('efectiveDate').invalid"
+                                    [readOnly]="inputReadOnly">
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('efectiveDate')?.valid &&
+                                    (dataForm.get('efectiveDate')?.touched || dataForm.get('efectiveDate')?.dirty)
+                                ">
+                                    {{dataForm.get('efectiveDate')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.INVALID_DATE}}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Número Periodo:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="periodNumber"
+                                    [class.is-invalid]="
+                                    dataForm.get('periodNumber').touched &&
+                                    dataForm.get('periodNumber').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                        !dataForm.get('periodNumber')?.valid &&
+                                        (dataForm.get('periodNumber')?.touched || dataForm.get('periodNumber')?.dirty)
+                                        ">
+                                    {{dataForm.get('periodNumber')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Valor Desde:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="valueFrom"
+                                    [class.is-invalid]="
+                                dataForm.get('valueFrom').touched &&
+                                dataForm.get('valueFrom').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('valueFrom')?.valid &&
+                                    (dataForm.get('valueFrom')?.touched || dataForm.get('valueFrom')?.dirty)
+                                    ">
+                                    {{dataForm.get('valueFrom')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Valor Hasta:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="valueUp"
+                                    [class.is-invalid]="
+                                dataForm.get('valueUp').touched &&
+                                dataForm.get('valueUp').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                    !dataForm.get('valueUp')?.valid &&
+                                    (dataForm.get('valueUp')?.touched || dataForm.get('valueUp')?.dirty)
+                                    ">
+                                    {{dataForm.get('valueUp')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="row mt-2">
+
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+
+                        <div class="form-group row">
+
+                            <div class="col-sm-12 col-md-6 text-center">
+                                <b>Cuota Mensual:</b>
+                            </div>
+
+                            <div class="col-sm-12 col-md-6">
+                                <input type="text" class="form-control text-center" formControlName="monthlyFee"
+                                    [class.is-invalid]="
+                                    dataForm.get('monthlyFee').touched &&
+                                    dataForm.get('monthlyFee').invalid" [readOnly]="inputReadOnly">
+
+                                <span class="text-danger mt-1" *ngIf="
+                                        !dataForm.get('monthlyFee')?.valid &&
+                                        (dataForm.get('monthlyFee')?.touched || dataForm.get('monthlyFee')?.dirty)
+                                        ">
+                                    {{dataForm.get('monthlyFee')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_DECIMAL}}
+                                </span>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+
+
+
+
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button *ngIf="button==='add'" (click)="crudPriceMaster()" type="button"
+                class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+            <button *ngIf="button==='edit'" (click)="crudPriceMaster()" type="button"
+                class="btn btn-round btn-success mr-1" [disabled]="dataForm.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+        </div>
+
+    </form>
+</div>

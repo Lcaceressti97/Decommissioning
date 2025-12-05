@@ -1,0 +1,11 @@
+{
+  "/apiSimcardInquiry/*": {
+    "target": "http://localhost:4434/simcardinquiry",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/apiSimcardInquiry": ""
+    }
+  }
+}

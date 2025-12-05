@@ -1,0 +1,63 @@
+<div class="main-content">
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+
+            {{ "Detalles Archivos del Pedido Batch: " + data.batch }}
+
+
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+
+    <div class="modal-body">
+        <div class="card-container">
+            <!-- Tab de gráficos  -->
+            <div class="d-flex" style="justify-content: center;">
+
+                <div class="row mb-3">
+                    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+                        <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                            <a ngbNavLink>
+                                Solicitud
+                            </a>
+                        </li>
+                        <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                            <a ngbNavLink>
+                                Respuesta
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12 col-md-12 col-lg-12">
+                    <form>
+                        <label class="form-label"><b>Contenido del archivo:</b> </label>
+
+                        <textarea name="baseFile" id="baseFile" cols="30" rows="10"
+                            class="form-control textarea-optional" style="max-height: 400px;" [(ngModel)]="inputFileStr"
+                            placeholder="SIN CONTENIDO" readonly></textarea>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-footer" style="justify-content: end;">
+        <button (click)="downloadFile()" [disabled]="!utilService.loadGrants('EX')" type="button"
+            class="btn btn-round btn-info">
+        Descargar Archivo
+        </button>
+        
+    </div>
+
+</div>

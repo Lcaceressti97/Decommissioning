@@ -1,0 +1,31 @@
+export interface ControlOrder {
+    id?: number;
+    idSimcardPadre: number;
+    idSupplier?: number;
+    supplierName: string;
+    noOrder: number;
+    userName: string;
+    customerName: string;
+    initialImsi: string;
+    initialIccd: string;
+    orderQuantity: number;
+    fileName: string;
+    created: string;
+    customer: string;
+    hlr: string;
+    batch: string;
+    key: string;
+    type: string;
+    typeInput1?: string;
+    art: string;
+    artInput1?: string;
+    graphic: string;
+    graphicInput1?: string;
+    model: string;
+    modelInput1?: string;
+    versionSize: string;
+    versionSizeInput1?: string;
+    versionSizeInput2?: string;
+    versionSizeInput3?: string;
+    status: string;
+}

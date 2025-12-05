@@ -1,0 +1,249 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            {{ getTitle() }}
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="headerFileForm">
+            <div class="card-container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6 class="text-center font-weight-bold">HEADER</h6>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>File Name:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="fileName" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Order Date:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="orderDate" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Customer Name:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="customerName" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Quantity:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="quantity" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Type:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="type" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>ArtWork:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="artWork" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Profile:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="profile" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Batch:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="batch" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Transport Key:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="transportKey" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>SIM-Reference:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="simReference" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Graph ref:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="graphRef" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="card-container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6 class="text-center font-weight-bold">INPUT VARIABLES DESCRIPTION </h6>
+                    </div>
+                </div>
+                <br>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>IMSI:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="imsi" readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Ser NB:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control" formControlName="serNb" readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <br><br>
+        <div class="card-container">
+            <div class="row">
+                <div class="col-md-12">
+                    <h6 class="text-center font-weight-bold">VAR OUT </h6>
+                </div>
+            </div>
+            <br>
+            <div class="dataTables_wrapper">
+                <div class="row">
+                    <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_length" id="datatable_length">
+                            <label>
+                                Se muestran
+                                <select aria-controls="datatable" class="form-control form-control-sm"
+                                    name="datatable_length" [(ngModel)]="resultsPerPage">
+                                    <option [value]="10">10</option>
+                                    <option [value]="15">15</option>
+                                    <option [value]="50">50</option>
+                                </select>
+                                resultados
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-md-6">
+                        <div class="dataTables_filter" id="datatable_filter">
+                            <label>
+                                <input aria-controls="datatable" class="form-control form-control-sm"
+                                    placeholder="Buscar" type="search" [(ngModel)]="searchedValue"
+                                    (keyup)="searchDetail()" (search)="reloadRows()" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <ngx-datatable class="bootstrap selection-cell ngx-datatable fixed-header virtualized mt-2"
+                [rows]="simcardDetailData" [loadingIndicator]="loadingIndicator" columnMode="force" rowHeight="auto"
+                [limit]="resultsPerPage" [footerHeight]="100"
+                [messages]="{emptyMessage: 'No hay detalles disponibles', totalMessage: getTotalText()}">
+
+                <ngx-datatable-column name="ICC" prop="icc">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div style="text-align: center;">
+                            {{ row.icc }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="IMSI" prop="imsi">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div style="text-align: center;">
+                            {{ row.imsi }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="KI" prop="ki">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div style="text-align: center;">
+                            {{ row.ki }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="PIN1" prop="pin1">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div style="text-align: center;">
+                            {{ row.pin1 }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+
+                <ngx-datatable-column name="PUK1" prop="puk1">
+                    <ng-template let-row="row" ngx-datatable-cell-template>
+                        <div style="text-align: center;">
+                            {{ row.puk1 }}
+                        </div>
+                    </ng-template>
+                </ngx-datatable-column>
+
+            </ngx-datatable>
+
+        </div>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+            Cerrar
+        </button>
+    </div>
+</div>

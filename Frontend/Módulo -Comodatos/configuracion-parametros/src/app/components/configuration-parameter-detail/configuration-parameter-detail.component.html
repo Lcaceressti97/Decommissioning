@@ -1,0 +1,108 @@
+<div>
+    <form [formGroup]="updateForm">
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                Formulario de Modificación:
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+    
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+    
+        <div class="modal-body">
+            <div class="container">
+                <div class="card shadow">
+
+                    <div class="card-header text-center">
+                        <h5 style="font-weight: bold;"> Datos Del Parámetro</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="container">
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Nombre:</b> 
+                                    </label>
+                                    <input type="text" readonly class="form-control" formControlName="parameterName"
+                                    [class.is-invalid]="
+                                    updateForm.get('parameterName').touched &&
+                                    updateForm.get('parameterName').invalid">
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !updateForm.get('parameterName')?.valid &&
+                                    (updateForm.get('parameterName')?.touched || updateForm.get('parameterName')?.dirty)
+                                    ">
+                                        {{updateForm.get('parameterName')?.hasError('required') ?
+                                        messages.NO_EMPTY : updateForm.get('parameterName')?.hasError('maxLength') ?                       messages.MAX_2000 : messages.MAX_2000 }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Valor:</b> 
+                                    </label>
+
+                                    <input *ngIf="inputNumber" type="number" class="form-control text-center" formControlName="value"
+                                    [class.is-invalid]="
+                                    updateForm.get('value').touched &&
+                                    updateForm.get('value').invalid">
+
+                                    <input *ngIf="!inputNumber" type="text" class="form-control text-center" formControlName="value"
+                                    [class.is-invalid]="
+                                    updateForm.get('value').touched &&
+                                    updateForm.get('value').invalid">
+
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !updateForm.get('value')?.valid &&
+                                    (updateForm.get('value')?.touched || updateForm.get('value')?.dirty)
+                                    ">
+                                        {{updateForm.get('value')?.hasError('required') ?
+                                        messages.NO_EMPTY   : messages.ONLY_NUMBERS_POSITIVe }}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-12">
+                                    <label class="form-label">
+                                        <b>Descripción:</b> 
+                                    </label>
+                                    <textarea readonly formControlName="description" [class.is-invalid]="
+                                      updateForm.get('description').touched &&
+                                      updateForm.get('description').invalid" class="form-control" type="text">
+                                      </textarea>
+                                    <span class="text-danger mt-1" *ngIf="
+                                    !updateForm.get('description')?.valid &&
+                                    (updateForm.get('description')?.touched || updateForm.get('description')?.dirty)
+                                    ">
+                                        {{updateForm.get('description')?.hasError('required') ?
+                                        messages.NO_EMPTY : updateForm.get('description')?.hasError('maxLength') ?                       messages.MAX_2000 : messages.MAX_2000 }}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button (click)="updateParameter()" type="button" class="btn btn-round bg-success mr-1" [disabled]="updateForm.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+
+
+    </form>
+    
+</div>

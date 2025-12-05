@@ -1,0 +1,606 @@
+<div class="main-content">
+    <form [formGroup]="dataForm">
+        <div class="modal-header">
+            <h4 class="modal-title " id="modal-basic-title" style="font-weight: bold;">
+                {{
+                "Proceso de Confirmar:"
+                }}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+
+            <div class="row mb-3" style="justify-content: center;">
+                <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs" style="padding-bottom: 0px;">
+                    <li (click)="changeTab(1)" id='nav1' [ngbNavItem]="1">
+                        <a ngbNavLink>
+                            Cliente
+                        </a>
+                    </li>
+                    <li (click)="changeTab(2)" id='nav2' [ngbNavItem]="2">
+                        <a ngbNavLink>
+                            Teléfono
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <br>
+
+            <!-- Card de los datos Generales -->
+            <div class="card shadow" [hidden]="hiddeGeneral">
+
+                <div class="card-header text-center">
+                    <h5 style="font-weight: bold;">
+                        Datos Cliente
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="container">
+
+
+                        <div class="card card-optional">
+
+                            <div class="card-body">
+                                <div class="container">
+
+
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-3 w-50 custom-label"><b>IMEI:</b></label>
+                                                <input type="text" class="form-control me-3" formControlName="actualEsn"
+                                                    disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                              !dataForm.get('actualEsn')?.valid &&
+                                              (dataForm.get('actualEsn')?.touched || dataForm.get('actualEsn')?.dirty)">
+                                                {{dataForm.get('actualEsn')?.hasError('required') ? messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Bandit:</b></label>
+                                                <input type="text" class="form-control me-3" formControlName="bandit"
+                                                    disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                            !dataForm.get('bandit')?.valid &&
+                                            (dataForm.get('bandit')?.touched || dataForm.get('bandit')?.dirty)">
+                                                {{dataForm.get('bandit')?.hasError('required') ? messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label
+                                                    class="form-label me-2 w-50 custom-label"><b>Teléfono:</b></label>
+                                                <input type="text" class="form-control me-3" formControlName="phone"
+                                                    disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                              !dataForm.get('phone')?.valid &&
+                                              (dataForm.get('phone')?.touched || dataForm.get('phone')?.dirty)">
+                                                {{dataForm.get('phone')?.hasError('required') ? messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Motivo:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="reasonClaim" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                              !dataForm.get('reasonClaim')?.valid &&
+                                              (dataForm.get('reasonClaim')?.touched || dataForm.get('reasonClaim')?.dirty)">
+                                                {{dataForm.get('reasonClaim')?.hasError('required') ? messages.NO_EMPTY
+                                                :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Estado
+                                                        Tel:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="phoneStatus" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                              !dataForm.get('phoneStatus')?.valid &&
+                                              (dataForm.get('phoneStatus')?.touched || dataForm.get('phoneStatus')?.dirty)" disabled>
+                                                {{dataForm.get('phoneStatus')?.hasError('required') ? messages.NO_EMPTY
+                                                : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Estado
+                                                        Seguro:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="statusClaim" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                            !dataForm.get('statusClaim')?.valid &&
+                                            (dataForm.get('statusClaim')?.touched || dataForm.get('statusClaim')?.dirty)">
+                                                {{dataForm.get('statusClaim')?.hasError('required') ? messages.NO_EMPTY
+                                                : messages.MAX_15}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Cuenta
+                                                        Cliente:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="customerAccount" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                              !dataForm.get('customerAccount')?.valid &&
+                                              (dataForm.get('customerAccount')?.touched || dataForm.get('customerAccount')?.dirty)">
+                                                {{dataForm.get('customerAccount')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Nombre
+                                                        Cliente:</b></label>
+                                                <input type="text" class="form-control" formControlName="customerName"
+                                                    disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                            !dataForm.get('customerName')?.valid &&
+                                            (dataForm.get('customerName')?.touched || dataForm.get('customerName')?.dirty)">
+                                                {{dataForm.get('customerName')?.hasError('required') ? messages.NO_EMPTY
+                                                : messages.MAX_15}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Cuenta
+                                                        Facturación:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="billingAccount" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                              !dataForm.get('billingAccount')?.valid &&
+                                              (dataForm.get('billingAccount')?.touched || dataForm.get('billingAccount')?.dirty)">
+                                                {{dataForm.get('billingAccount')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Cuenta
+                                                        Servicio:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="serviceAccount" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                            !dataForm.get('serviceAccount')?.valid &&
+                                            (dataForm.get('serviceAccount')?.touched || dataForm.get('serviceAccount')?.dirty)">
+                                                {{dataForm.get('serviceAccount')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Número Orden Taller:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="workshopOrderNumber" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                              !dataForm.get('workshopOrderNumber')?.valid &&
+                                              (dataForm.get('workshopOrderNumber')?.touched || dataForm.get('workshopOrderNumber')?.dirty)">
+                                                {{dataForm.get('workshopOrderNumber')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                        </div>
+
+
+
+                    </div>
+
+
+                </div>
+
+            </div>
+
+            <!-- Card para los prodcutos -->
+
+            <div class="card shadow" [hidden]="hiddeDetail">
+
+                <div class="card-header text-center">
+                    <h5 style="font-weight: bold;">
+                        Datos Teléfono
+                    </h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="container">
+
+                        <div class="card card-optional">
+                            <div class="card-body">
+                                <div class="container">
+                                    <div class="row mb-3">
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Tipo
+                                                        Inventario:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="newInvType" disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                        !dataForm.get('newInvType')?.valid &&
+                                        (dataForm.get('newInvType')?.touched || dataForm.get('newInvType')?.dirty)">
+                                                {{dataForm.get('newInvType')?.hasError('required') ? messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>No.
+                                                        Factura:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="invoiceNumber" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                            !dataForm.get('invoiceNumber')?.valid &&
+                                            (dataForm.get('invoiceNumber')?.touched || dataForm.get('invoiceNumber')?.dirty)">
+                                                {{dataForm.get('invoiceNumber')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Modelo:</b></label>
+                                                <input type="text" class="form-control me-3" formControlName="newModel"
+                                                    disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                            !dataForm.get('newModel')?.valid &&
+                                            (dataForm.get('newModel')?.touched || dataForm.get('newModel')?.dirty)">
+                                                {{dataForm.get('newModel')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Tipo
+                                                        Factura:</b></label>
+                                                <select class="form-control text-center" formControlName="invoiceType"
+                                                    [class.is-invalid]="
+                                                        dataForm.get('invoiceType').touched &&
+                                                        dataForm.get('invoiceType').invalid"
+                                                    [attr.disabled]="button === 'see' ? true : null">
+                                                    <option [value]="invoiceType"
+                                                        *ngFor="let invoiceType of invoiceTypes">
+                                                        {{ invoiceType}}
+                                                    </option>
+                                                </select>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                        !dataForm.get('invoiceType')?.valid &&
+                                        (dataForm.get('invoiceType')?.touched || dataForm.get('invoiceType')?.dirty)">
+                                                {{dataForm.get('invoiceType')?.hasError('required') ? messages.NO_EMPTY
+                                                :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Bodega:</b></label>
+                                                <input type="text" class="form-control me-3" formControlName="warehouse"
+                                                    disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                            !dataForm.get('warehouse')?.valid &&
+                                            (dataForm.get('warehouse')?.touched || dataForm.get('warehouse')?.dirty)">
+                                                {{dataForm.get('warehouse')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Nueva
+                                                        IMEI:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    (change)="getSerialNumbersByQuantity()" formControlName="newEsn"
+                                                    disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                        !dataForm.get('newEsn')?.valid &&
+                                        (dataForm.get('newEsn')?.touched || dataForm.get('newEsn')?.dirty)">
+                                                {{dataForm.get('newEsn')?.hasError('required') ? messages.NO_EMPTY
+                                                :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mb-3">
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Precio:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="actualPrice" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                            !dataForm.get('actualPrice')?.valid &&
+                                            (dataForm.get('actualPrice')?.touched || dataForm.get('actualPrice')?.dirty)">
+                                                {{dataForm.get('actualPrice')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+
+                                        </div>
+
+                                    </div>
+
+                                    <div class="row mb-3">
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label
+                                                    class="form-label me-2 w-50 custom-label"><b>Deducible:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="deductible" disabled>
+
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                          !dataForm.get('deductible')?.valid &&
+                                          (dataForm.get('deductible')?.touched || dataForm.get('deductible')?.dirty)">
+                                                {{dataForm.get('deductible')?.hasError('required') ? messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Ajuste por
+                                                        Precio:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="priceAdjustment" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                            !dataForm.get('priceAdjustment')?.valid &&
+                                            (dataForm.get('priceAdjustment')?.touched || dataForm.get('priceAdjustment')?.dirty)">
+                                                {{dataForm.get('priceAdjustment')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Primas de Seguro
+                                                        (Adeudadas):</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="insurancePremium" disabled>
+
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                          !dataForm.get('insurancePremium')?.valid &&
+                                          (dataForm.get('insurancePremium')?.touched || dataForm.get('insurancePremium')?.dirty)">
+                                                {{dataForm.get('insurancePremium')?.hasError('required') ?
+                                                messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Ajuste por
+                                                        Primas:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="adjustmentPremiums" disabled>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                            !dataForm.get('adjustmentPremiums')?.valid &&
+                                            (dataForm.get('adjustmentPremiums')?.touched || dataForm.get('adjustmentPremiums')?.dirty)">
+                                                {{dataForm.get('adjustmentPremiums')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Usuario
+                                                        Ingreso:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="userCreate" disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                        !dataForm.get('userCreate?: string;
+                                        ')?.valid &&
+                                        (dataForm.get('userCreate')?.touched || dataForm.get('userCreate')?.dirty)">
+                                                {{dataForm.get('userCreate')?.hasError('required') ? messages.NO_EMPTY
+                                                :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Fecha
+                                                        Ingreso:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="dateCreate" disabled>
+                                            </div>
+                                            <span class="text-danger" *ngIf="
+                                        !dataForm.get('dateCreate')?.valid &&
+                                        (dataForm.get('dateCreate')?.touched || dataForm.get('dateCreate')?.dirty)">
+                                                {{dataForm.get('dateCreate')?.hasError('required') ? messages.NO_EMPTY
+                                                :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                    </div>
+                                    <div class="row mb-3">
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Usuario
+                                                        Resolución:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="userResolution" disabled>
+
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                          !dataForm.get('userResolution')?.valid &&
+                                          (dataForm.get('userResolution')?.touched || dataForm.get('userResolution')?.dirty)">
+                                                {{dataForm.get('userResolution')?.hasError('required') ?
+                                                messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label me-2 w-50 custom-label"><b>Fecha
+                                                        Resolución:</b></label>
+                                                <input type="text" class="form-control me-3"
+                                                    formControlName="dateResolution" disabled>
+
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                          !dataForm.get('dateResolution')?.valid &&
+                                          (dataForm.get('dateResolution')?.touched || dataForm.get('dateResolution')?.dirty)">
+                                                {{dataForm.get('dateResolution')?.hasError('required') ?
+                                                messages.NO_EMPTY :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="row mb-3">
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+                                            <div class="d-flex align-items-center">
+                                                <label
+                                                    class="form-label me-2 w-50 custom-label"><b>Comentario:</b></label>
+                                                <textarea class="form-control me-3" formControlName="observations"
+                                                    rows="4" placeholder="Escribe tu comentario aquí..."
+                                                    disabled></textarea>
+                                            </div>
+                                            <span class="text-danger"
+                                                *ngIf="
+                                        !dataForm.get('observations')?.valid &&
+                                        (dataForm.get('observations')?.touched || dataForm.get('observations')?.dirty)">
+                                                {{dataForm.get('observations')?.hasError('required') ? messages.NO_EMPTY
+                                                :
+                                                messages.MAX_15}}
+                                            </span>
+                                        </div>
+
+                                        <div class="col-sm-6 col-md-6 mx-auto">
+
+                                        </div>
+
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <br>
+
+                </div>
+
+            </div>
+
+
+
+
+
+
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+            <button *ngIf="button === 'edit'" (click)="confirm()" type="button" class="btn btn-round btn-success mr-1"
+                [disabled]="dataForm.invalid || !utilService.loadGrants('CR') || !dataForm.get('newEsn').value">
+                Confirmar
+            </button>
+        </div>
+
+    </form>
+</div>

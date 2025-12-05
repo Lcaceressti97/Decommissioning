@@ -1,0 +1,59 @@
+.btn-close {
+    border: none !important;
+    background: transparent;
+    padding: 0px;
+    width: 30px;
+    height: 30px;
+    font-size: 30px;
+}
+
+.fa {
+    color: #ff3636 !important;
+}
+
+.icon {
+    color: #ffffff !important;
+}
+
+.modal-footer {
+    justify-content: end;
+}
+
+.modal-footer button {
+    justify-content: end;
+    margin-left: 10px;
+}
+
+/* Importar Bootstrap */
+@import "~bootstrap/dist/css/bootstrap.min.css";
+
+/* Estilos personalizados para el modal */
+.modal-body {
+    padding: 20px;
+}
+
+.table-bordered th,
+.table-bordered td {
+    border: 1px solid #dee2e6;
+}
+
+.table-bordered th {
+    background-color: #f8f9fa;
+}
+
+.form-check-input[type="checkbox"] {
+    margin-right: 8px;
+}
+
+.modal-divider-container {
+    margin: 0 1rem;
+    /* Márgenes izquierdo y derecho */
+}
+
+.modal-divider {
+    border: none;
+    border-top: 1px solid #022649;
+    /* Color de la línea */
+    margin: 5;
+    /* Restablecer margen para la línea */
+}

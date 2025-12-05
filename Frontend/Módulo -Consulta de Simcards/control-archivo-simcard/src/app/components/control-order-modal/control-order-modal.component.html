@@ -1,0 +1,553 @@
+<div>
+    <div class="modal-header">
+        <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+            
+            {{ action === "see" ? "Detalles Pedido Batch: " + data.batch : action === "add" ? "Crear Nuevo Pedido:" : "Procesar Pedido Batch: " + data.batch }}
+
+           
+        </h4>
+        <button type="button" class="btn-close" (click)="closeModal()">
+            <i class="fa fa-times-circle" aria-hidden="true"></i>
+        </button>
+    </div>
+
+    <div class="modal-divider-container">
+        <hr class="modal-divider">
+    </div>
+
+    <div class="modal-body">
+
+      
+        <form [formGroup]="form">
+            <div class="card-container">
+
+                <!-- Fila 1 -->
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-6 col-lg-6">
+                        <div class="form-group row">
+
+                            <label class="col-sm-12 col-md-4 col-lg-4">
+                                <b>Proveedor:</b>
+                            </label>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='see' && action!=='emit'">
+                                <select class="form-control text-center" formControlName="supplierName"
+                                    (change)="changeProvider($event)" [class.is-invalid]="
+                                    form.get('supplierName').touched &&
+                                    form.get('supplierName').invalid">
+                                    <option [value]="provider.id + ',' + provider.supplierName + ',' + provider.initialIccd + ',' + provider.email + ',' + provider.key"
+                                        *ngFor="let provider of providerModels">
+                                        {{ provider.supplierName}}
+                                    </option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('supplierName')?.valid &&
+                                (form.get('supplierName')?.touched || form.get('supplierName')?.dirty)
+                                ">
+                                    {{form.get('supplierName')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='add'">
+                                <input type="text" class="form-control text-center" formControlName="supplierName"
+                                    readonly>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-sm-12 col-md-6 col-lg-6" *ngIf="action!=='add'">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>No. Pedido:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="noOrder" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Fila 2 -->
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Cliente:</b></label>
+
+                            <div class="col-sm-8" *ngIf="action!=='see' && action!=='emit'">
+                                <select class="form-control text-center" formControlName="customerName"
+                                    [class.is-invalid]="
+                                form.get('customerName').touched &&
+                                form.get('customerName').invalid" (change)="changeCustomer($event)">
+                                    <option [value]="client.clientName + ',' + client.hlr" *ngFor="let client of clientModels">
+                                        {{ client.clientName}}
+                                    </option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('customerName')?.valid &&
+                                (form.get('customerName')?.touched || form.get('customerName')?.dirty)
+                                ">
+                                    {{form.get('customerName')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='add'">
+                                <input type="text" class="form-control text-center" formControlName="customerName"
+                                    readonly>
+
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Usuario:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="userName"
+                                    readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-12 col-md-4"><b>Correo:</b></label>
+
+                            <div class="col-sm-12 col-md-8">
+                                
+                                    <input type="email" class="form-control text-center" formControlName="email"
+                                        readonly [class.is-invalid]="
+                                        form.get('email').touched &&
+                                        form.get('email').invalid" />
+
+                                        <span class="text-danger mt-1" *ngIf="
+                                        !form.get('email')?.valid &&
+                                        (form.get('email')?.touched || form.get('email')?.dirty)
+                                        ">
+                                            {{form.get('email')?.hasError('email') ?
+                                            messages.ONLY_EMAIL : messages.ONLY_EMAIL }}
+                                        </span>
+                                
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6" *ngIf="action!=='add'">
+                        <button (click)="sendEmail()" [disabled]="!utilService.loadGrants('UP')" type="button"
+                            class="btn btn-round bg-success mr-1 btn-modal-file">
+                            Enviar Pedido
+                        </button>
+                    </div>
+
+                </div>
+
+            </div>
+
+            <br>
+            <!-- Card 2 -->
+            <div class="card-container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6 class="text-center font-weight-bold">IMSI e ICCID</h6>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Imsi Inicial:</b></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control text-center" formControlName="initialImsi"
+                                [class.is-invalid]="
+                                form.get('initialImsi').touched &&
+                                form.get('initialImsi').invalid" readonly />
+                                     <span class="text-danger mt-1" *ngIf="
+                                     !form.get('initialImsi')?.valid &&
+                                     (form.get('initialImsi')?.touched || form.get('initialImsi')?.dirty)
+                                     ">
+                                         {{form.get('initialImsi')?.hasError('required') ?
+                                         messages.NO_EMPTY : messages.NO_EMPTY }}
+                                     </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Iccd Inicial:</b></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control text-center" formControlName="initialIccd"
+                                [class.is-invalid]="
+                                form.get('initialIccd').touched &&
+                                form.get('initialIccd').invalid" readonly />
+                                     <span class="text-danger mt-1" *ngIf="
+                                     !form.get('initialIccd')?.valid &&
+                                     (form.get('initialIccd')?.touched || form.get('initialIccd')?.dirty)
+                                     ">
+                                         {{form.get('initialIccd')?.hasError('required') ?
+                                         messages.NO_EMPTY : messages.NO_EMPTY }}
+                                     </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <!-- Card - 3 -->
+            <div class="card-container">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Cantidad de Pedido:</b></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control text-center" formControlName="orderQuantity"
+                                    [class.is-invalid]="
+                                form.get('orderQuantity').touched &&
+                                form.get('orderQuantity').invalid" [readOnly]="readonly" />
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('orderQuantity')?.valid &&
+                                (form.get('orderQuantity')?.touched || form.get('orderQuantity')?.dirty)
+                                ">
+                                    {{form.get('orderQuantity')?.hasError('required') ?
+                                    messages.NO_EMPTY :
+                                    form.get('orderQuantity')?.hasError('maxLength') ?
+                                    messages.MAX_100 : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6" *ngIf="action!=='add'">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Nombre de Archivo:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="fileName"
+                                    readonly />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6" *ngIf="action==='add'">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Cliente:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="customer"
+                                    readonly />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3" *ngIf="action!=='add'">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Fecha:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="createdDate"
+                                    readonly />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Cliente:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="customer"
+                                    [class.is-invalid]="
+                                form.get('customer').touched &&
+                                form.get('customer').invalid" readonly />
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('customer')?.valid &&
+                                (form.get('customer')?.touched || form.get('customer')?.dirty)
+                                ">
+                                    {{form.get('customer')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>HLR:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="hlr"
+                                    [class.is-invalid]="
+                                form.get('hlr').touched &&
+                                form.get('hlr').invalid" readonly />
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('hlr')?.valid &&
+                                (form.get('hlr')?.touched || form.get('hlr')?.dirty)
+                                ">
+                                    {{form.get('hlr')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+
+                        <div class="form-group row" *ngIf="action!=='add'">
+                            <label class="col-sm-4"><b>Batch:</b></label>
+                            <div class="col-sm-8">
+                                <input type="number" class="form-control text-center" formControlName="batch"
+                                    [class.is-invalid]="
+                                form.get('batch').touched &&
+                                form.get('batch').invalid" [readOnly]="readonly" />
+
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('batch')?.valid &&
+                                (form.get('batch')?.touched || form.get('batch')?.dirty)
+                                ">
+                                    {{form.get('batch')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="form-group row" *ngIf="action==='add'">
+                            <label class="col-sm-4"><b>Key:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="key"
+                                    [class.is-invalid]="
+                                form.get('key').touched &&
+                                form.get('key').invalid" [readOnly]="true" />
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('key')?.valid &&
+                                (form.get('key')?.touched || form.get('key')?.dirty)
+                                ">
+                                    {{form.get('key')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="action!=='add'">
+                    <div class="col-md-6">
+                        <div class="form-group row" >
+                            <label class="col-sm-4"><b>Key:</b></label>
+                            <div class="col-sm-8">
+                                <input type="text" class="form-control text-center" formControlName="key"
+                                    [class.is-invalid]="
+                                form.get('key').touched &&
+                                form.get('key').invalid" [readOnly]="readonly" />
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('key')?.valid &&
+                                (form.get('key')?.touched || form.get('key')?.dirty)
+                                ">
+                                    {{form.get('key')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+            <!-- Card 4 -->
+            <div class="card-container">
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Tipo:</b></label>
+
+                            <div class="col-sm-8" *ngIf="action!=='see' && action!=='emit'">
+                                <select class="form-control text-center" formControlName="type" [class.is-invalid]="
+                                form.get('type').touched &&
+                                form.get('type').invalid">
+                                    <option [value]="type.typeDescription" *ngFor="let type of typeModels">
+                                        {{ type.typeNumber + " - " +type.typeDescription}}
+                                    </option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('type')?.valid &&
+                                (form.get('type')?.touched || form.get('type')?.dirty)
+                                ">
+                                    {{form.get('type')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='add'">
+                                <input type="text" class="form-control text-center" formControlName="type" readonly>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Arte:</b></label>
+
+                            <div class="col-sm-8" *ngIf="action!=='see' && action!=='emit'">
+                                <select class="form-control text-center" formControlName="art" [class.is-invalid]="
+                                form.get('art').touched &&
+                                form.get('art').invalid">
+                                    <option [value]="art.artDescription" *ngFor="let art of artModels">
+                                        {{ art.artNumber + " - " + art.artDescription}}
+                                    </option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('art')?.valid &&
+                                (form.get('art')?.touched || form.get('art')?.dirty)
+                                ">
+                                    {{form.get('art')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='add'">
+                                <input type="text" class="form-control text-center" formControlName="art" readonly>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Graphic:</b></label>
+
+                            <div class="col-sm-8" *ngIf="action!=='see' && action!=='emit'">
+                                <select class="form-control text-center" formControlName="graphic" [class.is-invalid]="
+                                form.get('graphic').touched &&
+                                form.get('graphic').invalid">
+                                    <option [value]="graphic.graphicRef" *ngFor="let graphic of graphicModels">
+                                        {{ graphic.graphicRef + " - "+ graphic.graphicDescription}}
+                                    </option>
+                                </select>
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('graphic')?.valid &&
+                                (form.get('graphic')?.touched || form.get('graphic')?.dirty)
+                                ">
+                                    {{form.get('graphic')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='add'">
+                                <input type="text" class="form-control text-center" formControlName="graphic" readonly>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <br>
+
+            <!-- Card Last -->
+            <div class="card-container">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h6 class="text-center font-weight-bold">PRODUCTO</h6>
+                    </div>
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Modelo:</b></label>
+
+                            <div class="col-sm-8" *ngIf="action!=='see' && action!=='emit'">
+
+                                <select class="form-control text-center" formControlName="model" [class.is-invalid]="
+                                form.get('model').touched &&
+                                form.get('model').invalid" (change)="changeModel($event)">
+                                    <option [value]="model.id + ',' + model.simModel"
+                                        *ngFor="let model of modeloModels">
+                                        {{ model.id + " - " + model.simModel}}
+                                    </option>
+                                </select>
+
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('model')?.valid &&
+                                (form.get('model')?.touched || form.get('model')?.dirty)
+                                ">
+                                    {{form.get('model')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='add'">
+                                <input type="text" class="form-control text-center" formControlName="model" readonly>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <div class="form-group row">
+                            <label class="col-sm-4"><b>Version y Tamaño:</b></label>
+
+                            <div class="col-sm-8" *ngIf="action!=='see' && action!=='emit'">
+
+                                <select class="form-control text-center" formControlName="versionSize"
+                                    [class.is-invalid]="
+                                form.get('versionSize').touched &&
+                                form.get('versionSize').invalid" (change)="changeVersion($event)">
+                                    <option [value]="version.version +',' + version.capacity" *ngFor="let version of versionModels">
+                                        {{ version.version + " - " +version.capacity}}
+                                    </option>
+                                </select>
+
+
+                                <span class="text-danger mt-1" *ngIf="
+                                !form.get('versionSize')?.valid &&
+                                (form.get('versionSize')?.touched || form.get('versionSize')?.dirty)
+                                ">
+                                    {{form.get('versionSize')?.hasError('required') ?
+                                    messages.NO_EMPTY : messages.NO_EMPTY }}
+                                </span>
+                            </div>
+
+                            <div class="col-sm-12 col-md-8 col-lg-8" *ngIf="action!=='add'">
+                                <input type="text" class="form-control text-center" formControlName="versionSize"
+                                    readonly>
+
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+                <br>
+
+
+
+            </div>
+
+            <div class="row" style="justify-content: end;">
+                <button (click)="addOrderCOntrol()" *ngIf="action==='add'" type="button"
+                    class="btn btn-round bg-success mr-3" [disabled]="form.invalid || !utilService.loadGrants('CR')">
+                    Crear
+                </button>
+            </div>
+
+        </form>
+
+       
+
+    </div>
+
+  
+
+</div>

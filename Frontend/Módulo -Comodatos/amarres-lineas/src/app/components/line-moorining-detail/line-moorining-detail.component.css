@@ -1,0 +1,18 @@
+/* Estilo personalizado para el carousel */
+.custom-carousel {
+    display: flex;
+    align-items: center; /* Centra verticalmente el contenido */
+    justify-content: center; /* Centra horizontalmente el contenido */
+  }
+  
+  .carousel-content {
+    text-align: center; /* Alinea el contenido del slide al centro */
+    background-color: #e4e7ea; /* Color de fondo oscuro para hacer contraste */
+    
+    padding: 20px;
+  }
+
+  
+
+
+

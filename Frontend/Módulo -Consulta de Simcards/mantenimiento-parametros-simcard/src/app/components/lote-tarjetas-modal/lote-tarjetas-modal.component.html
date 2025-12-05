@@ -1,0 +1,112 @@
+<div class="main-content">
+    <form [formGroup]="form">
+
+        <div class="modal-header">
+            <h4 class="modal-title font-weight-bold" id="modal-basic-title">
+                {{ action==='add' ? "Crear Modelo de Tarjetas:" : action==='update' ? "Modificar Modelo:" :
+                "Detalles del Modelo:" }}
+            </h4>
+            <button type="button" class="btn-close" (click)="closeModal()">
+                <i class="fa fa-times-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+
+        
+        <div class="modal-divider-container">
+            <hr class="modal-divider">
+        </div>
+
+        <div class="modal-body">
+            <div class="card-container">
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-md-12">
+                        <label class="form-label"><b>Modelo:</b> </label>
+                        <input type="text" class="form-control text-center" formControlName="model" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('model')?.valid &&
+                                (form.get('model')?.touched || form.get('model')?.dirty)
+                                ">
+                            {{form.get('model')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            : form.get('model')?.hasError('maxLength') ? messages.INVALID
+                          : messages.MAX_6
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-md-12">
+                        <label class="form-label"><b>Lin:</b> </label>
+                        <input type="text" class="form-control text-center" formControlName="lin" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('lin')?.valid &&
+                                (form.get('lin')?.touched || form.get('lin')?.dirty)
+                                ">
+                            {{form.get('lin')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            : form.get('lin')?.hasError('maxLength') ? messages.INVALID
+                          : messages.MAX_3
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-md-12">
+                        <label class="form-label"><b>Valor:</b> </label>
+                        <input type="number" class="form-control text-center" formControlName="value" [readOnly]="readonly">
+                        <span class="text-danger" *ngIf="
+                                !form.get('value')?.valid &&
+                                (form.get('value')?.touched || form.get('value')?.dirty)
+                                ">
+                            {{form.get('value')?.hasError('required')
+                            ? messages.NO_EMPTY
+                            :  messages.NO_EMPTY
+                            }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row mb-3">
+                    <div class="col-sm-12 col-md-12 col-lg-12">
+                        <label class="form-label"><b>Descripción</b></label>
+                        <textarea type="text" class="form-control"
+                            placeholder="Ingresa la descripción" formControlName="description" rows="5" [readOnly]="readonly">
+                                </textarea>
+                                <span class="text-danger" *ngIf="
+                                !form.get('description')?.valid &&
+                                (form.get('description')?.touched || form.get('description')?.dirty)
+                                ">
+                          {{form.get('description')?.hasError('required')
+                          ? messages.NO_EMPTY : form.get('description')?.hasError('maxLength') ? messages.INVALID
+                          : messages.MAX_150
+                          }}
+                        </span>
+                    </div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="modal-footer" style="justify-content: end;">
+
+            <button *ngIf="action==='add'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('CR')">
+                Crear
+            </button>
+
+            <button *ngIf="action==='update'" type="button" class="btn btn-round bg-success mr-2"
+                [disabled]="form.invalid || !utilService.loadGrants('UP')">
+                Actualizar
+            </button>
+
+            <button type="button" class="btn btn-round bg-danger" (click)="closeModal()">
+                Cerrar
+            </button>
+        </div>
+
+    </form>
+</div>

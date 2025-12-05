@@ -1,0 +1,11 @@
+.nav-tabs .nav-item .nav-link.active {
+    color: #ffffff;
+    background-color: #002e6e;
+    border: 1px solid #ffffff;
+  }
+
+  .nav-tabs .nav-item .nav-link.active:hover {
+    color: #ffffff !important;
+    background-color: #002e6e;
+    border: 1px solid #ffffff;
+  }

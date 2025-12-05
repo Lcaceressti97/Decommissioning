@@ -1,0 +1,11 @@
+{
+  "/apiSimcardInquiry/*": {
+    "target": "http://192.168.162.15:4434/simcardinquiry",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug",
+    "pathRewrite": {
+      "^/apiSimcardInquiry": ""
+    }
+  }
+}
