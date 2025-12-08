@@ -13,6 +13,7 @@ public class Constants {
 	public static final String ERROR_QUANTITY_DEDUCTIBLE = "Invalid number of claims. Only 1, 2 or 3 are allowed.";
 	public static final String ERROR_REASON = "Reason not found";
 	public static final String RECORDNOTFOUNDIMEI = "No records found for IMEI %s";
+		public static final String ERROR_NOT_FOUND_INSURANCE_RATES = "No insurance rates were found for model %s";
 
 	// Parameters
 	public static final String ERROR_PARAMETER_NAME = "No record found for the parameter name: %s";
