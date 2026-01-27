@@ -106,6 +106,14 @@ export class ModelsAsEbsService {
     );
   }
 
+  deleteModelAsEbs(id: number): Observable<any> {
+    return this.http.delete(`${this.localUrl}model-as-ebs/${id}`, {
+      observe: 'response',
+      headers: this.headers
+    }).pipe(
+      catchError((err) => this.handleError(err, "No se ha podido eliminar el modelo"))
+    );
+  }
 
 }
 

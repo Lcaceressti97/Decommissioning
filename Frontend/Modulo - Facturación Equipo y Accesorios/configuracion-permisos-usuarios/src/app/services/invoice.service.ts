@@ -38,26 +38,26 @@ export class InvoiceService {
     return throwError(error);
   }
 
-    /**
-   * Método que trae como paginación los datos de conrol de permisos del usuario
-   * 
-   * @param page 
-   * @param size 
-   * @returns 
-   */
-    getControlUserPermissions(page: any, size: any): Observable<any> {
-      return this.http.get(`${this.localUrl}controluserpermissions`, {
-        observe: "response",
-        headers: this.headers,
-        params: {
-          page: page,
-          size: size
-        }
-      }).pipe(
-        catchError((err) =>
-          this.handleError(err, "No se ha podido obtener los registros de los usuarios"))
-      );
-    }
+  /**
+ * Método que trae como paginación los datos de conrol de permisos del usuario
+ * 
+ * @param page 
+ * @param size 
+ * @returns 
+ */
+  getControlUserPermissions(page: any, size: any): Observable<any> {
+    return this.http.get(`${this.localUrl}controluserpermissions`, {
+      observe: "response",
+      headers: this.headers,
+      params: {
+        page: page,
+        size: size
+      }
+    }).pipe(
+      catchError((err) =>
+        this.handleError(err, "No se ha podido obtener los registros de los usuarios"))
+    );
+  }
 
   /**
  * Método que trae los permisos del usuario
@@ -222,7 +222,7 @@ export class InvoiceService {
    * 
    */
   getUserWithOutPermissions(): Observable<any> {
-    return this.http.get(`${this.localUrl}users`,{
+    return this.http.get(`${this.localUrl}users`, {
       observe: "response",
       headers: this.headers
     });
@@ -259,5 +259,43 @@ export class InvoiceService {
 
     });
   }
+
+  //Deletes para permisos
+  deleteControlUserPermissions(id: number): Observable<any> {
+    return this.http.delete(`${this.localUrl}controluserpermissions/${id}`, {
+      observe: 'response',
+      headers: this.headers
+    }).pipe(
+      catchError((err) => this.handleError(err, "No se ha podido eliminar ControlUserPermissions"))
+    );
+  }
+
+  deleteCancelInvoiceWithFiscalNo(id: number): Observable<any> {
+    return this.http.delete(`${this.localUrl}cancelinvoicewithfiscalno/${id}`, {
+      observe: 'response',
+      headers: this.headers
+    }).pipe(
+      catchError((err) => this.handleError(err, "No se ha podido eliminar permiso de anulación con FN"))
+    );
+  }
+
+  deleteCancelInvoiceWithOutFiscalNo(id: number): Observable<any> {
+    return this.http.delete(`${this.localUrl}cancelinvoicewithothfiscalno/${id}`, {
+      observe: 'response',
+      headers: this.headers
+    }).pipe(
+      catchError((err) => this.handleError(err, "No se ha podido eliminar permiso de anulación sin FN"))
+    );
+  }
+
+  deleteUser(id: number): Observable<any> {
+    return this.http.delete(`${this.localUrl}users/${id}`, {
+      observe: 'response',
+      headers: this.headers
+    }).pipe(
+      catchError((err) => this.handleError(err, "No se ha podido eliminar el usuario"))
+    );
+  }
+
 
 }

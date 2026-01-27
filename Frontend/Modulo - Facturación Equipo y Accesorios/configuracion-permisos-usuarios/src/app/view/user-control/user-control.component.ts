@@ -19,7 +19,7 @@ export class UserControlComponent implements OnInit {
 
   // Props of table
   loadingIndicator: boolean = true;
-  resultsPerPage: number = 10;
+  resultsPerPage: number = 20;
   searchedValue: string = "";
   rows: ControlUserPermissions[] = [];
   rows2: ControlUserPermissions[] = [];
@@ -46,8 +46,12 @@ export class UserControlComponent implements OnInit {
 
     await this.getTypesUser();
 
-    this.getControlUserPermissions();
+    this.resultsPerPage = 20;
+    this.pageSize = 20;
+    this.currentPage = 0;
 
+    this.openLoading('Cargando Registros...');
+    this.getControlUserPermissionsPromise().finally(() => this.closeLoading());
   }
 
 
@@ -90,26 +94,55 @@ export class UserControlComponent implements OnInit {
   }
 
   async refreshTable() {
-    // Limpiar el valor del formulario
     this.consultForm.get('user')?.setValue('');
 
     this.pageSize = 20;
+    this.resultsPerPage = 20;
     this.currentPage = 0;
 
-    // Mostrar el loading
-    Swal.fire({
-      title: 'Cargando ...',
+    this.openLoading('Cargando Registros...');
+    try {
+      await this.getControlUserPermissionsPromise();
+    } finally {
+      this.closeLoading();
+    }
+  }
+
+  private openLoading(title = 'Cargando Registros...') {
+    return Swal.fire({
+      title,
       allowOutsideClick: false,
       onBeforeOpen: () => {
         Swal.showLoading();
       }
     });
+  }
 
-    // Llamar a la función para obtener todos los registros
-    await this.getControlUserPermissions();
 
-    // Cerrar el loading
-    Swal.close();
+  private closeLoading() { Swal.close(); }
+
+  onPageChange(event: any) {
+    this.openLoading('Cargando Registros...');
+
+    setTimeout(async () => {
+      try {
+        this.currentPage = event.offset;
+        await this.getControlUserPermissionsPromise();
+      } finally {
+        this.closeLoading();
+      }
+    }, 0);
+  }
+
+  async onResultsPerPageChange(size: number) {
+    this.openLoading('Cargando Registros...');
+
+    this.resultsPerPage = +size;
+    this.pageSize = +size;
+    this.currentPage = 0;
+
+    await this.getControlUserPermissionsPromise();
+    this.closeLoading();
   }
 
   /**
@@ -143,10 +176,10 @@ export class UserControlComponent implements OnInit {
   getControlUserPermissonsByUser(username: any) {
     this.invoiceService.getControlUserPermissonsByUser(username).subscribe((response) => {
       if (response.status === 200) {
-        this.rows = []; 
-        this.rows2 = []; 
+        this.rows = [];
+        this.rows2 = [];
 
-        const userData = response.body.data; 
+        const userData = response.body.data;
 
         this.currentPage = 0;
         this.pageSize = 1;
@@ -155,8 +188,8 @@ export class UserControlComponent implements OnInit {
 
         if (userData) {
           this.rows.push(userData);
-          this.rows2.push(userData); 
-          this.loadingIndicator = false; 
+          this.rows2.push(userData);
+          this.loadingIndicator = false;
 
           this.utilService.showNotification(0, "Datos cargados");
         } else {
@@ -176,58 +209,48 @@ export class UserControlComponent implements OnInit {
       this.totalPages = 0;
     });
   }
-  // Método para manejar el cambio de página
-  async onPageChange(event: any) {
-    this.currentPage = event.offset;
-    await this.getControlUserPermissions();
-  }
 
   /**
 * Método encargado de obtener los registros de las facturas
 * 
 */
-  getControlUserPermissions() {
+  getControlUserPermissionsPromise(): Promise<boolean> {
+    this.loadingIndicator = true;
 
-    // Se llama e método del servicio
-    this.invoiceService.getControlUserPermissions(this.currentPage, this.pageSize).subscribe((response) => {
+    return new Promise((resolve) => {
+      this.invoiceService.getControlUserPermissions(this.currentPage, this.pageSize).subscribe({
+        next: (response) => {
+          if (response.status === 200) {
+            this.rows = [];
+            this.rows2 = [];
 
-      // Validamos si responde con un 200
-      if (response.status === 200) {
+            const billingResponse = response.body as ControlPermissionsPagesResponse;
 
-        // Vaciamos las 
-        this.rows = [];
-        this.rows2 = [];
+            this.totalElements = billingResponse.data.totalElements;
+            this.totalPages = billingResponse.data.totalPages;
+            this.currentPage = billingResponse.data.number;
 
-        // Mapeamos el body del response
-        let billingResponse = response.body as ControlPermissionsPagesResponse;
+            billingResponse.data.content.forEach((item) => {
+              this.rows.push(item as ControlUserPermissions);
+            });
 
-        // Actualizar la información de paginación
-        this.totalElements = billingResponse.data.totalElements;
-        this.totalPages = billingResponse.data.totalPages;
-        this.currentPage = billingResponse.data.number;
+            this.rows = [...this.rows];
+            this.rows2 = [...this.rows];
 
-        // Agregamos los valores a los rows
-
-        billingResponse.data.content.map((resourceMap, configError) => {
-
-          let dto: ControlUserPermissions = resourceMap;
-
-          this.rows.push(dto);
-
-        });
-
-        this.loadingIndicator = false;
-        this.rows = [...this.rows];
-        this.rows2 = [...this.rows];
-        if (this.rows.length > 0) {
-          this.utilService.showNotification(0, "Datos cargados");
+            if (this.rows.length > 0) this.utilService.showNotification(0, "Datos cargados");
+            this.loadingIndicator = false;
+            resolve(true);
+          } else {
+            this.loadingIndicator = false;
+            resolve(false);
+          }
+        },
+        error: () => {
+          this.loadingIndicator = false;
+          resolve(false);
         }
-
-      }
-
-    }, (error) => {
-
-    })
+      });
+    });
   }
 
   /**
@@ -273,5 +296,84 @@ export class UserControlComponent implements OnInit {
 
   }
 
+  confirmDelete(row: ControlUserPermissions) {
+    Swal.fire({
+      title: 'Eliminar usuario y permisos',
+      html: `¿Desea eliminar todos los permisos y el usuario <b>${row.userName}</b>?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#002e6e',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+      const confirmed = result.isConfirmed === true || result.value === true;
+      if (confirmed) {
+        this.deleteRow(row);
+      }
+    });
+  }
+
+  deleteRow(row: ControlUserPermissions) {
+    Swal.fire({
+      title: 'Eliminando ...',
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    const username = row.userName;
+
+    Promise.all([
+      this.invoiceService.getControlUserPermissonsByUser(username).toPromise(),
+      this.invoiceService.getUserPermissonsWithFn(username).toPromise(),
+      this.invoiceService.getUserPermissonsWithOutFn(username).toPromise()
+    ])
+      .then(async ([controlRes, withFnRes, withOutFnRes]: any[]) => {
+        const control = controlRes?.body?.data;
+        const withFn = withFnRes?.body?.data?.[0] || null;
+        const withOutFn = withOutFnRes?.body?.data?.[0] || null;
+
+        const idControl = control?.id ?? row.id;
+        const idUser = control?.idUser ?? (row as any).idUser;
+
+        const idWithFn = withFn?.id;
+        const idWithOutFn = withOutFn?.id;
+
+        if (idWithFn) {
+          await this.invoiceService.deleteCancelInvoiceWithFiscalNo(idWithFn).toPromise();
+        }
+
+        if (idWithOutFn) {
+          await this.invoiceService.deleteCancelInvoiceWithOutFiscalNo(idWithOutFn).toPromise();
+        }
+
+        if (idControl) {
+          await this.invoiceService.deleteControlUserPermissions(idControl).toPromise();
+        }
+
+        if (idUser) {
+          await this.invoiceService.deleteUser(idUser).toPromise();
+        }
+
+        Swal.close();
+        this.utilService.showNotification(0, 'Permisos y usuario eliminados');
+
+        if (this.rows.length === 1 && this.currentPage > 0) {
+          this.currentPage--;
+        }
+
+        await this.getControlUserPermissionsPromise();
+      })
+      .catch((err) => {
+        Swal.close();
+        console.error('DELETE permissions/user error =>', err);
+        this.utilService.showNotifyError(
+          err?.status || 0,
+          err?.error?.description || 'Error al eliminar permisos/usuario'
+        );
+      });
+  }
 
 }

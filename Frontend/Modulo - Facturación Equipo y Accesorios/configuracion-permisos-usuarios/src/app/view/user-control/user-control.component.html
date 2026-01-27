@@ -71,11 +71,13 @@
                                         <label>
                                             Se muestran
                                             <select aria-controls="datatable" class="form-control form-control-sm"
-                                                name="datatable_length" [(ngModel)]="resultsPerPage">
-                                                <option [value]="10">10</option>
-                                                <option [value]="15">15</option>
+                                                name="datatable_length" [(ngModel)]="resultsPerPage"
+                                                (ngModelChange)="onResultsPerPageChange($event)">
+                                                <option [value]="20">20</option>
                                                 <option [value]="50">50</option>
+                                                <option [value]="100">100</option>
                                             </select>
+
                                             resultados
                                         </label>
                                     </div>
@@ -131,9 +133,12 @@
                                         <i class="now-ui-icons ui-2_settings-90"></i>
                                     </button>
 
+                                    <button type="button" (click)="confirmDelete(row)"
+                                        class="btn btn-round btn-sm btn-danger" data-placement="right"
+                                        data-toggle="tooltip" title="Eliminar permisos">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
 
-
-                                    <!-- TODO: Add validations and permissions to buttons -->
                                 </ng-template>
                             </ngx-datatable-column>
                         </ngx-datatable>

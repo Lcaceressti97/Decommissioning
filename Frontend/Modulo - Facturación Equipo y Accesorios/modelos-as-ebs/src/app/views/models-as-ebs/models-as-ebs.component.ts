@@ -19,7 +19,7 @@ export class ModelsAsEbsComponent implements OnInit {
 
   // Table
   loadingIndicator: boolean = true;
-  resultsPerPage: number = 10;
+  resultsPerPage: number = 20;
   searchedValue: string = "";
   rows: ModelAsEbsModel[] = [];
   rows2: ModelAsEbsModel[] = [];
@@ -39,8 +39,14 @@ export class ModelsAsEbsComponent implements OnInit {
   ngOnInit() {
     this.consultForm = this.initForm();
 
-    this.getModelsAsEbs();
+    this.resultsPerPage = 20;
+    this.pageSize = 20;
+    this.currentPage = 0;
+
+    this.openLoading('Cargando Registros...');
+    this.getModelsAsEbs().finally(() => this.closeLoading());
   }
+
 
   // Methods
 
@@ -49,7 +55,7 @@ export class ModelsAsEbsComponent implements OnInit {
       model: ['', [Validators.required]],
     })
   }
-  
+
   // Methods Screen
   /**
   * Nos ayuda a filtrar, es decir: nos ayuda a buscar
@@ -83,7 +89,7 @@ export class ModelsAsEbsComponent implements OnInit {
 
     // Mostrar el loading
     Swal.fire({
-      title: 'Cargando ...',
+      title: 'Cargando Registros ...',
       allowOutsideClick: false,
       onBeforeOpen: () => {
         Swal.showLoading();
@@ -161,7 +167,7 @@ export class ModelsAsEbsComponent implements OnInit {
         this.utilService.showNotification(1, "No se encontraron datos para el código ebs ingresado.!!");
         this.rows = [];
         this.rows2 = [];
-        
+
       }
 
     }, (error) => {
@@ -176,58 +182,149 @@ export class ModelsAsEbsComponent implements OnInit {
   }
 
   // Método para manejar el cambio de página
-  async onPageChange(event: any) {
-    this.currentPage = event.offset;
-    await this.getModelsAsEbs();
+  onPageChange(event: any) {
+    this.openLoading('Cargando Registros...');
+
+    setTimeout(async () => {
+      try {
+        this.currentPage = event.offset;
+        await this.getModelsAsEbs();
+      } finally {
+        this.closeLoading();
+      }
+    }, 0);
   }
+
 
   /**
 * Método encargado de obtener los registros de las facturas
 * 
 */
-  getModelsAsEbs() {
+  getModelsAsEbs(): Promise<boolean> {
+    this.loadingIndicator = true;
 
-    // Se llama e método del servicio
-    this.modelsAsEbsService.getModelsAsEbs(this.currentPage, this.pageSize).subscribe((response) => {
+    return new Promise((resolve) => {
+      this.modelsAsEbsService.getModelsAsEbs(this.currentPage, this.pageSize).subscribe({
+        next: (response) => {
+          if (response.status === 200) {
+            this.rows = [];
+            this.rows2 = [];
 
-      // Validamos si responde con un 200
-      if (response.status === 200) {
+            const modelAsEbsResponse = response.body as ModelAsEbsPagesResponse;
 
-        // Vaciamos las 
-        this.rows = [];
-        this.rows2 = [];
+            this.totalElements = modelAsEbsResponse.data.totalElements;
+            this.totalPages = modelAsEbsResponse.data.totalPages;
+            this.currentPage = modelAsEbsResponse.data.number;
 
-        // Mapeamos el body del response
-        let modelAsEbsResponse = response.body as ModelAsEbsPagesResponse;
+            modelAsEbsResponse.data.content.forEach((item) => {
+              this.rows.push(item as ModelAsEbsModel);
+            });
 
-        // Actualizar la información de paginación
-        this.totalElements = modelAsEbsResponse.data.totalElements;
-        this.totalPages = modelAsEbsResponse.data.totalPages;
-        this.currentPage = modelAsEbsResponse.data.number;
+            this.rows = [...this.rows];
+            this.rows2 = [...this.rows];
 
-        // Agregamos los valores a los rows
+            if (this.rows.length > 0) this.utilService.showNotification(0, "Datos cargados");
 
-        modelAsEbsResponse.data.content.map((resourceMap, configError) => {
-
-          let dto: ModelAsEbsModel = resourceMap;
-
-
-          this.rows.push(dto);
-
-        });
-
-        this.loadingIndicator = false;
-        this.rows = [...this.rows];
-        this.rows2 = [...this.rows];
-        if (this.rows.length > 0) {
-          this.utilService.showNotification(0, "Datos cargados");
+            this.loadingIndicator = false;
+            resolve(true);
+          } else {
+            this.loadingIndicator = false;
+            resolve(false);
+          }
+        },
+        error: () => {
+          this.loadingIndicator = false;
+          resolve(false);
         }
-
-      }
-
-    }, (error) => {
-
-    })
+      });
+    });
   }
+
+
+  async onResultsPerPageChange(size: number) {
+    this.openLoading('Cargando Registros...');
+
+    this.resultsPerPage = +size;
+    this.pageSize = +size;
+    this.currentPage = 0;
+
+    await this.getModelsAsEbs();
+    this.closeLoading();
+  }
+
+  private openLoading(title = 'Cargando Registros...') {
+    return Swal.fire({
+      title,
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
+  }
+
+  private closeLoading() { Swal.close(); }
+
+  confirmDelete(row: ModelAsEbsModel) {
+    Swal.fire({
+      title: 'Eliminar registro',
+      text: `¿Desea eliminar el modelo ${row.codMod}?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sí, eliminar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#002e6e',
+      cancelButtonColor: '#d33'
+    }).then((result) => {
+
+      const confirmed = result.isConfirmed === true || result.value === true;
+
+      if (confirmed) {
+        this.deleteRow(row.id);
+      }
+    });
+  }
+
+
+  deleteRow(id: number) {
+    Swal.fire({
+      title: 'Eliminando ...',
+      allowOutsideClick: false,
+      onBeforeOpen: () => {
+        Swal.showLoading();
+      }
+    });
+
+    this.modelsAsEbsService.deleteModelAsEbs(id).subscribe({
+      next: async (res) => {
+        Swal.close();
+
+        if (res.status === 200 && res.body?.code === 1) {
+
+          this.utilService.showNotification(0, 'Registro eliminado');
+
+          if (this.rows.length === 1 && this.currentPage > 0) {
+            this.currentPage--;
+          }
+
+          await this.getModelsAsEbs();
+
+        } else {
+          this.utilService.showNotification(
+            1,
+            res.body?.description || 'No se pudo eliminar el registro'
+          );
+        }
+      },
+      error: (err) => {
+        Swal.close();
+        console.error('DELETE error =>', err);
+        this.utilService.showNotifyError(
+          err.status,
+          err?.error?.description || 'Error al eliminar el registro'
+        );
+      }
+    });
+  }
+
 
 }

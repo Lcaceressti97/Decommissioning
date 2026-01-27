@@ -64,6 +64,7 @@
     "tslib": "^1.11.1",
     "uuid": "^3.4.0",
     "xdlocalstorage": "^2.0.5",
+    "xlsx-js-style": "^1.2.0",
     "zone.js": "^0.10.3"
   },
   "devDependencies": {

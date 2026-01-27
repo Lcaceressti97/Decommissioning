@@ -116,6 +116,14 @@ export class EquipmentAccesoriesService {
     );
   }
 
+  deletePriceMaster(id: number): Observable<any> {
+    return this.http.delete(`${this.localUrl}pricemaster/${id}`, {
+      observe: 'response',
+      headers: this.headers
+    }).pipe(
+      catchError((err) => this.handleError(err, "No se ha podido eliminar el precio maestro"))
+    );
+  }
 
 
 }

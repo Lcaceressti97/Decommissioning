@@ -29,17 +29,16 @@
                     placeholder="Ingrese el Código EBS">
                 </div>
 
-                <div [classList]="inputClassesConsult" style="margin-right: 20px;"> <button
-                    (click)="getModelAsEbsByCodEbs(consultForm.value.model)" [disabled]="consultForm.invalid"
-                    class="btn btn-round mr-2 bg-darkBlue btn-outline-primary">
-                    <i class="fas fa-search"></i>
-                  </button>
-                </div>
-                <div [classList]="inputClassesConsult" style="margin-right: 10px;"> <button (click)="refreshTable()"
-                    title="Refrescar" class="btn btn-round mr-2 bg-darkBlue btn-outline-primary">
-                    <i class="fas fa-sync"></i>
-                  </button>
-                </div>
+                <button type="button" (click)="getModelAsEbsByCodEbs(consultForm.value.model)"
+                  [disabled]="consultForm.invalid" class="btn btn-round mr-2 bg-darkBlue btn-outline-primary">
+                  <i class="fas fa-search"></i>
+                </button>
+
+                <button type="button" (click)="refreshTable()" title="Refrescar"
+                  class="btn btn-round mr-2 bg-darkBlue btn-outline-primary">
+                  <i class="fas fa-sync"></i>
+                </button>
+
               </div>
 
             </form>
@@ -61,10 +60,10 @@
                     <label>
                       Se muestran
                       <select aria-controls="datatable" class="form-control form-control-sm" name="datatable_length"
-                        [(ngModel)]="resultsPerPage">
-                        <option [value]="5">5</option>
-                        <option [value]="10">10</option>
-                        <option [value]="15">15</option>
+                        [(ngModel)]="resultsPerPage" (ngModelChange)="onResultsPerPageChange($event)">
+                        <option [value]="20">20</option>
+                        <option [value]="50">50</option>
+                        <option [value]="100">100</option>
                       </select>
                       resultados
                     </label>
@@ -95,7 +94,7 @@
             selectedMessage: 'seleccionado'
         }">
 
-              <ngx-datatable-column name="ID" prop="id" [cellClass]="'custom-class'">
+              <ngx-datatable-column name="Id" prop="id" [cellClass]="'custom-class'">
               </ngx-datatable-column>
 
               <ngx-datatable-column name="Nombre" prop="name" [cellClass]="'custom-class'">
@@ -124,8 +123,11 @@
                     <i class="now-ui-icons ui-2_settings-90"></i>
                   </button>
 
+                  <button type="button" (click)="confirmDelete(row)" class="btn btn-round btn-sm btn-danger"
+                    data-placement="right" data-toggle="tooltip" title="Dar clic para eliminar">
+                    <i class="fas fa-trash"></i>
+                  </button>
 
-                  <!-- TODO: Add validations and permissions to buttons -->
                 </ng-template>
               </ngx-datatable-column>
 
