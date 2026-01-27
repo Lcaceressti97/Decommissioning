@@ -101,14 +101,14 @@ public class BulkEmissionExecutor implements IBulkEmissionExecutor {
             runStep("NON_FISCAL_NOTE",
                     () -> executionNonFiscalNoteService(channel, billing, idPrefecture, ctx, p1002));
 
-            //runStep("UNLOAD_STOCK",
-            //      () -> executionUnloadReservedStockService(channel, billing, idPrefecture, ctx));
+            runStep("UNLOAD_STOCK",
+                 () -> executionUnloadReservedStockService(channel, billing, idPrefecture, ctx));
 
             runStep("PROVISIONING",
                     () -> generationInsuranceSchemes(billing, idPrefecture));
 
-            runStep("TRAMA",
-                    () -> generationTrama(channel, billing, idPrefecture, ctx, puf));
+           runStep("TRAMA",
+                   () -> generationTrama(channel, billing, idPrefecture, ctx, puf));
 
             // === Persistencias finales ===
             applyVoucherDataToBilling(billing, voucherData, true);

@@ -2,10 +2,8 @@ package hn.com.tigo.equipmentaccessoriesbilling.services;
 
 import javax.ws.rs.BadRequestException;
 
-import hn.com.tigo.equipmentaccessoriesbilling.entities.PriceMasterEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +13,9 @@ import hn.com.tigo.equipmentaccessoriesbilling.repositories.IModelAsEbsRepositor
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.ILogsService;
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IModelAsEbsService;
 import hn.com.tigo.equipmentaccessoriesbilling.utils.Constants;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -117,13 +115,13 @@ public class ModelAsEbsServiceImpl implements IModelAsEbsService {
     }
 
     @Override
+    @Transactional
     public void deleteModelAsEbs(Long id) {
         ModelAsEbsEntity entity = this.modelAsEbsRepository.findById(id).orElse(null);
         if (entity == null)
             throw new BadRequestException(String.format(Constants.ERROR_NOT_FINDING_AN_ID_IN_DELETE, id));
 
         this.modelAsEbsRepository.delete(entity);
-
     }
 
 }

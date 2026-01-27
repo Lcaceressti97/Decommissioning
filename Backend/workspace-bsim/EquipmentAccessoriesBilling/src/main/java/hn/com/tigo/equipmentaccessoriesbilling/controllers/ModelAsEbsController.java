@@ -25,76 +25,76 @@ import hn.com.tigo.equipmentaccessoriesbilling.utils.ResponseBuilder;
 @RequestMapping("/model-as-ebs")
 public class ModelAsEbsController {
 
-	private final IModelAsEbsService modelAsEbsService;
-	private final ResponseBuilder responseBuilder;
-	private final ExceptionHandler exceptionHandler;
+    private final IModelAsEbsService modelAsEbsService;
+    private final ResponseBuilder responseBuilder;
+    private final ExceptionHandler exceptionHandler;
 
-	public ModelAsEbsController(IModelAsEbsService modelAsEbsService) {
-		super();
-		this.modelAsEbsService = modelAsEbsService;
-		this.responseBuilder = new ResponseBuilder();
-		this.exceptionHandler = new ExceptionHandler(responseBuilder);
+    public ModelAsEbsController(IModelAsEbsService modelAsEbsService) {
+        super();
+        this.modelAsEbsService = modelAsEbsService;
+        this.responseBuilder = new ResponseBuilder();
+        this.exceptionHandler = new ExceptionHandler(responseBuilder);
 
-	}
+    }
 
-	@PostConstruct
-	void setGlobalSecurityContext() {
-		SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
-	}
+    @PostConstruct
+    void setGlobalSecurityContext() {
+        SecurityContextHolder.setStrategyName(SecurityContextHolder.MODE_INHERITABLETHREADLOCAL);
+    }
 
-	@GetMapping()
-	public ResponseEntity<Object> getAll(Pageable pageable,HttpServletRequest request) {
+    @GetMapping()
+    public ResponseEntity<Object> getAll(Pageable pageable, HttpServletRequest request) {
 
-		return exceptionHandler.handleExceptions(() -> modelAsEbsService.getAllModelAsEbs(pageable), request);
+        return exceptionHandler.handleExceptions(() -> modelAsEbsService.getAllModelAsEbs(pageable), request);
 
-	}
+    }
 
-	@GetMapping("/{id}")
-	public ResponseEntity<Object> getById(@PathVariable Long id, HttpServletRequest request) {
+    @GetMapping("/{id}")
+    public ResponseEntity<Object> getById(@PathVariable Long id, HttpServletRequest request) {
 
-		return exceptionHandler.handleExceptions(() -> this.modelAsEbsService.getModelAsEbsById(id), request);
+        return exceptionHandler.handleExceptions(() -> this.modelAsEbsService.getModelAsEbsById(id), request);
 
-	}
+    }
 
-	@GetMapping("/codmod/{codmod}")
-	public ResponseEntity<Object> getByCodMod(@PathVariable String codmod, HttpServletRequest request) {
+    @GetMapping("/codmod/{codmod}")
+    public ResponseEntity<Object> getByCodMod(@PathVariable String codmod, HttpServletRequest request) {
 
-		return exceptionHandler.handleExceptionsEbsModel(() -> this.modelAsEbsService.findByCodMod(codmod), request);
+        return exceptionHandler.handleExceptionsEbsModel(() -> this.modelAsEbsService.findByCodMod(codmod), request);
 
-	}
+    }
 
-	@GetMapping("/cod-ebs/{codEbs}")
-	public ResponseEntity<Object> getModelAsEbsByCodEbs(@PathVariable String codEbs, HttpServletRequest request) {
+    @GetMapping("/cod-ebs/{codEbs}")
+    public ResponseEntity<Object> getModelAsEbsByCodEbs(@PathVariable String codEbs, HttpServletRequest request) {
 
-		return exceptionHandler.handleExceptionsEbsModel(() -> this.modelAsEbsService.getModelAsEbsByCodEbs(codEbs), request);
+        return exceptionHandler.handleExceptionsEbsModel(() -> this.modelAsEbsService.getModelAsEbsByCodEbs(codEbs), request);
 
-	}
+    }
 
-	@PostMapping("/add")
-	public ResponseEntity<Object> add(@Valid @RequestBody ModelAsEbsModel model, HttpServletRequest httpRequest) {
+    @PostMapping("/add")
+    public ResponseEntity<Object> add(@Valid @RequestBody ModelAsEbsModel model, HttpServletRequest httpRequest) {
 
-		return exceptionHandler.handleExceptions(() -> {
-			this.modelAsEbsService.addModelAsEbs(model);
-			return model;
-		}, httpRequest);
-	}
+        return exceptionHandler.handleExceptions(() -> {
+            this.modelAsEbsService.addModelAsEbs(model);
+            return model;
+        }, httpRequest);
+    }
 
-	@PutMapping("/update/{id}")
-	public ResponseEntity<Object> update(@PathVariable Long id, @Valid @RequestBody ModelAsEbsModel model,
-			HttpServletRequest request) {
+    @PutMapping("/update/{id}")
+    public ResponseEntity<Object> update(@PathVariable Long id, @Valid @RequestBody ModelAsEbsModel model,
+                                         HttpServletRequest request) {
 
-		return exceptionHandler.handleExceptions(() -> {
-			this.modelAsEbsService.updateModelAsEbs(id, model);
-			return model;
-		}, request);
-	}
+        return exceptionHandler.handleExceptions(() -> {
+            this.modelAsEbsService.updateModelAsEbs(id, model);
+            return model;
+        }, request);
+    }
 
-	@DeleteMapping("/{id}")
-	public ResponseEntity<Object> delete(@PathVariable Long id, HttpServletRequest request) {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Object> delete(@PathVariable Long id, HttpServletRequest request) {
+        return exceptionHandler.handleExceptions(() -> {
+            this.modelAsEbsService.deleteModelAsEbs(id);
+            return "Registro eliminado: " + id;
+        }, request);
+    }
 
-		return exceptionHandler.handleExceptions(() -> {
-			this.modelAsEbsService.deleteModelAsEbs(id);
-			return null;
-		}, request);
-	}
 }
