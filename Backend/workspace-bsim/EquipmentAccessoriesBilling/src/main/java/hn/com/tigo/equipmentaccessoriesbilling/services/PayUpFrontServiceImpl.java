@@ -18,6 +18,7 @@ import hn.com.tigo.equipmentaccessoriesbilling.models.ConfigParametersModel;
 import hn.com.tigo.equipmentaccessoriesbilling.models.PayUpFrontRequest;
 import hn.com.tigo.equipmentaccessoriesbilling.models.PayUpFrontRequest.AcctAccessCode;
 import hn.com.tigo.equipmentaccessoriesbilling.models.PayUpFrontRequest.PayUpfrontInfo;
+import hn.com.tigo.equipmentaccessoriesbilling.models.PayUpFrontRequest.AdditionalProperty;
 import hn.com.tigo.equipmentaccessoriesbilling.provider.PayUpFrontProvider;
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IConfigParametersService;
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IPayUpFrontService;
@@ -68,13 +69,34 @@ public class PayUpFrontServiceImpl implements IPayUpFrontService {
             String invoiceType = billingEntity.getInvoiceType();
 
             PayUpFrontProvider payUpFrontProvider = new PayUpFrontProvider(parameters.get("PAY_UP_FRONT_PROVIDER"));
-            String payUpfrontSerialNo = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss")) + billingEntity.getId();
+
             String transType = parameters.get("TRANS_TYPE");
             String payType = parameters.get("PAY_TYPE");
             String chargeCode = parameters.get("CHARGE_CODE");
             String currencyId = parameters.get("CURRENCY_ID");
             String payUpfrontReason = parameters.get("PAY_UP_FRONT_REASON");
             String dueDateParameter = parameters.get("DUE_DATE");
+
+            String code = parameters.get("CODE");
+            String mea = parameters.get("MEA");
+            String factEquipment = parameters.get("FACT_EQUIPO");
+            String valorAdditionalProperty = parameters.get("VALOR_ADDITIONAL_PROPERTY");
+            String others = parameters.get("OTROS");
+            String bill = parameters.get("BILL");
+            String paymentMethod = billingEntity.getInvoiceType();
+            String invoiceIdMea = billingEntity.getId().toString();
+            String userMea = billingEntity.getSeller();
+
+            String valueAdditionalProperty = String.join(";",
+                    safe(mea),
+                    safe(factEquipment),
+                    safe(valorAdditionalProperty),
+                    safe(others),
+                    safe(bill),
+                    safe(paymentMethod),
+                    safe(invoiceIdMea),
+                    safe(userMea)
+            ) + ";";
 
             String dueDateString;
             if (cashInvoiceTypes.contains(invoiceType)) {
@@ -95,7 +117,7 @@ public class PayUpFrontServiceImpl implements IPayUpFrontService {
 
             // Setea los valores en la instancia de PayUpFrontRequest
             PayUpFrontRequest payUpFrontRequest = new PayUpFrontRequest();
-            payUpFrontRequest.setPayUpfrontSerialNo(payUpfrontSerialNo);
+
             payUpFrontRequest.setTransType(transType);
 
             AcctAccessCode acctAccessCode = new AcctAccessCode();
@@ -103,14 +125,19 @@ public class PayUpFrontServiceImpl implements IPayUpFrontService {
             acctAccessCode.setPayType(payType);
             payUpFrontRequest.setAcctAccessCode(acctAccessCode);
 
+            payUpFrontRequest.setPayUpfrontReason(payUpfrontReason);
+            payUpFrontRequest.setDueDate(dueDateString);
+
             PayUpfrontInfo payUpfrontInfo = new PayUpfrontInfo();
             payUpfrontInfo.setChargeCode(chargeCode);
             payUpfrontInfo.setChargeAmt(Math.round(billingEntity.getAmountTotal() * 1000000));
             payUpfrontInfo.setCurrencyId(Integer.parseInt(currencyId));
             payUpFrontRequest.setPayUpfrontInfo(Collections.singletonList(payUpfrontInfo));
 
-            payUpFrontRequest.setPayUpfrontReason(payUpfrontReason);
-            payUpFrontRequest.setDueDate(dueDateString);
+            AdditionalProperty additionalProperty = new AdditionalProperty();
+            additionalProperty.setCode(code);
+            additionalProperty.setValue(valueAdditionalProperty);
+            payUpFrontRequest.setAdditionalProperty(Collections.singletonList(additionalProperty));
 
             Gson gson = new Gson();
             String json = gson.toJson(payUpFrontRequest);
@@ -156,4 +183,7 @@ public class PayUpFrontServiceImpl implements IPayUpFrontService {
         }
     }
 
+    private String safe(String v) {
+        return (v == null) ? "" : v.trim();
+    }
 }

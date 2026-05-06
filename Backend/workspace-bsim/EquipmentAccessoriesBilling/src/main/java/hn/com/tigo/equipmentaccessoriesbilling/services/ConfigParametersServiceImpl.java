@@ -40,7 +40,7 @@ public class ConfigParametersServiceImpl implements IConfigParametersService {
 
 		return entities.stream().map(ConfigParametersEntity::entityToModel).collect(Collectors.toList());
 	}
-	
+
 	@Override
 	public ConfigParametersModel getByName(String name) {
 		ConfigParametersEntity entity = configParametersRepository.findByParameterName(name);
@@ -49,6 +49,15 @@ public class ConfigParametersServiceImpl implements IConfigParametersService {
 		}
 		ConfigParametersModel model = entity.entityToModel();
 		return model;
+	}
+
+	@Override
+	public String getValueByName(String name) {
+		String value = configParametersRepository.findByParameterNameNative(name);
+		if (value == null) {
+			throw new BadRequestException(String.format(Constants.ERROR_PARAMETER_NAME, name.toString()));
+		}
+		return value;
 	}
 
 }

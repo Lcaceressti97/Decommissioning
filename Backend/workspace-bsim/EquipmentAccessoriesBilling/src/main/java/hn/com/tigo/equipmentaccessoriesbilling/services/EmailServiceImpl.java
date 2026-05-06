@@ -76,7 +76,8 @@ public class EmailServiceImpl implements IEmailService {
 
 			}
 
-			byte[] pdfBytes = InvoicePdfGenerator.generateInvoicePdf(billingEntity, branchOfficesEntity, model.getCashierName());
+			byte[] pdfBytes = InvoicePdfGenerator.generateInvoicePdf(billingEntity, branchOfficesEntity,
+					model.getCashierName());
 
 			AttachmentsDTO attachmentsDTO = new AttachmentsDTO();
 			AttachmentDto attachmentDto = new AttachmentDto();
@@ -92,6 +93,40 @@ public class EmailServiceImpl implements IEmailService {
 
 		} catch (Exception e) {
 			return null;
+		}
+	}
+
+	@Override
+	public boolean sendBulkEmail(String email, String fileName, String zipBase64) {
+
+		try {
+
+			EmailServiceProvider serviceEmail = new EmailServiceProvider(this.configParametersService.getByName("EMAIL_SERVICE_PROVIDER").getParameterValue());
+
+			String from = this.configParametersService.getValueByName("FROM_BULK");
+			String subject = this.configParametersService.getValueByName("SUBJECT_BULK"); 
+			String body = this.configParametersService.getValueByName("BODY_BULK"); 
+
+			SentDTO sendTo = new SentDTO();
+
+			ToDto emailDto = new ToDto();
+			emailDto.setTo(email);
+			sendTo.getSend().add(emailDto);
+
+			AttachmentsDTO attachmentsDTO = new AttachmentsDTO();
+			AttachmentDto attachmentDto = new AttachmentDto();
+			attachmentDto.setAttachContent(zipBase64);
+			attachmentDto.setAttachName(fileName);
+			attachmentDto.setMimeType("application/zip");
+			attachmentsDTO.getAttachments().add(attachmentDto);
+
+			GeneralResponse response = serviceEmail.sendMessage(from, sendTo, "", subject, body, attachmentsDTO);
+			System.out.println("Email service response, envio masivo de facturas: " + response.getMessage());
+			return true;
+		} catch (BadRequestException e) {
+			return false;
+		} catch (Exception e) {
+			return false;
 		}
 	}
 

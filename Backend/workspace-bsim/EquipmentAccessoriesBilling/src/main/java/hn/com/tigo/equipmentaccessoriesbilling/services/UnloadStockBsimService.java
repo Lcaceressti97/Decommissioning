@@ -124,8 +124,10 @@ public class UnloadStockBsimService {
             paramsAuthentication.put(parameter.getParameterName(), parameter.getParameterValue());
         }
 
-        String unloadStockUrl = paramsAuthentication.get("UNLOAD_STOCK_R_ENDPOINT");
-        String transactionType = paramsAuthentication.get("TRANSACTION_TYPE_UNLOAD_STOCK");
+        //String unloadStockUrl = paramsAuthentication.get("UNLOAD_STOCK_R_ENDPOINT");
+		// Quitar para QA
+		String unloadStockUrl = "https://bsim.tigo.com.hn/api/bsim-operations-service/v1/operations/unloadReservedStock";
+		String transactionType = paramsAuthentication.get("TRANSACTION_TYPE_UNLOAD_STOCK");
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();

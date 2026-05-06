@@ -1,5 +1,6 @@
 package hn.com.tigo.comodatos.service;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +8,9 @@ import java.util.stream.Collectors;
 
 import javax.ws.rs.BadRequestException;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import hn.com.tigo.comodatos.entities.PromotionsDetailEntity;
 import hn.com.tigo.comodatos.entities.PromotionsEntity;
@@ -19,151 +20,162 @@ import hn.com.tigo.comodatos.repositories.IPromotionsRepository;
 import hn.com.tigo.comodatos.services.interfaces.IPromotionsService;
 
 @Service
+@Transactional
 public class PromotionsServiceImpl implements IPromotionsService {
 
-	IPromotionsRepository promotionsRepository;
+    private final IPromotionsRepository promotionsRepository;
+    private final IPromotionsDetailRepository promotionsDetailRepository;
 
-	 @Autowired
-	IPromotionsDetailRepository promotionsDetailRepository;
+    public PromotionsServiceImpl(IPromotionsRepository promotionsRepository,
+                                 IPromotionsDetailRepository promotionsDetailRepository) {
+        this.promotionsRepository = promotionsRepository;
+        this.promotionsDetailRepository = promotionsDetailRepository;
+    }
 
-	public PromotionsServiceImpl(IPromotionsRepository promotionsRepository,
-			IPromotionsDetailRepository promotionsDetailRepository) {
-		super();
-		this.promotionsRepository = promotionsRepository;
-		this.promotionsDetailRepository = promotionsDetailRepository;
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public List<PromotionsModel> getAllPromotions() {
+        return promotionsRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+                .stream()
+                .map(PromotionsEntity::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<PromotionsModel> getAllPromotions() {
-		List<PromotionsEntity> entities = this.promotionsRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-		return entities.stream().map(PromotionsEntity::entityToModel).collect(Collectors.toList());
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public List<PromotionsModel> getPromotionsByModelCode(String modelCode) {
+        return promotionsRepository.getPromotionsByModelCode(modelCode)
+                .stream()
+                .map(PromotionsEntity::entityToModel)
+                .collect(Collectors.toList());
+    }
 
-	@Override
-	public List<PromotionsModel> getPromotionsByModelCode(String modelCode) {
-		List<PromotionsEntity> entities = this.promotionsRepository.getPromotionsByModelCode(modelCode);
-		return entities.stream().map(PromotionsEntity::entityToModel).collect(Collectors.toList());
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public PromotionsModel getPromotionsById(Long id) {
+        PromotionsEntity entity = promotionsRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(String.format("No records found for id %s", id)));
 
-	@Override
-	public PromotionsModel getPromotionsById(Long id) {
-		PromotionsEntity entity = this.promotionsRepository.findById(id).orElse(null);
+        return entity.entityToModel();
+    }
 
-		if (entity == null)
-			throw new BadRequestException(String.format("No records found for id %s", id));
+    @Override
+    public void addPromotions(PromotionsModel promotionsModel) {
+        PromotionsEntity promotionsEntity = new PromotionsEntity();
+        promotionsEntity.setId(-1L);
+        promotionsEntity.setPromotionCode(promotionsModel.getPromotionCode());
+        promotionsEntity.setModelCode(promotionsModel.getModelCode());
+        promotionsEntity.setDescription(promotionsModel.getDescription());
+        promotionsEntity.setCorporate(promotionsModel.getCorporate());
+        promotionsEntity.setPermanentValidity(promotionsModel.getPermanentValidity());
+        promotionsEntity.setStartDate(LocalDateTime.now());
+        promotionsEntity.setEndDate(promotionsModel.getEndDate());
+        promotionsEntity.setFinanciado(promotionsModel.getFinanciado());
+        promotionsEntity.setGross(promotionsModel.getGross());
 
-		return entity.entityToModel();
-	}
+        PromotionsEntity savedPromotion = promotionsRepository.save(promotionsEntity);
 
-	@Override
-	public void addPromotions(PromotionsModel promotionsModel) {
-		// Crear la entidad de la promoción
-		PromotionsEntity promotionsEntity = new PromotionsEntity();
-		promotionsEntity.setId(-1L);
-		promotionsEntity.setPromotionCode(promotionsModel.getPromotionCode());
-		promotionsEntity.setModelCode(promotionsModel.getModelCode());
-		promotionsEntity.setDescription(promotionsModel.getDescription());
-		promotionsEntity.setCorporate(promotionsModel.getCorporate());
-		promotionsEntity.setPermanentValidity(promotionsModel.getPermanentValidity());
-		promotionsEntity.setStartDate(LocalDateTime.now());
-		promotionsEntity.setEndDate(promotionsModel.getEndDate());
+        List<PromotionsDetailEntity> detailEntities = new ArrayList<>();
+        for (PromotionsDetailEntity detailModel : promotionsModel.getPromotionsDetail()) {
+            PromotionsDetailEntity detailEntity = new PromotionsDetailEntity();
+            detailEntity.setId(-1L);
+            detailEntity.setDetail(savedPromotion);
+            detailEntity.setPromotionCode(detailModel.getPromotionCode());
+            detailEntity.setModelCode(detailModel.getModelCode());
+            detailEntity.setPlanValue(detailModel.getPlanValue());
+            detailEntity.setMonthsPermanence(detailModel.getMonthsPermanence());
+            detailEntity.setSubsidyFund(detailModel.getSubsidyFund());
+            detailEntity.setAdditionalSubsidy(detailModel.getAdditionalSubsidy());
+            detailEntity.setInstitutionalFunds(detailModel.getInstitutionalFunds());
+            detailEntity.setCoopsFund(detailModel.getCoopsFund());
+            detailEntity.setStatus(detailModel.getStatus());
+            detailEntities.add(detailEntity);
+        }
 
-		// Guardar la entidad de la promoción
-		PromotionsEntity savedPromotionsEntity = this.promotionsRepository.save(promotionsEntity);
+        promotionsDetailRepository.saveAll(detailEntities);
+    }
 
-		// Crear las entidades de los detalles de la promoción
-		List<PromotionsDetailEntity> promotionsDetailModels = promotionsModel.getPromotionsDetail();
-		List<PromotionsDetailEntity> promotionsDetailEntities = new ArrayList<>();
-		for (PromotionsDetailEntity promotionsDetailModel : promotionsDetailModels) {
-			PromotionsDetailEntity promotionsDetailEntity = new PromotionsDetailEntity();
-			promotionsDetailEntity.setId(-1L);
-			promotionsDetailEntity.setDetail(savedPromotionsEntity);
-			promotionsDetailEntity.setPromotionCode(promotionsDetailModel.getPromotionCode());
-			promotionsDetailEntity.setModelCode(promotionsDetailModel.getModelCode());
-			promotionsDetailEntity.setPlanValue(promotionsDetailModel.getPlanValue());
-			promotionsDetailEntity.setMonthsPermanence(promotionsDetailModel.getMonthsPermanence());
-			promotionsDetailEntity.setSubsidyFund(promotionsDetailModel.getSubsidyFund());
-			promotionsDetailEntity.setAdditionalSubsidy(promotionsDetailModel.getAdditionalSubsidy());
-			promotionsDetailEntity.setInstitutionalFunds(promotionsDetailModel.getInstitutionalFunds());
-			promotionsDetailEntity.setCoopsFund(promotionsDetailModel.getCoopsFund());
-			promotionsDetailEntity.setStatus(promotionsDetailModel.getStatus());
-			promotionsDetailEntities.add(promotionsDetailEntity);
-		}
+    @Override
+    public void updatePromotions(Long id, PromotionsModel promotionsModel) {
+        PromotionsEntity promotionsEntity = promotionsRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(String.format("Record with id %s is not valid", id)));
 
-		// Guardar las entidades de los detalles de la promoción
-		this.promotionsDetailRepository.saveAll(promotionsDetailEntities);
-	}
+        promotionsEntity.setPromotionCode(promotionsModel.getPromotionCode());
+        promotionsEntity.setModelCode(promotionsModel.getModelCode());
+        promotionsEntity.setDescription(promotionsModel.getDescription());
+        promotionsEntity.setCorporate(promotionsModel.getCorporate());
+        promotionsEntity.setPermanentValidity(promotionsModel.getPermanentValidity());
+        promotionsEntity.setEndDate(promotionsModel.getEndDate());
+        promotionsEntity.setFinanciado(promotionsModel.getFinanciado());
+        promotionsEntity.setGross(promotionsModel.getGross());
 
-	@Override
-	public void updatePromotions(Long id, PromotionsModel promotionsModel) {
-		// Buscar la entidad de la promoción
-		PromotionsEntity promotionsEntity = this.promotionsRepository.findById(id)
-				.orElseThrow(() -> new BadRequestException(String.format("Record with id %s is not valid", id)));
+        promotionsRepository.save(promotionsEntity);
 
-		// Actualizar los campos de la promoción
-		promotionsEntity.setPromotionCode(promotionsModel.getPromotionCode());
-		promotionsEntity.setModelCode(promotionsModel.getModelCode());
-		promotionsEntity.setDescription(promotionsModel.getDescription());
-		promotionsEntity.setCorporate(promotionsModel.getCorporate());
-		promotionsEntity.setPermanentValidity(promotionsModel.getPermanentValidity());
-		// promotionsEntity.setStartDate(promotionsModel.getStartDate());
-		promotionsEntity.setEndDate(promotionsModel.getEndDate());
+        List<PromotionsDetailEntity> requestDetails = promotionsModel.getPromotionsDetail();
+        List<PromotionsDetailEntity> currentDetails = promotionsEntity.getPromotionsDetail();
 
-		// Guardar la entidad de la promoción actualizada
-		this.promotionsRepository.save(promotionsEntity);
+        List<PromotionsDetailEntity> detailsToDelete = currentDetails.stream()
+                .filter(current -> requestDetails.stream()
+                        .noneMatch(request -> request.getId() != null && request.getId().equals(current.getId())))
+                .collect(Collectors.toList());
 
-		// Actualizar los detalles de la promoción
-		List<PromotionsDetailEntity> promotionsDetailModels = promotionsModel.getPromotionsDetail();
-		List<PromotionsDetailEntity> existingPromotionsDetailEntities = promotionsEntity.getPromotionsDetail();
+        promotionsDetailRepository.deleteAll(detailsToDelete);
 
-		// Eliminar los detalles que ya no están en el modelo
-		List<PromotionsDetailEntity> promotionsDetailEntitiesToDelete = existingPromotionsDetailEntities.stream()
-				.filter(detail -> !promotionsDetailModels.stream()
-						.anyMatch(detailModel -> detailModel.getId().equals(detail.getId())))
-				.collect(Collectors.toList());
-		this.promotionsDetailRepository.deleteAll(promotionsDetailEntitiesToDelete);
+        for (PromotionsDetailEntity detailModel : requestDetails) {
+            PromotionsDetailEntity detailEntity = currentDetails.stream()
+                    .filter(current -> current.getId().equals(detailModel.getId()))
+                    .findFirst()
+                    .orElseGet(() -> {
+                        PromotionsDetailEntity newDetail = new PromotionsDetailEntity();
+                        newDetail.setDetail(promotionsEntity);
+                        return newDetail;
+                    });
 
-		// Actualizar o crear los detalles de la promoción
-		for (PromotionsDetailEntity promotionsDetailModel : promotionsDetailModels) {
-			PromotionsDetailEntity promotionsDetailEntity = existingPromotionsDetailEntities.stream()
-					.filter(detail -> detail.getId().equals(promotionsDetailModel.getId())).findFirst()
-					.orElseGet(() -> {
-						PromotionsDetailEntity newPromotionsDetailEntity = new PromotionsDetailEntity();
-						newPromotionsDetailEntity.setDetail(promotionsEntity);
-						return newPromotionsDetailEntity;
-					});
+            detailEntity.setPromotionCode(detailModel.getPromotionCode());
+            detailEntity.setModelCode(detailModel.getModelCode());
+            detailEntity.setPlanValue(detailModel.getPlanValue());
+            detailEntity.setMonthsPermanence(detailModel.getMonthsPermanence());
+            detailEntity.setSubsidyFund(detailModel.getSubsidyFund());
+            detailEntity.setAdditionalSubsidy(detailModel.getAdditionalSubsidy());
+            detailEntity.setInstitutionalFunds(detailModel.getInstitutionalFunds());
+            detailEntity.setCoopsFund(detailModel.getCoopsFund());
+            detailEntity.setStatus(detailModel.getStatus());
 
-			promotionsDetailEntity.setPromotionCode(promotionsDetailModel.getPromotionCode());
-			promotionsDetailEntity.setModelCode(promotionsDetailModel.getModelCode());
-			promotionsDetailEntity.setPlanValue(promotionsDetailModel.getPlanValue());
-			promotionsDetailEntity.setMonthsPermanence(promotionsDetailModel.getMonthsPermanence());
-			promotionsDetailEntity.setSubsidyFund(promotionsDetailModel.getSubsidyFund());
-			promotionsDetailEntity.setAdditionalSubsidy(promotionsDetailModel.getAdditionalSubsidy());
-			promotionsDetailEntity.setInstitutionalFunds(promotionsDetailModel.getInstitutionalFunds());
-			promotionsDetailEntity.setCoopsFund(promotionsDetailModel.getCoopsFund());
-			promotionsDetailEntity.setStatus(promotionsDetailModel.getStatus());
+            promotionsDetailRepository.save(detailEntity);
+        }
+    }
 
-			this.promotionsDetailRepository.save(promotionsDetailEntity);
-		}
-	}
+    @Override
+    public void deletePromotions(Long id) {
+        PromotionsEntity entity = promotionsRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(String.format("Record with id %s is not valid", id)));
 
-	@Override
-	public void deletePromotions(Long id) {
-		PromotionsEntity entity = this.promotionsRepository.findById(id).orElse(null);
-		if (entity == null)
-			throw new BadRequestException(String.format("Record with id %s is not valid", id));
+        promotionsRepository.delete(entity);
+    }
 
-		this.promotionsRepository.delete(entity);
+    @Override
+    @Transactional(readOnly = true)
+    public List<PromotionsDetailEntity> searchModels(String precioPromo, String mesesPermanencia, String modelCode) {
+        return promotionsDetailRepository.searchModels(precioPromo, mesesPermanencia, modelCode);
+    }
 
-	}
-
-	public List<PromotionsDetailEntity> buscarModelos(String precioPromo, String mesesPermanencia, String modelCode) {
-
-		return this.promotionsDetailRepository.buscarModelos(precioPromo, mesesPermanencia, modelCode);
-	}
-	
-	public Object getDesc(String precioPromo, String mesesPermanencia, String modelCode, String corporate, String startDate) {
-
-		return this.promotionsDetailRepository.getDesc(precioPromo, mesesPermanencia, modelCode, corporate, startDate);
-	}
+    @Override
+    @Transactional(readOnly = true)
+    public BigDecimal getDesc(String precioPromo,
+                              String mesesPermanencia,
+                              String modelCode,
+                              String corporate,
+                              String startDate,
+                              Integer financiado,
+                              Integer gross) {
+        return promotionsDetailRepository.getDesc(
+                precioPromo,
+                mesesPermanencia,
+                modelCode,
+                corporate,
+                startDate,
+                financiado,
+                gross
+        );
+    }
 }

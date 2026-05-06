@@ -461,21 +461,21 @@ public class BillingServiceImpl implements IBillingService {
             }
         }
 
-        
+
         if (channelEntity.getReserveSerialNumber() == 1 && channelEntity.getId() == 2) {
             // Reservar los números de serie
             for (InvoiceDetailEntity detail : model.getInvoiceDetails()) {
                 if (detail.getSerieOrBoxNumber() != null && !detail.getSerieOrBoxNumber().isEmpty()) {
                     // Obtener el token de autenticación
                     AuthenticationBsimResponse accessToken = authenticationService.getAccessToken();
-                    
+
                     List<InvoiceDetailEntity> detailList = Arrays.asList(detail);
                     System.out.println(detailList.get(0));
                     reserveSeriesService.reserveSeries(accessToken.getAccess_token(), model.getInventoryType(),
                             detail.getModel(), model.getWarehouse(), model.getSubWarehouse(), detailList, model.getChannel(), model.getSeller(), channelEntity);
                 }
             }
-        } 
+        }
 
         // Consumo del servicio CustomerInfo
         CustomerInfoModel customerInfo = null;
@@ -1341,7 +1341,7 @@ public class BillingServiceImpl implements IBillingService {
                         statusEntry -> new BranchOfficeAndStatus(entry.getKey(), statusEntry.getKey(), statusEntry.getValue())))
                 .collect(Collectors.toList());
     }
-    
+
     @Override
     public List<InvoicesByNameOrRtnModel> getAllPendingByNameOrRtn(String name, String rtn) {
     	String likeName = "%" + name.toLowerCase() + "%";

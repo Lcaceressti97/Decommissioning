@@ -7,5 +7,6 @@ import hn.com.tigo.equipmentaccessoriesbilling.services.emailservice.GeneralResp
 public interface IEmailService {
 
 	GeneralResponse sendEmail(EmailServiceModel model);
-
+	boolean sendBulkEmail(String email, String fileName, String zipBase64);
+	
 }

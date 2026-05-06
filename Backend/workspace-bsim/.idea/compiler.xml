@@ -17,6 +17,7 @@
         <module name="AnnotationsDecommissioning" />
         <module name="EquipmentInsurance" />
         <module name="EquipmentBlacklist" />
+        <module name="ServiceBilling" />
       </profile>
     </annotationProcessing>
   </component>
@@ -31,6 +32,7 @@
       <module name="InquiriesAmsysNavega" options="-parameters" />
       <module name="JTellerServices" options="-parameters" />
       <module name="SelfConsumptionModule" options="-parameters" />
+      <module name="ServiceBilling" options="-parameters" />
       <module name="SimcardInquiry" options="-parameters" />
     </option>
   </component>

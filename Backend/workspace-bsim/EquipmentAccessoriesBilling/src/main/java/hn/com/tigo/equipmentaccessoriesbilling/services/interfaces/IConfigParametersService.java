@@ -12,4 +12,5 @@ public interface IConfigParametersService {
 	
 	ConfigParametersModel getByName(String name);
 
+	String getValueByName(String name);
 }

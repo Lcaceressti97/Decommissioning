@@ -3,11 +3,15 @@ package hn.com.tigo.equipmentaccessoriesbilling.controllers;
 import hn.com.tigo.equipmentaccessoriesbilling.exceptions.ExceptionHandler;
 import hn.com.tigo.equipmentaccessoriesbilling.models.BulkEmissionBatchResult;
 import hn.com.tigo.equipmentaccessoriesbilling.models.BulkEmitRequest;
+import hn.com.tigo.equipmentaccessoriesbilling.models.BulkNotificationsRequest;
+import hn.com.tigo.equipmentaccessoriesbilling.models.BulkNotificationsResponse;
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IBulkEmissionService;
 import hn.com.tigo.equipmentaccessoriesbilling.utils.ResponseBuilder;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -27,8 +31,16 @@ public class BulkEmissionController {
     }
 
     @GetMapping()
-    public ResponseEntity<Object> getInvoicesBulkEmission(Pageable pageable, @RequestParam String seller, HttpServletRequest request) {
+    public ResponseEntity<Object> getInvoicesBulkEmission(Pageable pageable, @RequestParam String seller,
+            HttpServletRequest request) {
         return exceptionHandler.handleExceptions(() -> bulkEmissionService.getBulkEmission(pageable, seller), request);
+    }
+
+    @GetMapping("/get-emited")
+    public ResponseEntity<Object> getEmitedInvoices(Pageable pageable, @RequestParam String seller,
+            HttpServletRequest request) {
+        return exceptionHandler.handleExceptions(() -> bulkEmissionService.getEmitedInvoices(pageable, seller),
+                request);
     }
 
     @GetMapping(value = "/search")
@@ -41,8 +53,36 @@ public class BulkEmissionController {
 
         return exceptionHandler.handleExceptions(
                 () -> bulkEmissionService.searchByCustomerOrCustomerId(pageable, seller, customer, customerId),
-                request
-        );
+                request);
+    }
+
+    @GetMapping(value = "/search-emited")
+    public ResponseEntity<Object> searchEmitedByCustomerOrCustomerIdPaged(
+            Pageable pageable,
+            @RequestParam(required = false) String seller,
+            @RequestParam(required = false) String customer,
+            @RequestParam(name = "customerId", required = false) String customerId,
+            HttpServletRequest request) {
+
+        return exceptionHandler.handleExceptions(
+                () -> bulkEmissionService.searchEmitedByCustomerOrCustomerIdPaged(pageable, seller, customer,
+                        customerId),
+                request);
+    }
+
+    @GetMapping("/emitedInvoicesByNameOrRtn")
+    public ResponseEntity<Object> getAllEmitedByNameOrRtn(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String rtn,
+            HttpServletRequest request) {
+        return exceptionHandler.handleExceptions(() -> this.bulkEmissionService.getAllEmitedByNameOrRtn(name, rtn),
+                request);
+    }
+
+    @PostMapping("/send-bulk-notifications")
+    public ResponseEntity<BulkNotificationsResponse> sendBulkNotifications(@RequestBody BulkNotificationsRequest req) throws IOException {
+        BulkNotificationsResponse result = this.bulkEmissionService.sendBulkNotifications(req);
+        return ResponseEntity.ok(result);
     }
 
     @PostMapping("/emission")
@@ -52,8 +92,7 @@ public class BulkEmissionController {
                 req.getUserCreate(),
                 req.getDescription(),
                 req.getIdBranchOffices(),
-                req.getPaymentCode()
-        );
+                req.getPaymentCode());
         return ResponseEntity.ok(result);
     }
 

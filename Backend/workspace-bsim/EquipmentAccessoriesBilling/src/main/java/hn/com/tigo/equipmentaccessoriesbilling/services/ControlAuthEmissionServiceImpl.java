@@ -58,6 +58,8 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
     private final IEquipmentInsuranceControlRepository equipmentInsuranceControlRepository;
     private final IProvisioningInsuranceService provisioningInsuranceService;
     private final IInsuranceClaimRepository insuranceClaimRepository;
+    private final IControlBlisterRepository controlBlisterRepository;
+    private final ISimcardDetailRepository simcardDetailRepository;
 
     public ControlAuthEmissionServiceImpl(IControlAuthEmissionRepository controlAuthEmissionRepository,
                                           IBillingRepository billingRepository, IControlUserPermissionsRepository controlUserPermissionsRepository,
@@ -66,7 +68,7 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
                                           IChannelRepository channelRepository, AuthenticationBsimService authenticationService,
                                           ReleaseSerialBsimService releaseSerialBsimService, UnloadStockBsimService unloadStockBsimService,
                                           INonFiscalNoteService nonFiscalNoteService, ProcessQueue processQueue,
-                                          IEquipmentInsuranceControlRepository equipmentInsuranceControlRepository, IProvisioningInsuranceService provisioningInsuranceService, IInsuranceClaimRepository insuranceClaimRepository) {
+                                          IEquipmentInsuranceControlRepository equipmentInsuranceControlRepository, IProvisioningInsuranceService provisioningInsuranceService, IInsuranceClaimRepository insuranceClaimRepository, IControlBlisterRepository controlBlisterRepository, ISimcardDetailRepository simcardDetailRepository) {
         super();
         this.controlAuthEmissionRepository = controlAuthEmissionRepository;
         this.billingRepository = billingRepository;
@@ -85,6 +87,8 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
         this.equipmentInsuranceControlRepository = equipmentInsuranceControlRepository;
         this.provisioningInsuranceService = provisioningInsuranceService;
         this.insuranceClaimRepository = insuranceClaimRepository;
+        this.controlBlisterRepository = controlBlisterRepository;
+        this.simcardDetailRepository = simcardDetailRepository;
     }
 
     @Override
@@ -132,18 +136,18 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
         long startTime = System.currentTimeMillis();
         String payUpfrontSerialNo = null;
         String invoiceNo = null;
-        
+
         try {
             // Tipo de autorización en números
             int typeIssued = 0;
             int typeAuthorized = 0;
-            
+
             VoucherResponseType voucherResponseType = null;
             BillingEntity billingEntity = this.billingRepository.findById(model.getIdPrefecture()).orElse(null);
-            
+
             ControlUserPermissionsEntity controlUserPermissions = controlUserPermissionsRepository
                     .findByUserName(model.getUserCreate().toUpperCase());
-            
+
             /**
              * Validación si existe la factura
              *
@@ -152,9 +156,9 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
                 throw new BadRequestException(
                         String.format(Constants.ERROR_INVOICE_NOT_EXISTS, model.getIdPrefecture().toString()));
             }
-            
+
             ChannelEntity channelEntity = this.channelRepository.findById(billingEntity.getChannel()).orElse(null);
-            
+
             // Validación de la anulación del usuario
             validateUserAuthEmission(billingEntity, model, model.getUserCreate().toUpperCase());
 
@@ -338,12 +342,11 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
                         : billingEntity.getIdBranchOffices();
 
 
-
                 // Ejecucion del servicio PayUpFront
                 if (channelEntity.getPayUpFrontNumber() == 1) {
                     delayExecution(millisecondsParam);
 
-                    TaskResponseType taskResponseType = payUpFrontService.executeTask(billingEntity,channelEntity);
+                    TaskResponseType taskResponseType = payUpFrontService.executeTask(billingEntity, channelEntity);
 
                     validateResponsePayUpFront(taskResponseType);
 
@@ -359,12 +362,13 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
 
                 // Ejecucion del servicio addVoucher
                 voucherResponseType = voucherProvider.executeAddVoucher(model.getIdPrefecture(),
-                        model.getUserCreate().toUpperCase(), branchOfficesId, model.getTypeApproval(), parameters,channelEntity);
+                        model.getUserCreate().toUpperCase(), branchOfficesId, model.getTypeApproval(), parameters, channelEntity);
+
 
                 // Ejecucion del servicio NonFiscalNote
                 if (channelEntity.getNonFiscalNote() == 1) {
                     if (cashInvoiceTypes.contains(billingEntity.getInvoiceType())) {
-                        OrderResponse orderResponse = nonFiscalNoteService.executeTask(billingEntity, model,channelEntity);
+                        OrderResponse orderResponse = nonFiscalNoteService.executeTask(billingEntity, model, channelEntity);
                         if (orderResponse.getCode() != 0) {
                             throw new BadRequestException("Error Non Fiscal Note: " + orderResponse.getMessage());
 
@@ -381,11 +385,11 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
 
                             releaseSerialBsimService.releaseSeries(accessToken.getAccess_token(),
                                     billingEntity.getInventoryType(), detail.getModel(), billingEntity.getWarehouse(),
-                                    billingEntity.getSubWarehouse(), detailList, model.getIdPrefecture(), model.getUserCreate(),channelEntity);
+                                    billingEntity.getSubWarehouse(), detailList, model.getIdPrefecture(), model.getUserCreate(), channelEntity);
 
                         }
                     }
-                } 
+                }
 
                 // Descarga de inventario
                 if (channelEntity.getInventoryDownload() == 1) {
@@ -393,22 +397,22 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
                         if (detail.getSerieOrBoxNumber() != null && !detail.getSerieOrBoxNumber().isEmpty()) {
                             AuthenticationBsimResponse accessToken = authenticationService.getAccessToken();
                             List<InvoiceDetailEntity> detailList = Arrays.asList(detail);
-                            
+
                             //Condicion para que digital vaya al API vieja de unload de BSIM
-                            if(channelEntity.getId() == 2) {
+                            if (channelEntity.getId() == 2) {
                                 unloadStockBsimService.unloadStock(accessToken.getAccess_token(),
                                         billingEntity.getInventoryType(), detail.getModel(), billingEntity.getWarehouse(),
-                                        billingEntity.getSubWarehouse(), detailList, model.getIdPrefecture(), model.getUserCreate(),channelEntity); 
+                                        billingEntity.getSubWarehouse(), detailList, model.getIdPrefecture(), model.getUserCreate(), channelEntity);
                             }
-                            
+
                             // Condicion para el resto de channels distintos al de digital que va al API nueva de BSIM
-                            if(channelEntity.getId() != 2) {
-                            	unloadStockBsimService.unloadReservedStock(accessToken.getAccess_token(),
+                            if (channelEntity.getId() != 2) {
+                                unloadStockBsimService.unloadReservedStock(accessToken.getAccess_token(),
                                         billingEntity.getInventoryType(), detail.getModel(), billingEntity.getWarehouse(),
-                                        billingEntity.getSubWarehouse(), detail.getReserveKey(), detailList, model.getIdPrefecture(), model.getUserCreate(),channelEntity);
-                            
+                                        billingEntity.getSubWarehouse(), detail.getReserveKey(), detailList, model.getIdPrefecture(), model.getUserCreate(), channelEntity);
+
                             }
-                       }
+                        }
                     }
                 }
 
@@ -435,6 +439,9 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
                                 model.getUserCreate(), startTimeQueue);
                     }
                 }
+
+                // Si la factura ya fue emitida correctamente y el channel es 3
+                updateSimcardBillingStatusIfChannel3(channelEntity, billingEntity, model);
 
             } else if (model.getTypeApproval() == typeAuthorized) {
                 billingEntity.setAuthorizingUser(model.getUserCreate().toUpperCase());
@@ -467,7 +474,7 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
                     readConfig = new ReadFilesConfig();
                     String trama = generateTrama(model, billingEntity, payUpfrontSerialNo, invoiceNo);
 
-                    startTimeQueue = this.processQueue.processTrama(readConfig, startTimeQueue, trama,channelEntity);
+                    startTimeQueue = this.processQueue.processTrama(readConfig, startTimeQueue, trama, channelEntity);
                     billingEntity.setTramaEmission(trama);
 
                 } catch (Exception error) {
@@ -637,7 +644,7 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
 
             ChannelEntity channelEntity = this.channelRepository.findById(3L).orElse(null);
 
-            this.processQueue.processTrama(readConfig, startTimeQueue, trama,channelEntity);
+            this.processQueue.processTrama(readConfig, startTimeQueue, trama, channelEntity);
 
             LocalDate currentDate = LocalDate.now();
             LocalDateTime currentDateTime = currentDate.atStartOfDay();
@@ -767,6 +774,77 @@ public class ControlAuthEmissionServiceImpl implements IControlAuthEmissionServi
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new BadRequestException("The thread was interrupted");
+        }
+    }
+
+    private void updateSimcardBillingStatusIfChannel3(
+            ChannelEntity channelEntity,
+            BillingEntity billingEntity,
+            ControlAuthEmissionModel model
+    ) {
+        try {
+            if (channelEntity == null || channelEntity.getId() == null) {
+                return;
+            }
+
+            // Solo aplica para channel 3
+            if (channelEntity.getId() != 3L) {
+                return;
+            }
+
+            if (billingEntity == null || billingEntity.getInvoiceDetails() == null || billingEntity.getInvoiceDetails().isEmpty()) {
+                return;
+            }
+
+            for (InvoiceDetailEntity detail : billingEntity.getInvoiceDetails()) {
+                if (detail == null) {
+                    continue;
+                }
+
+                String modelDetail = detail.getModel();
+                String serieOrBox = detail.getSerieOrBoxNumber();
+
+                if (modelDetail == null || modelDetail.trim().isEmpty()) {
+                    continue;
+                }
+
+                if (serieOrBox == null || serieOrBox.trim().isEmpty()) {
+                    continue;
+                }
+
+                String normalizedModel = modelDetail.trim();
+                String normalizedSerieOrBox = serieOrBox.trim();
+
+                // 1. Validar si el modelo existe en MEA_CONTROL_BLISTER
+                boolean existsInControlBlister = controlBlisterRepository.existsByModelIgnoreCase(normalizedModel);
+
+                if (!existsInControlBlister) {
+                    continue;
+                }
+
+                // 2. Buscar en SIMCARD_DETAIL por MODEL + ICC (serieOrBoxNumber)
+                SimcardDetailEntity simcardDetail = simcardDetailRepository.findByModelAndIcc(
+                        normalizedModel,
+                        normalizedSerieOrBox
+                );
+
+                if (simcardDetail == null) {
+                    continue;
+                }
+
+                // 3. Actualizar BILLING_STATUS = EMI
+                simcardDetailRepository.updateBillingStatusToEmi(normalizedModel, normalizedSerieOrBox);
+            }
+
+        } catch (Exception e) {
+            // No romper flujo
+            logsService.saveLog(
+                    8,
+                    model != null ? model.getIdPrefecture() : -1L,
+                    "Error updating SIMCARD_DETAIL billing status for channel 3: " + e.getMessage(),
+                    model != null ? model.getUserCreate() : null,
+                    0
+            );
         }
     }
 }

@@ -15,96 +15,27 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class PromotionsModel {
 
-	private Long id;
+    private Long id;
 
-	@NotNull(message = "Promotion Code is required")
-	private String promotionCode;
+    @NotNull(message = "Promotion Code is required")
+    private String promotionCode;
 
-	@NotNull(message = "Model Code is required")
-	private String modelCode;
+    @NotNull(message = "Model Code is required")
+    private String modelCode;
 
-	private String description;
+    private String description;
 
-	private String corporate;
+    private String corporate;
 
-	private String permanentValidity;
+    private String permanentValidity;
 
-	private LocalDateTime startDate;
+    private LocalDateTime startDate;
 
-	private LocalDateTime endDate;
+    private LocalDateTime endDate;
 
-	private List<PromotionsDetailEntity> promotionsDetail;
+    private Integer financiado;
 
-	public Long getId() {
-		return id;
-	}
+    private Integer gross;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getPromotionCode() {
-		return promotionCode;
-	}
-
-	public void setPromotionCode(String promotionCode) {
-		this.promotionCode = promotionCode;
-	}
-
-	public String getModelCode() {
-		return modelCode;
-	}
-
-	public void setModelCode(String modelCode) {
-		this.modelCode = modelCode;
-	}
-
-	public String getDescription() {
-		return description;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getCorporate() {
-		return corporate;
-	}
-
-	public void setCorporate(String corporate) {
-		this.corporate = corporate;
-	}
-
-	public String getPermanentValidity() {
-		return permanentValidity;
-	}
-
-	public void setPermanentValidity(String permanentValidity) {
-		this.permanentValidity = permanentValidity;
-	}
-
-	public LocalDateTime getStartDate() {
-		return startDate;
-	}
-
-	public void setStartDate(LocalDateTime startDate) {
-		this.startDate = startDate;
-	}
-
-	public LocalDateTime getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(LocalDateTime endDate) {
-		this.endDate = endDate;
-	}
-
-	public List<PromotionsDetailEntity> getPromotionsDetail() {
-		return promotionsDetail;
-	}
-
-	public void setPromotionsDetail(List<PromotionsDetailEntity> promotionsDetail) {
-		this.promotionsDetail = promotionsDetail;
-	}
-	
+    private List<PromotionsDetailEntity> promotionsDetail;
 }

@@ -1,6 +1,7 @@
 package hn.com.tigo.equipmentaccessoriesbilling.services;
 
 import hn.com.tigo.equipmentaccessoriesbilling.entities.BillingEntity;
+import hn.com.tigo.equipmentaccessoriesbilling.entities.BranchOfficesEntity;
 import hn.com.tigo.equipmentaccessoriesbilling.entities.ControlUserPermissionsEntity;
 import hn.com.tigo.equipmentaccessoriesbilling.entities.TypeUserEntity;
 import hn.com.tigo.equipmentaccessoriesbilling.entities.UserBranchOfficesEntity;
@@ -9,20 +10,33 @@ import hn.com.tigo.equipmentaccessoriesbilling.models.BillingModel;
 import hn.com.tigo.equipmentaccessoriesbilling.models.BulkEmissionBatchResult;
 import hn.com.tigo.equipmentaccessoriesbilling.models.BulkEmissionContext;
 import hn.com.tigo.equipmentaccessoriesbilling.models.BulkEmissionItemResult;
+import hn.com.tigo.equipmentaccessoriesbilling.models.BulkNotificationsRequest;
+import hn.com.tigo.equipmentaccessoriesbilling.models.BulkNotificationsResponse;
 import hn.com.tigo.equipmentaccessoriesbilling.models.ConfigParametersModel;
+import hn.com.tigo.equipmentaccessoriesbilling.models.InvoicesByNameOrRtnModel;
 import hn.com.tigo.equipmentaccessoriesbilling.repositories.*;
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IBillingService;
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IBulkEmissionExecutor;
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IBulkEmissionService;
 import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IConfigParametersService;
+import hn.com.tigo.equipmentaccessoriesbilling.services.interfaces.IEmailService;
 import hn.com.tigo.equipmentaccessoriesbilling.utils.Constants;
+import hn.com.tigo.equipmentaccessoriesbilling.utils.InvoicePdfGenerator;
+import hn.com.tigo.equipmentaccessoriesbilling.utils.Util;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 @RequiredArgsConstructor
@@ -30,11 +44,12 @@ public class BulkEmissionServiceImpl implements IBulkEmissionService {
 
     private final IBillingRepository billingRepository;
     private final IConfigParametersService configParametersService;
+    private final IEmailService emailService;
     private final IControlUserPermissionsRepository controlUserPermissionsRepository;
     private final ITypeUserRepository typeUserRepository;
     private final IUserBranchOfficesRepository userBranchOfficesRepository;
+    private final IBranchOfficesRepository branchOfficesRepository;
     private final IBulkEmissionExecutor emissionExecutor;
-
 
     @Override
     public Page<BillingModel> getBulkEmission(Pageable pageable, String seller) {
@@ -48,10 +63,21 @@ public class BulkEmissionServiceImpl implements IBulkEmissionService {
     }
 
     @Override
+    public Page<BillingModel> getEmitedInvoices(Pageable pageable, String seller) {
+        final String sellerUpper = Optional.ofNullable(seller)
+                .map(String::toUpperCase)
+                .orElseThrow(() -> new BadRequestException(String.format(Constants.ERROR_USER_NOT_EXISTS, "null")));
+        final UserVisibilityContext userCtx = buildUserVisibilityContext(sellerUpper);
+        final VisibilityParams visParams = loadVisibilityParams();
+        Page<BillingEntity> page = resolveEmitedInvoicesVisibilityQuery(pageable, sellerUpper, userCtx, visParams);
+        return page.map(BillingEntity::entityToModel);
+    }
+
+    @Override
     public Page<BillingModel> searchByCustomerOrCustomerId(Pageable pageable,
-                                                           String seller,
-                                                           String customer,
-                                                           String customerId) {
+            String seller,
+            String customer,
+            String customerId) {
         if (StringUtils.isBlank(customer) && StringUtils.isBlank(customerId)) {
             throw new BadRequestException("You must provide at least one of the parameters: customer or customerId.");
         }
@@ -83,7 +109,134 @@ public class BulkEmissionServiceImpl implements IBulkEmissionService {
 
         return page.map(BillingEntity::entityToModel);
     }
-    
+
+    @Override
+    public Page<BillingModel> searchEmitedByCustomerOrCustomerIdPaged(Pageable pageable,
+            String seller,
+            String customer,
+            String customerId) {
+        if (StringUtils.isBlank(customer) && StringUtils.isBlank(customerId)) {
+            throw new BadRequestException("You must provide at least one of the parameters: customer or customerId.");
+        }
+        final String sellerUpper = Optional.ofNullable(seller)
+                .map(String::toUpperCase)
+                .orElseThrow(() -> new BadRequestException(String.format(Constants.ERROR_USER_NOT_EXISTS, "null")));
+        final UserVisibilityContext userCtx = buildUserVisibilityContext(sellerUpper);
+        final VisibilityParams visParams = loadVisibilityParams();
+        final String type = userCtx.typeUser.getTypeUser();
+
+        if ("CAJERO".equalsIgnoreCase(type)) {
+            return Page.<BillingEntity>empty(pageable).map(BillingEntity::entityToModel);
+        }
+
+        Page<BillingEntity> page;
+        if (visParams.seeAllInvoices.contains(type)) {
+            page = billingRepository.searchEmitedByCustomerOrCustomerId(pageable, customer, customerId);
+        } else if (visParams.seeOnlyTheirInvoices.contains(type)) {
+            List<Long> branchIds = ensureBranchIds(userCtx);
+            page = billingRepository.searchEmitedByCustomerOrCustomerIdBySellerBranchOffice(
+                    pageable, sellerUpper, branchIds, customer, customerId);
+        } else if (visParams.seeAllInvoicesBranchOffice.contains(type)) {
+            List<Long> branchIds = ensureBranchIds(userCtx);
+            page = billingRepository.searchEmitedByCustomerOrCustomerIdByBranchOffice(
+                    pageable, branchIds, customer, customerId);
+        } else {
+            throw new BadRequestException("User does not have permission to view emited invoices");
+        }
+
+        return page.map(BillingEntity::entityToModel);
+    }
+
+    @Override
+    public List<InvoicesByNameOrRtnModel> getAllEmitedByNameOrRtn(String name, String rtn) {
+        String likeName = "%" + name.toLowerCase() + "%";
+        String likeRtn = "%" + rtn.toLowerCase() + "%";
+        List<Object[]> data = new ArrayList<>();
+        if (!(name == "")) {
+            data = billingRepository.getAllEmitedByName(likeName);
+        }
+        if (!(rtn == "")) {
+            data = billingRepository.getAllEmitedByRtn(likeRtn);
+        }
+        List<InvoicesByNameOrRtnModel> dtoList = new ArrayList<>();
+        for (Object[] result : data) {
+            InvoicesByNameOrRtnModel dto = new InvoicesByNameOrRtnModel();
+            dto.setId((BigDecimal) result[0]);
+            dto.setInvoiceType((String) result[1]);
+            dto.setStatus((BigDecimal) result[2]);
+            dto.setExonerationStatus((BigDecimal) result[3]);
+            dto.setCustomer((String) result[4]);
+            dto.setSeller((String) result[5]);
+            dto.setPrimaryIdentity((String) result[6]);
+            dto.setCreated((Timestamp) result[7]);
+            dtoList.add(dto);
+        }
+        return dtoList;
+    }
+
+    @Override
+    public BulkNotificationsResponse sendBulkNotifications(BulkNotificationsRequest req) throws IOException {
+
+        BulkNotificationsResponse result = new BulkNotificationsResponse();
+        ByteArrayOutputStream zipBytes = new ByteArrayOutputStream();
+
+        Integer emailAmountSend = 0;
+
+        try (ZipOutputStream zipOut = new ZipOutputStream(zipBytes)) {
+
+            String[] invoicesId = req.getIdInvoices().split(";");
+            long size = 0L;
+            for (String invoiceId : invoicesId) {
+
+                BillingEntity billingEntity = this.billingRepository.findById(Long.valueOf(invoiceId)).orElse(null);
+                if (billingEntity == null)
+                    throw new BadRequestException(
+                            String.format(Constants.ERROR_NOT_FOUND_RECORD, invoiceId));
+
+                BranchOfficesEntity branchOfficesEntity = this.branchOfficesRepository
+                        .findById(billingEntity.getIdBranchOffices()).orElse(null);
+                if (branchOfficesEntity == null)
+                    throw new BadRequestException(
+                            String.format(Constants.ERROR_NOT_FINDING_AN_ID, invoiceId));
+
+                byte[] invoiceBase64 = InvoicePdfGenerator.generateInvoicePdf(billingEntity, branchOfficesEntity,
+                        req.getCashierName());
+
+                size += Util.sizeBytesFromBase64(Base64.getEncoder().encodeToString(invoiceBase64));
+
+                if (size >= 5000000) {
+                    result.setResult("El archivo excede los 5 MB permitidos de envio.");
+                    result.setEmailAmountSend(0);
+                    return result;
+                }
+
+                ZipEntry entry = new ZipEntry("Factura_" + invoiceId + ".pdf");
+                zipOut.putNextEntry(entry);
+
+                zipOut.write(invoiceBase64);
+                zipOut.closeEntry();
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        byte[] finalZipBytes = zipBytes.toByteArray();
+
+        String zipBase64 = Base64.getEncoder().encodeToString(finalZipBytes);
+        String[] emails = req.getEmails().split(";");
+
+        for (String email : emails) {
+            boolean response = this.emailService.sendBulkEmail(email, "Facturas.zip", zipBase64);
+            if (response)
+                emailAmountSend += 1;
+        }
+
+        result.setResult("Proceso ejecutado exitosamente.");
+        result.setEmailAmountSend(emailAmountSend);
+        return result;
+    }
+
     // ==========================
     // ==== EMISIÓN MASIVA ====
     // ==========================
@@ -94,10 +247,10 @@ public class BulkEmissionServiceImpl implements IBulkEmissionService {
      */
     @Override
     public BulkEmissionBatchResult emitBulk(List<Long> idsPreInvoices,
-                                            String userCreate,
-                                            String description,
-                                            Long idBranchOffices,
-                                            String paymentCode) {
+            String userCreate,
+            String description,
+            Long idBranchOffices,
+            String paymentCode) {
 
         if (idsPreInvoices == null || idsPreInvoices.isEmpty()) {
             throw new BadRequestException("You must provide at least one pre-invoice ID..");
@@ -248,7 +401,8 @@ public class BulkEmissionServiceImpl implements IBulkEmissionService {
         if (typeUser == null) {
             throw new BadRequestException(Constants.ERROR_USER_TYPE);
         }
-        List<UserBranchOfficesEntity> branches = userBranchOfficesRepository.findByIdUserActivated(userPerm.getIdUser());
+        List<UserBranchOfficesEntity> branches = userBranchOfficesRepository
+                .findByIdUserActivated(userPerm.getIdUser());
         boolean hasBranches = branches != null && !branches.isEmpty();
         if (!hasBranches && !("ADMINISTRATIVO".equalsIgnoreCase(typeUser.getTypeUser())
                 || "CREDITOS".equalsIgnoreCase(typeUser.getTypeUser()))) {
@@ -268,17 +422,19 @@ public class BulkEmissionServiceImpl implements IBulkEmissionService {
         }
         Set<String> a = new HashSet<>(grouped.getOrDefault("USERS_SEE_ALL_INVOICES", Collections.emptyList()));
         Set<String> b = new HashSet<>(grouped.getOrDefault("USERS_SEE_ONLY_THEIR_INVOICES", Collections.emptyList()));
-        Set<String> c = new HashSet<>(grouped.getOrDefault("USERS_SEE_ALL_INVOICES_BRACHOFFICE", Collections.emptyList()));
+        Set<String> c = new HashSet<>(
+                grouped.getOrDefault("USERS_SEE_ALL_INVOICES_BRACHOFFICE", Collections.emptyList()));
         return new VisibilityParams(a, b, c);
     }
 
     private Page<BillingEntity> resolveVisibilityQuery(Pageable pageable,
-                                                       String sellerUpper,
-                                                       UserVisibilityContext userCtx,
-                                                       VisibilityParams visParams) {
+            String sellerUpper,
+            UserVisibilityContext userCtx,
+            VisibilityParams visParams) {
         String type = userCtx.typeUser.getTypeUser();
 
-        if ("CAJERO".equalsIgnoreCase(type)) return Page.empty(pageable);
+        if ("CAJERO".equalsIgnoreCase(type))
+            return Page.empty(pageable);
 
         if (visParams.seeAllInvoices.contains(type)) {
             return billingRepository.getInvoicesForEmission(pageable);
@@ -294,9 +450,32 @@ public class BulkEmissionServiceImpl implements IBulkEmissionService {
         throw new BadRequestException("User does not have permission to view invoices");
     }
 
+    private Page<BillingEntity> resolveEmitedInvoicesVisibilityQuery(Pageable pageable,
+            String sellerUpper,
+            UserVisibilityContext userCtx,
+            VisibilityParams visParams) {
+        String type = userCtx.typeUser.getTypeUser();
+
+        if ("CAJERO".equalsIgnoreCase(type))
+            return Page.empty(pageable);
+
+        if (visParams.seeAllInvoices.contains(type)) {
+            return billingRepository.getEmitedInvoices(pageable);
+        }
+        if (visParams.seeOnlyTheirInvoices.contains(type)) {
+            List<Long> branchIds = ensureBranchIds(userCtx);
+            return billingRepository.getEmitedInvoicesBySellerBranchOffice(pageable, sellerUpper, branchIds);
+        }
+        if (visParams.seeAllInvoicesBranchOffice.contains(type)) {
+            List<Long> branchIds = ensureBranchIds(userCtx);
+            return billingRepository.getEmitedInvoicesByBranchOffice(pageable, branchIds);
+        }
+        throw new BadRequestException("User does not have permission to view emited invoices");
+    }
 
     private List<Long> ensureBranchIds(UserVisibilityContext userCtx) {
-        if (userCtx.isExemptFromBranchValidation()) return Collections.emptyList();
+        if (userCtx.isExemptFromBranchValidation())
+            return Collections.emptyList();
         if (userCtx.branchOfficeIds == null || userCtx.branchOfficeIds.isEmpty()) {
             throw new BadRequestException(Constants.ERROR_USER_BRANCHOFFICE);
         }
