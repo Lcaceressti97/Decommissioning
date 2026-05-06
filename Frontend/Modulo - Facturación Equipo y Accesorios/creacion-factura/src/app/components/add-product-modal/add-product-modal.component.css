@@ -56,6 +56,17 @@
     padding-left: 0 !important;
 }
 
+.discount-suffix-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding-left: 10px !important;
+}
+
+.discount-suffix-label {
+    margin-bottom: 0;
+}
+
 .card-optional {
     border-radius: 10px !important;
     box-shadow: 0 0px 2px rgba(0, 0, 0, 0.1) !important;

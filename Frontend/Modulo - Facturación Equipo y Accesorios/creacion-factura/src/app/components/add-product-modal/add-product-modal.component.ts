@@ -6,11 +6,9 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { NgbActiveModal, NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import {
   BillingServicesModel,
-  Branche,
-  ChannelModel,
   ControlUserPermissions,
   ExistencesModel,
   InventoryTypeModel,
@@ -45,6 +43,7 @@ export class AddProductModalComponent implements OnInit {
   @Input() controlUserPermissions: ControlUserPermissions;
   @Input() taxPorcentage: number = 0;
   @Output() invoiceDetalle = new EventEmitter<InvoiceDetail[]>();
+
   existencesModel: ExistencesModel[] = [];
   serialNumberList: any[] = [];
   serialReserveTokensList: SerialNumber[] = [];
@@ -98,13 +97,22 @@ export class AddProductModalComponent implements OnInit {
 
   ngOnInit(): void {
     this.formDetail = this.initFormDetail();
-    console.log(this.existences);
     this.selectedWarehouse = [];
-    this.formDetail.get('quantity').valueChanges.subscribe((value) => {
+
+    this.formDetail.get('quantity')?.valueChanges.subscribe(() => {
       if (this.serialNumberList.length > 0) {
         this.getSerialNumbersByQuantity();
       }
+
+      this.refreshAutomaticDiscountAmount();
+      this.resetTaxAndTotal();
     });
+
+    this.formDetail.get('unitPrice')?.valueChanges.subscribe(() => {
+      this.refreshAutomaticDiscountAmount();
+      this.resetTaxAndTotal();
+    });
+
     this.getExistencesByFilter().then(() => {});
     this.getSerialNumbersQuery();
   }
@@ -114,19 +122,143 @@ export class AddProductModalComponent implements OnInit {
   }
 
   /**
+   * True cuando el usuario seleccionó "Sí" en Agregar descuento
+   */
+  private isManualDiscountEnabled(): boolean {
+    return Number(this.formDetail.get('selectTax')?.value) === 1;
+  }
+
+  /**
+   * Obtiene el porcentaje automático desde factorCode
+   */
+  private getAutomaticDiscountPercent(): number {
+    return Number(this.formDetail.get('discountPercentage')?.value || 0);
+  }
+
+  /**
+   * Obtiene el monto manual ingresado por el usuario
+   */
+  private getManualDiscountAmount(): number {
+    return Number(this.formDetail.get('discount')?.value || 0);
+  }
+
+  /**
+   * Obtiene subtotal actual usando cantidad * precio
+   */
+  private getCurrentSubtotal(): number {
+    const quantity = Number(this.formDetail.get('quantity')?.value || 0);
+    const unitPrice = Number(this.formDetail.get('unitPrice')?.value || 0);
+    return Number(this.roundToTwoDecimals(quantity * unitPrice));
+  }
+
+  /**
+   * Calcula el descuento automático en monto
+   * usando subtotal * porcentaje / 100
+   */
+  private calculateAutomaticDiscountAmount(subtotal: number): number {
+    const percent = this.getAutomaticDiscountPercent();
+
+    if (!subtotal || subtotal <= 0 || !percent || percent <= 0) {
+      return 0;
+    }
+
+    return Number(this.roundToTwoDecimals((subtotal * percent) / 100));
+  }
+
+  /**
+   * Devuelve el descuento real para cálculos:
+   * - Si Agregar descuento = Sí -> monto manual
+   * - Si Agregar descuento = No -> monto automático
+   */
+  private getEffectiveDiscount(subtotal?: number): number {
+    const currentSubtotal =
+      subtotal != null ? Number(subtotal) : this.getCurrentSubtotal();
+
+    if (this.isManualDiscountEnabled()) {
+      return this.getManualDiscountAmount();
+    }
+
+    return this.calculateAutomaticDiscountAmount(currentSubtotal);
+  }
+
+  /**
+   * Limpia descuento automático cuando no hay price master
+   */
+  private clearAutomaticDiscount(): void {
+    const discountControl = this.formDetail.get('discount') as FormControl;
+    const discountPercentageControl = this.formDetail.get('discountPercentage') as FormControl;
+
+    discountPercentageControl.setValue('0.00');
+    discountControl.setValue('0.00');
+  }
+
+  /**
+   * Refresca el monto de descuento automático
+   */
+  private refreshAutomaticDiscountAmount(): void {
+    if (this.isManualDiscountEnabled()) {
+      return;
+    }
+
+    const discountControl = this.formDetail.get('discount') as FormControl;
+    const subtotal = this.getCurrentSubtotal();
+    const automaticDiscount = this.calculateAutomaticDiscountAmount(subtotal);
+
+    discountControl.setValue(this.roundToTwoDecimals(automaticDiscount));
+  }
+
+  /**
+   * Refresca el valor visual del campo descuento según la opción seleccionada
+   */
+  private syncDiscountFieldByMode(): void {
+    const discountControl = this.formDetail.get('discount') as FormControl;
+
+    if (this.isManualDiscountEnabled()) {
+      this.readonlyDiscount = false;
+      discountControl.setValue('0.00');
+      return;
+    }
+
+    this.readonlyDiscount = true;
+
+    const subtotal = this.getCurrentSubtotal();
+    const automaticDiscount = this.calculateAutomaticDiscountAmount(subtotal);
+
+    discountControl.setValue(this.roundToTwoDecimals(automaticDiscount));
+  }
+
+  /**
+   * Limpia impuesto y total para forzar recálculo
+   */
+  private resetTaxAndTotal(): void {
+    const TAX_CONTROL = this.formDetail.get('tax') as FormControl;
+    const TOTAL_CONTROL = this.formDetail.get('amountTotal') as FormControl;
+
+    TAX_CONTROL.setValue('0.00');
+    TOTAL_CONTROL.setValue('0.00');
+    this.isv = '0.00';
+    this.totalDetail = '0.00';
+  }
+
+  /**
    * Método encargado de obtener el precio
    *
    * @returns
    */
-
   getPriceMaster(): Promise<boolean> {
     return new Promise((resolve) => {
-      const model = this.formDetail.get('model').value;
-      const inventoryType = this.formDetail.get('inventoryType').value[0]?.code;
+      const model = this.formDetail.get('model')?.value;
+      const inventoryType = this.formDetail.get('inventoryType')?.value[0]?.code;
 
-      // Verifica si el modelo y el tipo de inventario están seleccionados
+      const PRICE_CONTROL = this.formDetail.get('unitPrice') as FormControl;
+      const DISCOUNT_CONTROL = this.formDetail.get('discount') as FormControl;
+      const DISCOUNT_PERC_CONTROL = this.formDetail.get('discountPercentage') as FormControl;
+
       if (!model || !inventoryType) {
-        return resolve(false);
+        PRICE_CONTROL.setValue('0.00');
+        this.clearAutomaticDiscount();
+        resolve(false);
+        return;
       }
 
       this.invoiceService
@@ -137,45 +269,44 @@ export class AddProductModalComponent implements OnInit {
               const priceMasterResponse = response.body as PriceMasterResponse;
               this.priceMasterModel = Array.isArray(priceMasterResponse.data)
                 ? priceMasterResponse.data
-                : [priceMasterResponse.data];
+                : priceMasterResponse.data
+                  ? [priceMasterResponse.data]
+                  : [];
 
-              // Verificar si se han encontrado precios
               if (this.priceMasterModel.length > 0) {
+                const selectedPriceMaster = this.priceMasterModel[0];
+
+                const price = Number(selectedPriceMaster.price || 0);
+                const factorCode = Number(selectedPriceMaster.factorCode || 0);
+
+                PRICE_CONTROL.setValue(this.roundToTwoDecimals(price));
+                DISCOUNT_PERC_CONTROL.setValue(this.roundToTwoDecimals(factorCode));
+
+                if (!this.isManualDiscountEnabled()) {
+                  const subtotal = this.getCurrentSubtotal();
+                  const automaticDiscount = this.calculateAutomaticDiscountAmount(subtotal);
+                  DISCOUNT_CONTROL.setValue(this.roundToTwoDecimals(automaticDiscount));
+                }
+
+                this.resetTaxAndTotal();
                 resolve(true);
               } else {
-                const PRICE_CONTRO = this.formDetail.get(
-                  'unitPrice'
-                ) as FormControl;
-                PRICE_CONTRO.setValue('0.00');
-                this.utilService.showNotification(
-                  1,
-                  'No se encontraron precios para el modelo y tipo de inventario seleccionados.'
-                );
+                PRICE_CONTROL.setValue('0.00');
+                this.clearAutomaticDiscount();
+                this.resetTaxAndTotal();
                 resolve(false);
               }
             } else {
-              const PRICE_CONTRO = this.formDetail.get(
-                'unitPrice'
-              ) as FormControl;
-              PRICE_CONTRO.setValue('0.00');
-              this.utilService.showNotification(
-                1,
-                'No se encontraron precios para el modelo y tipo de inventario seleccionados.'
-              );
+              PRICE_CONTROL.setValue('0.00');
+              this.clearAutomaticDiscount();
+              this.resetTaxAndTotal();
               resolve(false);
             }
           },
           error: () => {
-            const PRICE_CONTRO = this.formDetail.get(
-              'unitPrice'
-            ) as FormControl;
-            PRICE_CONTRO.setValue('0.00');
-            if (!this.priceMasterModel.length) {
-              this.utilService.showNotification(
-                1,
-                'No se encontraron precios para el modelo y tipo de inventario seleccionados.'
-              );
-            }
+            PRICE_CONTROL.setValue('0.00');
+            this.clearAutomaticDiscount();
+            this.resetTaxAndTotal();
             resolve(false);
           },
         });
@@ -188,9 +319,17 @@ export class AddProductModalComponent implements OnInit {
    * @returns
    */
   getExistencesByFilter(): Promise<boolean> {
-    return new Promise((resolve, reject) => {
-      const warehouseId = this.formDetail.get('warehouse').value[0].id;
-      const inventoryTypeId = this.formDetail.get('inventoryType').value[0].id;
+    return new Promise((resolve) => {
+      const warehouseValue = this.formDetail.get('warehouse')?.value;
+      const inventoryTypeValue = this.formDetail.get('inventoryType')?.value;
+
+      if (!warehouseValue?.length || !inventoryTypeValue?.length) {
+        resolve(false);
+        return;
+      }
+
+      const warehouseId = warehouseValue[0].id;
+      const inventoryTypeId = inventoryTypeValue[0].id;
 
       this.invoiceService
         .getExistencesByFilter(warehouseId, inventoryTypeId)
@@ -199,19 +338,15 @@ export class AddProductModalComponent implements OnInit {
             if (response.status === 200) {
               this.existencesModel = [];
 
-              let existenceResponse = response.body as ExistencesResponse;
-
-              console.log(existenceResponse);
+              const existenceResponse = response.body as ExistencesResponse;
 
               if (existenceResponse.data && existenceResponse.data.length > 0) {
-                existenceResponse.data.map((resourceMap, configError) => {
-                  let dto: ExistencesModel = resourceMap;
-
+                existenceResponse.data.forEach((resourceMap) => {
+                  const dto: ExistencesModel = resourceMap;
                   this.existencesModel.push(dto);
                 });
 
                 this.existencesModel = [...this.existencesModel];
-
                 resolve(true);
               } else {
                 this.utilService.showNotification(
@@ -224,16 +359,16 @@ export class AddProductModalComponent implements OnInit {
               resolve(false);
             }
           },
-          (error) => {
+          () => {
             resolve(false);
           }
         );
     });
   }
 
-  async changeWarehouseAndInventory(event) {
-    const warehouseId = this.formDetail.get('warehouse').value;
-    const inventoryTypeId = this.formDetail.get('inventoryType').value;
+  async changeWarehouseAndInventory(event: any) {
+    const warehouseId = this.formDetail.get('warehouse')?.value;
+    const inventoryTypeId = this.formDetail.get('inventoryType')?.value;
 
     if (warehouseId && inventoryTypeId) {
       await this.getExistencesByFilter();
@@ -242,9 +377,18 @@ export class AddProductModalComponent implements OnInit {
   }
 
   getSerialNumbersQuery(): void {
-    const warehouseId = this.formDetail.get('warehouse').value[0].code;
-    const inventoryTypeId = this.formDetail.get('inventoryType').value[0].code;
-    const itemCode = this.formDetail.get('model').value;
+    const warehouse = this.formDetail.get('warehouse')?.value;
+    const inventoryType = this.formDetail.get('inventoryType')?.value;
+    const itemCode = this.formDetail.get('model')?.value;
+
+    if (!warehouse?.length || !inventoryType?.length || !itemCode) {
+      this.serialNumberList = [];
+      this.formDetail.get('serieOrBoxNumber')?.setValue('');
+      return;
+    }
+
+    const warehouseId = warehouse[0].code;
+    const inventoryTypeId = inventoryType[0].code;
     const subWarehouseCode = '';
 
     this.invoiceService
@@ -256,7 +400,6 @@ export class AddProductModalComponent implements OnInit {
       )
       .subscribe(
         (response) => {
-          console.log(response);
           if (response.status === 200) {
             const responseData = response.body;
 
@@ -264,79 +407,24 @@ export class AddProductModalComponent implements OnInit {
               responseData.code === 1 &&
               responseData.data.result_code === 'INV000'
             ) {
-              // Acceder a la lista de números de serie
               const serialNumberList =
                 responseData.data.serial_number_list[0].serial_number_list;
-              this.serialNumberList = serialNumberList; // Guardar la lista de números de serie
-              console.log(this.serialNumberList);
-              this.getSerialNumbersByQuantity(); // Llamar a la función para actualizar la cantidad de números de serie
+              this.serialNumberList = serialNumberList;
+              this.getSerialNumbersByQuantity();
             } else {
-              console.error(responseData.description); // Mostrar el mensaje de error
               this.utilService.showNotification(1, responseData.description);
             }
-          } else {
-            console.error(response); // Manejar errores de respuesta
           }
         },
         (error) => {
-          console.error(error); // Manejar errores de la llamada al servicio
+          console.error(error);
         }
       );
   }
 
-  /*
-  getSerialNumbersQuery(): void {
-    const warehouseId = this.formDetail.get('warehouse').value[0].code;
-    const inventoryTypeId = this.formDetail.get('inventoryType').value[0].code;
-    const itemCode = this.formDetail.get('model').value;
-    const subWarehouseCode = "";
-
-    // Simulamos la respuesta del servidor
-    const response = {
-      "code": 1,
-      "description": "Success",
-      "data": {
-        "result_message": "Transacción exitosa",
-        "result_code": "INV000",
-        "count": 1,
-        "serial_number_list": [
-          {
-            "sub_warehouse_code": "POS",
-            "count": 15,
-            "serial_number_list": [
-              {
-                "serialNumber": "354061761362270"
-              },
-              {
-                "serialNumber": "354061761362437"
-              },
-              {
-                "serialNumber": "354061761378227"
-              }
-            ]
-          }
-        ]
-      },
-      "errors": []
-    };
-
-    // Procesamos la respuesta
-    if (response.code === 1 && response.data.result_code === "INV000") {
-      const serialNumberList = response.data.serial_number_list[0].serial_number_list;
-      this.serialNumberList = serialNumberList;
-      console.log(this.serialNumberList);
-      this.getSerialNumbersByQuantity();
-    } else {
-      console.error(response.description);
-      this.utilService.showNotification(1, response.description);
-    }
-  }
-*/
-
   getSerialNumbersByQuantity(): void {
-    const quantity = this.formDetail.get('quantity').value; // Obtener la cantidad ingresada
+    const quantity = this.formDetail.get('quantity')?.value;
 
-    // Verificar si hay números de serie disponibles y si la cantidad es válida
     if (
       this.serialNumberList &&
       this.serialNumberList.length > 0 &&
@@ -348,27 +436,28 @@ export class AddProductModalComponent implements OnInit {
           `La cantidad solicitada (${quantity}) excede el números de serie disponibles (${this.serialNumberList.length}).`
         );
 
-        this.formDetail.get('serieOrBoxNumber').setValue(''); // Limpiar el campo
+        this.formDetail.get('serieOrBoxNumber')?.setValue('');
       } else {
-        // Limitar la cantidad de números de serie a la cantidad ingresada
         const limitedSerialNumbers = this.serialNumberList
           .slice(0, quantity)
           .map((item) => item.serialNumber);
+
         this.formDetail
           .get('serieOrBoxNumber')
-          .setValue(limitedSerialNumbers.join(', '));
+          ?.setValue(limitedSerialNumbers.join(', '));
       }
     } else {
-      this.formDetail.get('serieOrBoxNumber').setValue(''); // Limpiar el campo si no hay números de serie
+      this.formDetail.get('serieOrBoxNumber')?.setValue('');
     }
   }
+
   /**
    * Método que solo permite números con un máximo de 4 digitos decimal
    *
    * @param control
    * @returns
    */
-  validarNumeroDecimal(control) {
+  validarNumeroDecimal(control: FormControl) {
     const numeroDecimalRegExp = /^[0-9]+(\.[0-9]{1,4})?$/;
     if (control.value && !numeroDecimalRegExp.test(control.value)) {
       return { numeroDecimalInvalido: true };
@@ -384,9 +473,9 @@ export class AddProductModalComponent implements OnInit {
       quantity: [0, [Validators.required]],
       unitPrice: ['0.00', [Validators.required, this.validarNumeroDecimal]],
       subtotal: ['0.00', [Validators.required]],
-      discountPercentage: ['0', []],
+      discountPercentage: ['0.00', []],
       discount: ['0.00', [Validators.required, this.validarNumeroDecimal]],
-      selectTax: [0, []],
+      selectTax: [0, []], // 0 = No, 1 = Sí
       taxPercentage: ['0', []],
       tax: ['0.00', [Validators.required]],
       amountTotal: ['0.00', []],
@@ -407,27 +496,20 @@ export class AddProductModalComponent implements OnInit {
     this.formDetail.controls['description'].reset();
     this.formDetail.controls['serieOrBoxNumber'].reset();
 
-    const QUANTITY_CONTRO = this.formDetail.get('quantity') as FormControl;
-    QUANTITY_CONTRO.setValue(0);
+    (this.formDetail.get('quantity') as FormControl).setValue(0);
+    (this.formDetail.get('unitPrice') as FormControl).setValue('0.00');
+    (this.formDetail.get('subtotal') as FormControl).setValue('0.00');
+    (this.formDetail.get('discountPercentage') as FormControl).setValue('0.00');
+    (this.formDetail.get('discount') as FormControl).setValue('0.00');
+    (this.formDetail.get('tax') as FormControl).setValue('0.00');
+    (this.formDetail.get('selectTax') as FormControl).setValue(0);
+    (this.formDetail.get('amountTotal') as FormControl).setValue('0.00');
 
-    const PRICE_CONTRO = this.formDetail.get('unitPrice') as FormControl;
-    PRICE_CONTRO.setValue('0.00');
-    const SUBTOTAL_CONTRO = this.formDetail.get('subtotal') as FormControl;
-    SUBTOTAL_CONTRO.setValue('0.00');
-    const DISCOUNT_CONTRO = this.formDetail.get('discount') as FormControl;
-    DISCOUNT_CONTRO.setValue('0.00');
-    const ISV_CONTRO = this.formDetail.get('tax') as FormControl;
-    ISV_CONTRO.setValue('0.00');
-    const SELECT_CONTRO = this.formDetail.get('selectTax') as FormControl;
-    SELECT_CONTRO.setValue(0);
-    const TOTAL_CONTRO = this.formDetail.get('amountTotal') as FormControl;
-    TOTAL_CONTRO.setValue('0.00');
-
-    // Variables globales del calculo y disabled
     this.validateTotalDetail = true;
     this.model = '';
     this.description = '';
     this.priceUnit = '0.00';
+    this.quantity = '0';
     this.subtotal = '0.00';
     this.discount = '0.00';
     this.isv = '0.00';
@@ -436,26 +518,14 @@ export class AddProductModalComponent implements OnInit {
   }
 
   /**
-   * Se usa para validar si se calcula o no el
-   * impuesto
-   *
-   * @param event
+   * Maneja el cambio de "Agregar descuento"
    */
-  changeCalISV(event) {
-    //console.log(event.target.value);
+  changeCalISV(event: any) {
+    const SELECT_CONTROL = this.formDetail.get('selectTax') as FormControl;
+    SELECT_CONTROL.setValue(Number(event.target.value));
 
-    const DISCOUNT_CONTRO = this.formDetail.get('discount') as FormControl;
-    const SELECT_ISV_CONTRO = this.formDetail.get('selectTax') as FormControl;
-
-    if (event.target.value == 1) {
-      this.readonlyDiscount = false;
-      SELECT_ISV_CONTRO.setValue('1');
-    } else {
-      this.readonlyDiscount = true;
-      this.isv = '0.00';
-      SELECT_ISV_CONTRO.setValue(0);
-      DISCOUNT_CONTRO.setValue('0.00');
-    }
+    this.syncDiscountFieldByMode();
+    this.resetTaxAndTotal();
   }
 
   /**
@@ -463,74 +533,37 @@ export class AddProductModalComponent implements OnInit {
    * el select de Código de Servicio
    *
    */
-  changeCodeService(event) {
+  changeCodeService(event: any) {
     this.validateTotalDetail = false;
     const SERVICE: string = event.target.value;
+
     const selectedObject = this.existencesModel.find(
       (existence) => existence.code === SERVICE
     );
-
-    this.getPriceMaster().then((success) => {
-      if (success) {
-        const priceControl = this.formDetail.get('unitPrice') as FormControl;
-
-        if (this.priceMasterModel.length > 0) {
-          const selectedPriceMaster = this.priceMasterModel[0];
-          priceControl.setValue(selectedPriceMaster.price);
-        }
-      }
-    });
 
     if (selectedObject) {
       this.model = selectedObject.code;
       this.description = selectedObject.description;
     }
+
+    this.getPriceMaster().then(() => {});
     this.getSerialNumbersQuery();
 
-    const SUBTOTAL_CONTRO = this.formDetail.get('subtotal') as FormControl;
-    SUBTOTAL_CONTRO.setValue('0.00');
-    const DISCOUNT_CONTRO = this.formDetail.get('discount') as FormControl;
-    DISCOUNT_CONTRO.setValue('0.00');
-    const ISV_CONTRO = this.formDetail.get('tax') as FormControl;
-    ISV_CONTRO.setValue('0.00');
-    const SELECT_CONTRO = this.formDetail.get('selectTax') as FormControl;
-    SELECT_CONTRO.setValue(0);
-    const TOTAL_CONTRO = this.formDetail.get('amountTotal') as FormControl;
-    TOTAL_CONTRO.setValue('0.00');
+    (this.formDetail.get('subtotal') as FormControl).setValue('0.00');
+    (this.formDetail.get('tax') as FormControl).setValue('0.00');
+    (this.formDetail.get('amountTotal') as FormControl).setValue('0.00');
 
-    //this.priceUnit = PRICE_UNIT_CONST;
     this.subtotal = '0.00';
-    this.discount = '0.00';
     this.isv = '0.00';
     this.totalDetail = '0.00';
-    this.readonlyDiscount = true;
-  }
 
-  roundToTwoDecimalsTest(numero: number): number {
-    return Math.round((numero + Number.EPSILON) * 100) / 100;
-  }
-
-  roundToTwoDecimalsTes(numero: number): number {
-    return parseFloat(numero.toFixed(2));
-  }
-
-  roundToTwoDecimalsT(numero: number): number {
-    return Math.round(numero * 100) / 100;
-  }
-
-  roundToTwoDecimalsNo(numero: number): string {
-    return this.decimalPipe.transform(numero, '1.2-2');
-  }
-
-  roundToTwoDecimalsTest2(numero: number): string {
-    return parseFloat(numero.toFixed(2)).toString();
+    this.syncDiscountFieldByMode();
   }
 
   roundToTwoDecimals(numero: number | string): string {
-    //console.log(numero);
     Big.DP = 10;
     Big.RM = Big.roundHalfUp;
-    const bigNumero = new Big(numero);
+    const bigNumero = new Big(numero || 0);
     return bigNumero.round(2).toFixed(2);
   }
 
@@ -539,30 +572,28 @@ export class AddProductModalComponent implements OnInit {
    *
    */
   calculoSubtotalDetail() {
-    const descriptionControl = this.formDetail.get('subtotal') as FormControl;
-
+    const subtotalControl = this.formDetail.get('subtotal') as FormControl;
     const producto = this.formDetail.value as InvoiceDetail;
-    //console.log(producto);
-    //console.log(this.model);
-    const price: number = Number(producto.unitPrice);
 
-    //console.log(price);
-
-    if (producto.quantity == null) {
+    if (producto.quantity == null || Number(producto.quantity) <= 0) {
       this.utilService.showNotification(
         1,
-        'Ingrese una cantidad para calcular el total'
+        'Ingrese una cantidad mayor a cero para calcular el subtotal'
       );
-    } else {
-      //this.subtotal = (Math.round((producto.quantity * price))).toFixed(2);
-      this.subtotal = this.roundToTwoDecimals(
-        producto.quantity * producto.unitPrice
-      );
-      this.priceUnit = producto.unitPrice.toString();
-      this.quantity = producto.quantity.toString();
-      //console.log(this.totalDetail);
-      descriptionControl.setValue(this.subtotal);
+      return;
     }
+
+    this.subtotal = this.roundToTwoDecimals(
+      Number(producto.quantity) * Number(producto.unitPrice)
+    );
+
+    // Guardar valores normalizados para comparaciones posteriores
+    this.priceUnit = this.normalizeMoney(producto.unitPrice);
+    this.quantity = String(Number(producto.quantity));
+
+    subtotalControl.setValue(this.subtotal);
+    this.refreshAutomaticDiscountAmount();
+    this.resetTaxAndTotal();
   }
 
   /**
@@ -571,45 +602,43 @@ export class AddProductModalComponent implements OnInit {
    */
   calISV() {
     const producto = this.formDetail.value as InvoiceDetail;
-    //console.log(producto);
     const SUBTOTAL: number = Number(producto.subtotal);
-    const DISCOUNT: number = Number(producto.discount);
+    const DISCOUNT: number = this.getEffectiveDiscount(SUBTOTAL);
 
-    if (producto.quantity > 0) {
-      if (SUBTOTAL >= DISCOUNT && SUBTOTAL > 0) {
-        if (producto.unitPrice.toString() == this.priceUnit) {
-          const TAX_PORCENTAGE: number =
-            this.taxPorcentage != 0 ? this.taxPorcentage / 100 : 0;
-
-          this.discount = this.roundToTwoDecimals(DISCOUNT);
-          //const SUB_DISCOUNT: string = (Math.round(SUBTOTAL-DISCOUNT)).toFixed(2);
-          const SUB_DISCOUNT: string = this.roundToTwoDecimals(
-            SUBTOTAL - DISCOUNT
-          );
-
-          const SUB_DISCOUNT_NUMBER: number = Number(SUB_DISCOUNT);
-
-          //const TAX: number = Math.round(SUB_DISCOUNT_NUMBER * TAX_PORCENTAGE);
-          const TAX: string = this.roundToTwoDecimals(
-            SUB_DISCOUNT_NUMBER * TAX_PORCENTAGE
-          );
-
-          this.isv = TAX;
-          //console.log(this.isv);
-          const TAX_AMOUNT_CONTROL = this.formDetail.get('tax') as FormControl;
-          TAX_AMOUNT_CONTROL.setValue(this.isv);
-        } else {
-          this.utilService.showNotification(
-            1,
-            'EL precio unitario se modifico, vuelva a calcular el subtotal'
-          );
-        }
-      } else {
-        this.utilService.showNotification(1, 'Vuelva a calcular el subtotal');
-      }
-    } else {
+    if (Number(producto.quantity) <= 0) {
       this.utilService.showNotification(1, 'Ingrese una cantidad mayor a cero');
+      return;
     }
+
+    if (SUBTOTAL <= 0 || DISCOUNT > SUBTOTAL) {
+      this.utilService.showNotification(1, 'Vuelva a calcular el subtotal');
+      return;
+    }
+
+    if (this.hasUnitPriceChanged(producto.unitPrice)) {
+      this.utilService.showNotification(
+        1,
+        'EL precio unitario se modifico, vuelva a calcular el subtotal'
+      );
+      return;
+    }
+
+    const TAX_PORCENTAGE: number =
+      this.taxPorcentage !== 0 ? this.taxPorcentage / 100 : 0;
+
+    this.discount = this.roundToTwoDecimals(DISCOUNT);
+
+    const SUB_DISCOUNT: string = this.roundToTwoDecimals(
+      SUBTOTAL - DISCOUNT
+    );
+
+    const TAX: string = this.roundToTwoDecimals(
+      Number(SUB_DISCOUNT) * TAX_PORCENTAGE
+    );
+
+    this.isv = TAX;
+    const TAX_AMOUNT_CONTROL = this.formDetail.get('tax') as FormControl;
+    TAX_AMOUNT_CONTROL.setValue(this.isv);
   }
 
   /**
@@ -619,74 +648,57 @@ export class AddProductModalComponent implements OnInit {
   calTotal() {
     const producto = this.formDetail.value as InvoiceDetail;
     const SUBTOTAL: number = Number(producto.subtotal);
-    const DISCOUNT: number = Number(producto.discount);
+    const DISCOUNT: number = this.getEffectiveDiscount(SUBTOTAL);
     const TAX_PRODUCT: number = Number(producto.tax);
 
-    /**
-     * Validamos que el descuento no sea mayor al subtotal
-     *
-     */
     if (DISCOUNT > SUBTOTAL) {
       this.utilService.showNotification(
         1,
         'El descuento no debe de ser mayor al subtotal'
       );
-    } else {
-      /***
-       * Validamos si la cantidad es mayor a cero
-       *
-       */
-      if (producto.quantity <= 0) {
-        this.utilService.showNotification(
-          1,
-          'La cantidad debe de ser mayor a cero'
-        );
-      } else {
-        /**
-         * Validamos que el subtotal no sea cero
-         *
-         */
-        if (SUBTOTAL <= 0) {
-          this.utilService.showNotification(
-            1,
-            'El subtotal no puede menor a cero'
-          );
-        } else {
-          /**
-           * Validamos si se cambio el precio
-           *
-           */
-          if (producto.unitPrice.toString() == this.priceUnit) {
-            if (producto.tax.toString() == this.isv) {
-              const TOTAL: string = this.roundToTwoDecimals(
-                SUBTOTAL - DISCOUNT + TAX_PRODUCT
-              );
-              this.totalDetail = TOTAL;
-              const TOTAL_AMOUNT_CONTROL = this.formDetail.get(
-                'amountTotal'
-              ) as FormControl;
-              TOTAL_AMOUNT_CONTROL.setValue(TOTAL);
-            } else {
-              this.utilService.showNotification(
-                1,
-                'El impuesto no cuadra, vuelva a calcular el impuesto'
-              );
-            }
-          } else {
-            this.utilService.showNotification(
-              1,
-              'El precio unitario fue modificado, vuelva a realizar los calculos'
-            );
-          }
-        }
-      }
+      return;
     }
-  }
 
-  /**
-   * Método para agregar un producto
-   *
-   */
+    if (Number(producto.quantity) <= 0) {
+      this.utilService.showNotification(
+        1,
+        'La cantidad debe de ser mayor a cero'
+      );
+      return;
+    }
+
+    if (SUBTOTAL <= 0) {
+      this.utilService.showNotification(
+        1,
+        'El subtotal no puede ser menor o igual a cero'
+      );
+      return;
+    }
+
+    if (this.hasUnitPriceChanged(producto.unitPrice)) {
+      this.utilService.showNotification(
+        1,
+        'El precio unitario fue modificado, vuelva a realizar los cálculos'
+      );
+      return;
+    }
+
+    if (this.normalizeMoney(producto.tax) !== this.normalizeMoney(this.isv)) {
+      this.utilService.showNotification(
+        1,
+        'El impuesto no cuadra, vuelva a calcular el impuesto'
+      );
+      return;
+    }
+
+    const TOTAL: string = this.roundToTwoDecimals(
+      SUBTOTAL - DISCOUNT + TAX_PRODUCT
+    );
+
+    this.totalDetail = TOTAL;
+    const TOTAL_AMOUNT_CONTROL = this.formDetail.get('amountTotal') as FormControl;
+    TOTAL_AMOUNT_CONTROL.setValue(TOTAL);
+  }
 
   addProduct() {
     Swal.fire({
@@ -701,134 +713,107 @@ export class AddProductModalComponent implements OnInit {
       if (result.value) {
         const producto = this.formDetail.value as InvoiceDetail;
 
-        // Constante de valores finales
         const SUBTOTAL: number = Number(producto.subtotal);
-        const DISCOUNT: number = Number(producto.discount);
-        const TAX_PORCENTAGE: number =
-          this.taxPorcentage != 0 ? this.taxPorcentage / 100 : 0;
-        //const TAX: number = Number(producto.tax);
-        //const TOTAL: number = Number(producto.amountTotal);
+        const DISCOUNT: number = this.getEffectiveDiscount(SUBTOTAL);
+        const TAX_PERCENTAGE: number =
+          this.taxPorcentage !== 0 ? this.taxPorcentage / 100 : 0;
 
         const SUB: string = this.roundToTwoDecimals(
-          producto.quantity * producto.unitPrice
+          Number(producto.quantity) * Number(producto.unitPrice)
         );
 
         const SUB_DIS: string = this.roundToTwoDecimals(
-          Number(SUB) - producto.discount
+          Number(SUB) - DISCOUNT
         );
-        let ISV: string = '0.00';
 
-        ISV = this.roundToTwoDecimals(Number(SUB_DIS) * TAX_PORCENTAGE);
+        const ISV: string = this.roundToTwoDecimals(
+          Number(SUB_DIS) * TAX_PERCENTAGE
+        );
 
         const TOTAL: string = this.roundToTwoDecimals(
           Number(SUB_DIS) + Number(ISV)
         );
 
-        /*
-        console.log(this.subtotal);
-        console.log(this.discount);
-        console.log(this.isv);
-        console.log(this.totalDetail);
-        console.log("------------------------------");
-        console.log(SUB);
-        console.log(DISCOUNT);
-        console.log(ISV);
-        console.log(TOTAL);
-        */
+        const productsAdd: InvoiceDetail[] = [];
 
-        // Variable que se va a retornar al componente padre
-        let productsAdd: InvoiceDetail[] = [];
-
-        /**
-         * Validamos que el descuento no sea mayor al subtotal
-         *
-         */
         if (DISCOUNT > SUBTOTAL) {
           this.utilService.showNotification(
             1,
             'El descuento no debe de ser mayor al subtotal'
           );
-        } else {
-          /**
-           * Validamos que la cantidad sea mayor a cero
-           *
-           */
-          if (producto.quantity <= 0) {
+          return;
+        }
+
+        if (Number(producto.quantity) <= 0) {
+          this.utilService.showNotification(
+            1,
+            'La cantidad no debe de ser menor a uno'
+          );
+          return;
+        }
+
+        if (
+          !this.hasUnitPriceChanged(producto.unitPrice) &&
+          !this.hasQuantityChanged(producto.quantity)
+        ) {
+          const reserveSerials = await this.getSerialNumbersReserveQuery();
+
+          if (reserveSerials) {
+            const quantity = this.formDetail.get('quantity')?.value;
+            const serialNumbers = this.serialNumberList.slice(0, quantity);
+
+            serialNumbers.forEach((serialNumber) => {
+              const productAdd: InvoiceDetail = {};
+
+              productAdd.serieOrBoxNumber = serialNumber.serialNumber;
+              productAdd.idFind = this.generateUUID();
+              productAdd.model = this.model;
+              productAdd.description = this.description;
+              productAdd.unitPrice = Number(producto.unitPrice);
+              productAdd.quantity = 1;
+              productAdd.subtotal = Number(SUB) / quantity;
+              productAdd.discount = Number(DISCOUNT) / quantity;
+              productAdd.taxPercentage = this.taxPorcentage;
+              productAdd.tax = Number(ISV) / quantity;
+              productAdd.amountTotal = Number(TOTAL) / quantity;
+
+              this.serialReserveTokensList.forEach((item) => {
+                if (serialNumber.serialNumber === item.serial_number) {
+                  productAdd.reserveKey = item.reservation_result;
+                }
+              });
+
+              productsAdd.push(productAdd);
+            });
+
+            this.invoiceDetalle.emit(productsAdd);
+            this.closeModal();
+          } else {
             this.utilService.showNotification(
               1,
-              'La cantidad no debe de ser menor a uno'
+              'No se pudieron reservar las series'
             );
-          } else {
-            /**
-             * Validamos que el precio unitario sea el mismo que desde un princio se realizo el calculo
-             *
-             */
-            if (
-              producto.unitPrice.toString() == this.priceUnit &&
-              producto.quantity.toString() == this.quantity
-            ) {
-              const reserveSerials = await this.getSerialNumbersReserveQuery();
-
-              if (reserveSerials) {
-                const quantity = this.formDetail.get('quantity').value;
-                const serialNumbers = this.serialNumberList.slice(0, quantity);
-
-                serialNumbers.forEach((serialNumber) => {
-                  let productAdd: InvoiceDetail = {};
-
-                  productAdd.serieOrBoxNumber = serialNumber.serialNumber;
-
-                  console.log(this.model);
-                  console.log(this.description);
-
-                  productAdd.idFind = this.generateUUID();
-                  productAdd.model = this.model;
-                  productAdd.description = this.description;
-
-                  productAdd.unitPrice = Number(producto.unitPrice);
-                  productAdd.quantity = 1;
-                  productAdd.subtotal = Number(producto.subtotal) / quantity;
-                  productAdd.discount = Number(producto.discount) / quantity;
-                  productAdd.taxPercentage = this.taxPorcentage;
-                  productAdd.tax = Number(producto.tax) / quantity;
-                  productAdd.amountTotal =
-                    Number(producto.amountTotal) / quantity;
-                  this.serialReserveTokensList.forEach(item => {
-                    if(serialNumber.serialNumber === item.serial_number){
-                      productAdd.reserveKey = item.reservation_result;
-                    }
-                  })
-                  productsAdd.push(productAdd);
-                });
-
-                this.invoiceDetalle.emit(productsAdd);
-                this.closeModal();
-              } else {
-                this.utilService.showNotification(
-                  1,
-                  'No se pudieron reservar las series'
-                );
-              }
-            } else {
-              this.utilService.showNotification(
-                1,
-                'Los valores no cuadrán, verifique los campos volviendo a calcular el subtotal, impuesto y total'
-              );
-            }
           }
+        } else {
+          this.utilService.showNotification(
+            1,
+            'Los valores no cuadran, verifique los campos volviendo a calcular subtotal, impuesto y total'
+          );
         }
       }
     });
   }
 
   getSerialNumbersReserveQuery(): Promise<boolean> {
-    const warehouseId = this.formDetail.get('warehouse').value[0].code;
-    const inventoryTypeId = this.formDetail.get('inventoryType').value[0].code;
-    const itemCode = this.formDetail.get('model').value;
+    const warehouseId = this.formDetail.get('warehouse')?.value[0]?.code;
+    const inventoryTypeId = this.formDetail.get('inventoryType')?.value[0]?.code;
+    const itemCode = this.formDetail.get('model')?.value;
     const subWarehouseCode = this.subWareHouse;
-    const quantity = Number(this.formDetail.get('quantity').value);
+    const quantity = Number(this.formDetail.get('quantity')?.value);
 
-    return new Promise<boolean>((resolve, reject) => {
+    return new Promise<boolean>((resolve) => {
+      this.serialReserveTokensList = [];
+
       this.invoiceService
         .getSerialNumbersReserveQuery(
           itemCode,
@@ -845,19 +830,17 @@ export class AddProductModalComponent implements OnInit {
                 responseData.code === 1 &&
                 responseData.data.result_code === 'INV000'
               ) {
-                responseData.data.serial_number_list.forEach(item => {
-                  item.serial_number_list.forEach(item2 => {
+                responseData.data.serial_number_list.forEach((item) => {
+                  item.serial_number_list.forEach((item2) => {
                     this.serialReserveTokensList.push(item2);
-                  })
+                  });
                 });
                 resolve(true);
               } else {
-                console.error(responseData.description);
                 this.utilService.showNotification(1, responseData.description);
                 resolve(false);
               }
             } else {
-              console.error(response);
               resolve(false);
             }
           },
@@ -891,5 +874,17 @@ export class AddProductModalComponent implements OnInit {
     }
 
     return uuid;
+  }
+
+  private normalizeMoney(value: any): string {
+    return this.roundToTwoDecimals(Number(value || 0));
+  }
+
+  private hasUnitPriceChanged(currentValue: any): boolean {
+    return this.normalizeMoney(currentValue) !== this.normalizeMoney(this.priceUnit);
+  }
+
+  private hasQuantityChanged(currentValue: any): boolean {
+    return Number(currentValue || 0) !== Number(this.quantity || 0);
   }
 }

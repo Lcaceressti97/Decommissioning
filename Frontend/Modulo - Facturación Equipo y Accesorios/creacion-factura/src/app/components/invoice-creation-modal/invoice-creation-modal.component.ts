@@ -36,6 +36,10 @@ export class InvoiceCreationModalComponent implements OnInit {
   @Input() equipmentLineId: number = 0;
   @Input() nameFinalConsumer: string = "";
   @Input() rtnFinalConsumer: string = "";
+  @Input() olaCreditRtn: string = "";
+  @Input() olaCreditName: string = "";
+  @Input() olaCreditBillingAccount: string = "";
+  @Input() olaCreditCustomerAccount: string = "";
   @Output() messageEvent = new EventEmitter<Billing>();
 
   fiscalProcessData = [
@@ -48,7 +52,8 @@ export class InvoiceCreationModalComponent implements OnInit {
   customerTypeData = [
     { id: 1, name: 'Pospago' },
     { id: 2, name: 'Factura con Nombre y RTN' },
-    { id: 3, name: 'Consumidor Final' }
+    { id: 3, name: 'Consumidor Final' },
+    { id: 4, name: 'OLA CREDIT' }
   ];
 
   // Billing
@@ -102,7 +107,8 @@ export class InvoiceCreationModalComponent implements OnInit {
     this.taxPorcentageStr = `${this.taxPorcentage}%`;
     this.formGeneral = this.initFormGeneral();
     this.formValidation = this.initFormValidation();
-     this.formGeneral.get('customer')?.disable();
+
+    this.formGeneral.get('customer')?.disable();
     this.formGeneral.get('primaryIdentity')?.disable();
     this.formGeneral.get('customerRtnId')?.disable();
   }
@@ -300,6 +306,34 @@ export class InvoiceCreationModalComponent implements OnInit {
     this.formGeneral.controls['primaryIdentity'].reset();
   }
 
+  private enableManualCustomerFields() {
+    this.formGeneral.get('customer')?.enable();
+    this.formGeneral.get('primaryIdentity')?.enable();
+    this.formGeneral.get('customerRtnId')?.enable();
+    this.formGeneral.get('acctCode')?.enable();
+  }
+
+  private disableCustomerFields() {
+    this.formGeneral.get('customer')?.disable();
+    this.formGeneral.get('primaryIdentity')?.disable();
+    this.formGeneral.get('customerRtnId')?.disable();
+    this.formGeneral.get('acctCode')?.disable();
+  }
+
+  private applyOlaCreditData() {
+    this.formGeneral.get('acctCode')?.setValue(this.olaCreditBillingAccount || '');
+    this.formGeneral.get('customerId')?.setValue(this.olaCreditCustomerAccount || '');
+    this.formGeneral.get('customer')?.setValue(this.olaCreditName || '');
+    this.formGeneral.get('customerRtnId')?.setValue(this.olaCreditRtn || '');
+
+    this.formGeneral.get('primaryIdentity')?.setValue('');
+
+    this.formGeneral.get('customer')?.disable();
+    this.formGeneral.get('customerRtnId')?.disable();
+    this.formGeneral.get('acctCode')?.disable();
+
+    this.formGeneral.get('primaryIdentity')?.enable();
+  }
   // Methods Screen
 
   /**
@@ -328,45 +362,44 @@ export class InvoiceCreationModalComponent implements OnInit {
   }
 
   onCustomerTypeChange(event: any) {
-    this.customerTypeId = event.target.value;
+    this.customerTypeId = Number(event.target.value);
 
-    if (this.formGeneral.get('fiscalProcess')?.value == 1) {
-      // Limpiamos los valores de los campos antes de habilitarlos
-      if (this.customerTypeId != 3 || this.customerTypeId != 2) { // Si no es "Consumidor Final"
-        this.formGeneral.get('customer')?.setValue('');
-        this.formGeneral.get('primaryIdentity')?.setValue('');
-        this.formGeneral.get('customerRtnId')?.setValue('');
-        this.formGeneral.get('acctCode')?.setValue('');
-        this.formGeneral.get('customerId')?.setValue('');
-      }
-
-      // Habilitamos o deshabilitamos los campos según el tipo de cliente
-      const isCustomerTypeTwo = this.customerTypeId == 2; // 2 es el id para "Factura con Nombre y RTN"
-      const isCustomerTypeThree = this.customerTypeId == 3; // 3 es el id para "Consumidor Final"
-
-      if (isCustomerTypeTwo) {
-        this.formGeneral.get('customer')?.enable();
-        this.formGeneral.get('primaryIdentity')?.enable();
-        this.formGeneral.get('customerRtnId')?.enable();
-        this.formGeneral.get('acctCode')?.disable();
-      } else {
-        this.formGeneral.get('customer')?.disable();
-        this.formGeneral.get('primaryIdentity')?.disable();
-        this.formGeneral.get('customerRtnId')?.disable();
-        this.formGeneral.get('acctCode')?.enable();
-
-      }
-
-      // Si es "Consumidor Final", establecemos los valores y deshabilitamos los campos
-      if (isCustomerTypeThree) {
-        this.formGeneral.get('customer')?.setValue(this.nameFinalConsumer);
-        this.formGeneral.get('customerRtnId')?.setValue(this.rtnFinalConsumer);
-        this.formGeneral.get('customer')?.disable();
-        this.formGeneral.get('customerRtnId')?.disable();
-        this.formGeneral.get('acctCode')?.disable();
-      }
+    if (this.formGeneral.get('fiscalProcess')?.value != 1) {
+      return;
     }
 
+    this.formGeneral.get('customer')?.setValue('');
+    this.formGeneral.get('primaryIdentity')?.setValue('');
+    this.formGeneral.get('customerRtnId')?.setValue('');
+    this.formGeneral.get('acctCode')?.setValue('');
+    this.formGeneral.get('customerId')?.setValue('');
+
+    const isCustomerTypeTwo = this.customerTypeId === 2;
+    const isCustomerTypeThree = this.customerTypeId === 3;
+    const isCustomerTypeFour = this.customerTypeId === 4;
+
+    if (isCustomerTypeTwo) {
+      this.enableManualCustomerFields();
+      this.formGeneral.get('acctCode')?.disable();
+      return;
+    }
+
+    if (isCustomerTypeThree) {
+      this.formGeneral.get('customer')?.setValue(this.nameFinalConsumer);
+      this.formGeneral.get('customerRtnId')?.setValue(this.rtnFinalConsumer);
+      this.disableCustomerFields();
+      return;
+    }
+
+    if (isCustomerTypeFour) {
+      this.applyOlaCreditData();
+      return;
+    }
+
+    this.formGeneral.get('customer')?.disable();
+    this.formGeneral.get('primaryIdentity')?.disable();
+    this.formGeneral.get('customerRtnId')?.disable();
+    this.formGeneral.get('acctCode')?.enable();
   }
 
 
@@ -377,39 +410,32 @@ export class InvoiceCreationModalComponent implements OnInit {
    * @param event
    */
   async changeSucursal(event) {
-
     const DATA_BRANCH: string = event.target.value;
-
     const ARRAY_DATA_BRANCH: string[] = DATA_BRANCH.split("||");
 
-    // Seteo de los valores
     this.idBranchOffice = ARRAY_DATA_BRANCH[0] != 'null' ? Number(ARRAY_DATA_BRANCH[0]) : null;
     this.agency = ARRAY_DATA_BRANCH[1] != 'null' ? ARRAY_DATA_BRANCH[1] : null;
     this.warehouseCode = ARRAY_DATA_BRANCH[2] != 'null' ? ARRAY_DATA_BRANCH[2] : "0";
     this.acctCodeBranchOffice = ARRAY_DATA_BRANCH[3] != 'null' ? ARRAY_DATA_BRANCH[3] : "0";
 
-    // Setear el valor de la cuenta de facturacion  al input
-
-    if (this.customerTypeId != 1 && this.formGeneral.get('fiscalProcess')?.value == 1) {
-      const ACCTCODE_CONTROL = this.formGeneral.get('acctCode') as FormControl;
-      ACCTCODE_CONTROL.setValue(this.acctCodeBranchOffice);
+    if (this.formGeneral.get('fiscalProcess')?.value == 1) {
+      if (this.customerTypeId === 4) {
+        const ACCTCODE_CONTROL = this.formGeneral.get('acctCode') as FormControl;
+        ACCTCODE_CONTROL.setValue(this.olaCreditBillingAccount || '');
+      } else if (this.customerTypeId != 1) {
+        const ACCTCODE_CONTROL = this.formGeneral.get('acctCode') as FormControl;
+        ACCTCODE_CONTROL.setValue(this.acctCodeBranchOffice);
+      }
     }
 
-
-    // Setear el valor del código de bodega al input
     const WARECODE_CONTROL = this.formGeneral.get('warehouse') as FormControl;
     const nameWarehouse = await this.getSubWareHouseByCode(this.warehouseCode);
 
     if (nameWarehouse != null) {
       WARECODE_CONTROL.setValue(nameWarehouse);
-
     } else {
       WARECODE_CONTROL.setValue(this.warehouseCode);
-
     }
-
-
-
   }
 
   onChangeInventoryType(event) {
@@ -516,9 +542,7 @@ export class InvoiceCreationModalComponent implements OnInit {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Aceptar'
     }).then(async (result: any) => {
-
       if (result.value) {
-
         Swal.fire({
           title: 'Creando Factura...',
           allowOutsideClick: false,
@@ -527,35 +551,30 @@ export class InvoiceCreationModalComponent implements OnInit {
           }
         });
 
-        const invoiceFormGeneral: Billing = this.formGeneral.value;
-        const invoiceFormValidation: Billing = this.formValidation.value;
+        const invoiceFormGeneral: Billing = this.formGeneral.getRawValue();
+        const invoiceFormValidation: Billing = this.formValidation.getRawValue();
 
-        let porcentajeDescuento: any = this.roundToTwoDecimals((invoiceFormValidation.discount / invoiceFormValidation.subtotal) * 100);
+        const porcentajeDescuento: any =
+          Number(invoiceFormValidation.subtotal) > 0
+            ? this.roundToTwoDecimals((invoiceFormValidation.discount / invoiceFormValidation.subtotal) * 100)
+            : "0.00";
 
-        // Busca el nombre del fiscalProcess basado en el id
-        // Asegúrate de que invoiceFormGeneral.fiscalProcess sea un número
         const fiscalProcessName = this.fiscalProcessData.find(
-          process => process.id === Number(invoiceFormGeneral.fiscalProcess)  // Convertir a número
+          process => process.id === Number(invoiceFormGeneral.fiscalProcess)
         )?.name || '';
 
         const customerTypeName = this.customerTypeData.find(
-          process => process.id === Number(invoiceFormGeneral.customerType)  // Convertir a número
+          process => process.id === Number(invoiceFormGeneral.customerType)
         )?.name || '';
 
-        console.log('Estado de los campos:', {
-          primaryIdentity: this.formGeneral.get('primaryIdentity').value,
-          customer: this.formGeneral.get('customer').value,
-          acctCode: invoiceFormGeneral.primaryIdentity,
-        });
-
-        let billing: Billing = {
+        const billing: Billing = {
           invoiceType: invoiceFormGeneral.invoiceType,
           invoiceNo: "0",
-          acctCode: this.formGeneral.get('acctCode').value,
-          primaryIdentity: this.formGeneral.get('primaryIdentity').value,
-          customer: this.formGeneral.get('customer').value,
+          acctCode: invoiceFormGeneral.acctCode,
+          primaryIdentity: invoiceFormGeneral.primaryIdentity,
+          customer: invoiceFormGeneral.customer,
           customerId: invoiceFormGeneral.customerId,
-          customerRtnId: this.formGeneral.get('customerRtnId').value,
+          customerRtnId: invoiceFormGeneral.customerRtnId,
           customerAddress: invoiceFormGeneral.customerAddress,
           idBranchOffices: this.idBranchOffice,
           agency: this.agency,
@@ -576,34 +595,24 @@ export class InvoiceCreationModalComponent implements OnInit {
           customerType: customerTypeName,
           idInsuranceClaim: this.idInsuranceClaim || null,
           invoiceDetails: this.invoiceDetail,
-
-        }
-
-        //console.log(invoiceFormGeneral);
-        //console.log(invoiceFormValidation);
-        //console.log(billing);
+        };
 
         if (this.invoiceDetail.length > 0) {
-          console.log(billing)
           const VALIDATE_ADD_BILLING = await this.postAddBilling(billing);
-          //const VALIDATE_ADD_BILLING = true;
           Swal.close();
+
           if (VALIDATE_ADD_BILLING) {
             this.messageEvent.emit(this.billing);
             this.closeModal();
           } else {
             this.utilService.showNotification(3, "Fallo al crear la factura, Contacte al administrador del sistema.");
           }
-
-
         } else {
           Swal.close();
           this.utilService.showNotification(1, "Debe de haber un producto como mínimo para crear la factura");
         }
-
       }
-
-    })
+    });
   }
 
 
@@ -615,12 +624,14 @@ export class InvoiceCreationModalComponent implements OnInit {
    *
    */
   async findByAcctCode() {
-    const billing: Billing = this.formGeneral.value;
+    if (this.customerTypeId === 4) {
+      return;
+    }
 
+    const billing: Billing = this.formGeneral.getRawValue();
     const primaryIdentity = await this.getCustomerInfo(billing.acctCode);
     const selectedFiscalProcessId = this.formGeneral.get('fiscalProcess')?.value;
 
-    console.log(selectedFiscalProcessId);
     if (selectedFiscalProcessId == 2) {
       this.openModalDetailBlockedLines(primaryIdentity);
     }

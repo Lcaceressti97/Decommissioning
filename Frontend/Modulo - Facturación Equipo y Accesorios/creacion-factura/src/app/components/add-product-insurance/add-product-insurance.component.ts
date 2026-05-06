@@ -95,7 +95,7 @@ export class AddProductInsuranceComponent implements OnInit {
     private activeModal: NgbActiveModal,
     private formBuilder: FormBuilder,
     private decimalPipe: DecimalPipe
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.formDetail = this.initFormDetail();
@@ -822,7 +822,7 @@ export class AddProductInsuranceComponent implements OnInit {
                   productAdd.amountTotal = Number(producto.amountTotal);
 
                   this.serialReserveTokensList.forEach(item => {
-                    if(producto.serieOrBoxNumber === item.serial_number) productAdd.reserveKey = item.reservation_result;
+                    if (producto.serieOrBoxNumber === item.serial_number) productAdd.reserveKey = item.reservation_result;
                   })
 
                   //console.log(productAdd);

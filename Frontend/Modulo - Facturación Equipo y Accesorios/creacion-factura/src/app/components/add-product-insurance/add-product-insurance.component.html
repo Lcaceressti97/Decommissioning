@@ -79,17 +79,18 @@
                                 <div class="col-sm-12 col-md-4 col-lg-4" [hidden]="true">
                                     <label class="form-label">
                                         <b>Descripción:</b>
-                                      </label>
-                                      <input type="text" class="form-control text-center" [value]="description" readonly>
+                                    </label>
+                                    <input type="text" class="form-control text-center" [value]="description" readonly>
                                 </div>
                                 <div class="col-sm-12 col-md-6 col-lg-6">
                                     <label class="form-label">
                                         <b>Número de serie:</b>
                                     </label>
-                                    <textarea readonly class="form-control text-center" (change)="getSerialNumbersByQuantity()"
-                                        formControlName="serieOrBoxNumber" [class.is-invalid]=" 
+                                    <textarea readonly class="form-control text-center"
+                                        (change)="getSerialNumbersByQuantity()" formControlName="serieOrBoxNumber"
+                                        [class.is-invalid]=" 
                                         formDetail.get('serieOrBoxNumber').touched &&
-                                        formDetail.get('serieOrBoxNumber').invalid " >
+                                        formDetail.get('serieOrBoxNumber').invalid ">
                                     </textarea>
                                 </div>
                             </div>
@@ -203,7 +204,8 @@
 
                                 </div>
 
-                                <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="controlUserPermissions.assignDiscount !== 'N'">
+                                <div class="col-sm-12 col-md-4 col-lg-4"
+                                    *ngIf="controlUserPermissions.assignDiscount !== 'N'">
                                     <label class="form-label">
                                         <b>
                                             Agregar descuento:
@@ -213,7 +215,7 @@
                                     <select class="form-control text-center" (change)="changeCalISV($event)"
                                         formControlName="selectTax" [class.is-invalid]="
                                     formDetail.get('selectTax').touched &&
-                                    formDetail.get('selectTax').invalid"  >
+                                    formDetail.get('selectTax').invalid">
                                         <option [value]="0">No</option>
                                         <option [value]="1">Sí</option>
 

@@ -188,23 +188,33 @@
                                         </b>
                                     </label>
 
-                                    <input type="text" class="form-control text-center" formControlName="discount"
-                                        [class.is-invalid]="
-                                            formDetail.get('discount').touched &&
-                                            formDetail.get('discount').invalid" [readOnly]="readonlyDiscount">
+                                    <div class="row">
+                                        <div class="col-10 col-10-optional">
 
-                                    <span class="text-danger mt-1" *ngIf="
-                                        !formDetail.get('discount')?.valid &&
-                                        (formDetail.get('discount')?.touched || formDetail.get('discount')?.dirty)
-                                        ">
-                                        {{formDetail.get('discount')?.hasError('required') ?
-                                        messages.NO_EMPTY : messages.ONLY_NUMBER_DECIMAL}}
-                                    </span>
+                                            <input type="text" class="form-control text-center"
+                                                formControlName="discount" [class.is-invalid]="
+                formDetail.get('discount').touched &&
+                formDetail.get('discount').invalid" [readOnly]="readonlyDiscount">
+
+
+                                            <span class="text-danger mt-1" *ngIf="
+            !formDetail.get('discount')?.valid &&
+            (formDetail.get('discount')?.touched || formDetail.get('discount')?.dirty)
+        ">
+                                                {{formDetail.get('discount')?.hasError('required') ?
+                                                messages.NO_EMPTY : messages.ONLY_NUMBER_DECIMAL}}
+                                            </span>
+                                        </div>
+                                        <div class="col-2 col-2-optional discount-suffix-container">
+                                        </div>
+                                    </div>
+
 
 
                                 </div>
 
-                                <div class="col-sm-12 col-md-4 col-lg-4" *ngIf="controlUserPermissions.assignDiscount !== 'N'">
+                                <div class="col-sm-12 col-md-4 col-lg-4"
+                                    *ngIf="controlUserPermissions.assignDiscount !== 'N'">
                                     <label class="form-label">
                                         <b>
                                             Agregar descuento:
@@ -213,13 +223,11 @@
 
                                     <select class="form-control text-center" (change)="changeCalISV($event)"
                                         formControlName="selectTax" [class.is-invalid]="
-                                    formDetail.get('selectTax').touched &&
-                                    formDetail.get('selectTax').invalid" >
+                formDetail.get('selectTax').touched &&
+                formDetail.get('selectTax').invalid">
                                         <option [value]="0">No</option>
                                         <option [value]="1">Sí</option>
-
                                     </select>
-
                                 </div>
 
 

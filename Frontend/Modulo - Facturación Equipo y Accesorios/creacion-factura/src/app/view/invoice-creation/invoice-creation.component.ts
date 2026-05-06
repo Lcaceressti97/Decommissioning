@@ -37,6 +37,11 @@ export class InvoiceCreationComponent implements OnInit {
   nameFinalConsumer: string = "";
   rtnFinalConsumer: string = "";
 
+  olaCreditRtn: string = "";
+  olaCreditName: string = "";
+  olaCreditBillingAccount: string = "";
+  olaCreditCustomerAccount: string = "";
+
   // Disabled button
   disabledCreate: boolean = true;
   public dropDownListWareHouse: ItemSelect[] = [];
@@ -121,6 +126,12 @@ export class InvoiceCreationComponent implements OnInit {
     modalRef.componentInstance.rtnFinalConsumer = this.rtnFinalConsumer;
     modalRef.componentInstance.exchangeRate = this.exchangeRate;
     modalRef.componentInstance.controlUserPermissions = this.controlUserPermissions;
+
+    modalRef.componentInstance.olaCreditRtn = this.olaCreditRtn;
+    modalRef.componentInstance.olaCreditName = this.olaCreditName;
+    modalRef.componentInstance.olaCreditBillingAccount = this.olaCreditBillingAccount;
+    modalRef.componentInstance.olaCreditCustomerAccount = this.olaCreditCustomerAccount;
+
     modalRef.componentInstance.messageEvent.subscribe((invoice: any) => {
 
       this.rows.push(invoice);
@@ -147,11 +158,11 @@ export class InvoiceCreationComponent implements OnInit {
   // Methods Asyncronos
 
 
-    // Método para manejar el cambio de página
-    async onPageChange(event: any) {
-      this.currentPage = event.offset;
-      await this.getBilling(true, this.utilService.getSystemUser());
-    }
+  // Método para manejar el cambio de página
+  async onPageChange(event: any) {
+    this.currentPage = event.offset;
+    await this.getBilling(true, this.utilService.getSystemUser());
+  }
   /**
    * Método en uso
    * Consume un servicio que consume trae las facturas del día
@@ -191,25 +202,25 @@ export class InvoiceCreationComponent implements OnInit {
               return dto;
             });
           }
- /*          else if (billingResponse.data !== null && billingResponse.data !== undefined) {
-            // Si no es un arreglo, debemos convertirlo a un arreglo antes de utilizar map
-            this.rows = billingResponse.data.content.map((resourceMap, configError) => {
-              let dto: Billing = resourceMap;
-              dto.buttonExo = false;
-              dto.status = dto.status === this.parametersInvoiceStatus[0].stateCode ? this.parametersInvoiceStatus[0].parameterValue : dto.status === this.parametersInvoiceStatus[1].stateCode ? this.parametersInvoiceStatus[1].parameterValue : dto.status === this.parametersInvoiceStatus[2].stateCode ? this.parametersInvoiceStatus[2].parameterValue : dto.status === this.parametersInvoiceStatus[3].stateCode ? this.parametersInvoiceStatus[3].parameterValue : dto.status === this.parametersInvoiceStatus[4].stateCode ? this.parametersInvoiceStatus[4].parameterValue : dto.status === this.parametersInvoiceStatus[5].stateCode ? this.parametersInvoiceStatus[5].parameterValue : this.parametersInvoiceStatus[7].parameterValue;
-
-              if (dto.statusCode == 0 && (dto.exonerationStatus == 0 || dto.exonerationStatus == null)) {
-                dto.buttonExo = true;
-              }
-
-              if ((dto.invoiceType === "SHO" || dto.invoiceType === "SHP") && dto.statusCode == 0) {
-                dto.buttonExo = false;
-              }
-
-              dto.status = this.statusNames[dto.status] || "Sin estado";
-              return dto;
-            });
-          } */
+          /*          else if (billingResponse.data !== null && billingResponse.data !== undefined) {
+                     // Si no es un arreglo, debemos convertirlo a un arreglo antes de utilizar map
+                     this.rows = billingResponse.data.content.map((resourceMap, configError) => {
+                       let dto: Billing = resourceMap;
+                       dto.buttonExo = false;
+                       dto.status = dto.status === this.parametersInvoiceStatus[0].stateCode ? this.parametersInvoiceStatus[0].parameterValue : dto.status === this.parametersInvoiceStatus[1].stateCode ? this.parametersInvoiceStatus[1].parameterValue : dto.status === this.parametersInvoiceStatus[2].stateCode ? this.parametersInvoiceStatus[2].parameterValue : dto.status === this.parametersInvoiceStatus[3].stateCode ? this.parametersInvoiceStatus[3].parameterValue : dto.status === this.parametersInvoiceStatus[4].stateCode ? this.parametersInvoiceStatus[4].parameterValue : dto.status === this.parametersInvoiceStatus[5].stateCode ? this.parametersInvoiceStatus[5].parameterValue : this.parametersInvoiceStatus[7].parameterValue;
+         
+                       if (dto.statusCode == 0 && (dto.exonerationStatus == 0 || dto.exonerationStatus == null)) {
+                         dto.buttonExo = true;
+                       }
+         
+                       if ((dto.invoiceType === "SHO" || dto.invoiceType === "SHP") && dto.statusCode == 0) {
+                         dto.buttonExo = false;
+                       }
+         
+                       dto.status = this.statusNames[dto.status] || "Sin estado";
+                       return dto;
+                     });
+                   } */
 
           this.loadingIndicator = false;
           this.rows = [...this.rows];
@@ -349,31 +360,26 @@ export class InvoiceCreationComponent implements OnInit {
   getInvoiceType(): Promise<boolean> {
 
     return new Promise((resolve, reject) => {
-      // Se llama e método del servicio
       this.invoiceService.getInvoiceType().subscribe((response) => {
 
-        // Validamos si responde con un 200
         if (response.status === 200) {
 
           this.invoiceTypes = [];
 
-
-          // Mapeamos el body del response
           let configParameterResponse = response.body as InvoiceTypeResponse;
-
-          // Agregamos los valores a los rows
 
           configParameterResponse.data.map((resourceMap, configError) => {
 
             let dto: InvoiceTypesModel = resourceMap;
-
             this.invoiceTypes.push(dto.type);
-
 
           });
 
-          this.invoiceTypes = [...this.invoiceTypes];
+          if (!this.invoiceTypes.includes('OLA CREDIT')) {
+            this.invoiceTypes.push('OLA CREDIT');
+          }
 
+          this.invoiceTypes = [...this.invoiceTypes];
 
           resolve(true);
 
@@ -385,7 +391,6 @@ export class InvoiceCreationComponent implements OnInit {
         resolve(false);
       })
     });
-
 
   }
 
@@ -574,17 +579,11 @@ export class InvoiceCreationComponent implements OnInit {
   configparametersById(id: any): Promise<boolean> {
 
     return new Promise((resolve, reject) => {
-      // Se llama e método del servicio
       this.invoiceService.configparametersById(id).subscribe((response) => {
 
-        // Validamos si responde con un 200
         if (response.status === 200) {
 
-          // Mapeamos el body del response
           let configParameterResponse = response.body as ConfigParameterResponse;
-          //console.log(configParameterResponse);
-
-          // Agregamos los valores a los rows
 
           configParameterResponse.data.map((resourceMap, configError) => {
 
@@ -606,18 +605,30 @@ export class InvoiceCreationComponent implements OnInit {
               this.rtnFinalConsumer = String(dto.parameterValue);
             }
 
-            // Parametros generales
-            if (id === 1000) {
+            if (dto.parameterType == "RTN_OLA_CREDIT") {
+              this.olaCreditRtn = String(dto.parameterValue);
+            }
 
+            if (dto.parameterType == "NAME_OLA_CREDIT") {
+              this.olaCreditName = String(dto.parameterValue);
+            }
+
+            if (dto.parameterType == "BILLING_ACCOUNT_OLA_CREDIT") {
+              this.olaCreditBillingAccount = String(dto.parameterValue);
+            }
+
+            if (dto.parameterType == "CUSTOMER_ACCOUNT_OLA_CREDIT") {
+              this.olaCreditCustomerAccount = String(dto.parameterValue);
+            }
+
+            if (id === 1000) {
               this.parametersInvoiceStatus.push(dto);
               if (dto.parameterType == "INVOICE_STATUS") {
                 this.statusNames[dto.stateCode] = dto.parameterValue;
-
               }
             }
 
           });
-
 
           resolve(true);
 
@@ -629,7 +640,6 @@ export class InvoiceCreationComponent implements OnInit {
         resolve(false);
       })
     });
-
 
   }
 
