@@ -2,7 +2,8 @@ import { DatePipe } from '@angular/common';
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { PriceMasterModel } from 'src/app/model/model';
+import { ConfigParameter, PriceMasterModel } from 'src/app/model/model';
+import { ConfigParameterResponse } from 'src/app/entity/response';
 import { EquipmentAccesoriesService } from 'src/app/services/equipment-accesories.service';
 import { UtilService } from 'src/app/services/util.service';
 import { messages } from 'src/app/utils/enums';
@@ -25,6 +26,9 @@ export class PriceMasterModelComponent implements OnInit {
   dataForm!: FormGroup;
   messages = messages;
 
+  // Parámetro de validación del campo Código Factor
+  factorCodeMaxValue: number | null = null;
+
   // Readonly
   inputReadOnly: boolean = false;
   inputReadOnlyConvert: boolean = true;
@@ -40,7 +44,9 @@ export class PriceMasterModelComponent implements OnInit {
 
   constructor(private activeModal: NgbActiveModal,private formBuilder: FormBuilder, private datePipe:DatePipe, public utilService: UtilService, private equipmentAccesoriesService: EquipmentAccesoriesService) { }
 
-  ngOnInit(): void {
+  async ngOnInit(): Promise<void> {
+
+    await this.loadFactorCodeParameter();
 
     if(this.button==="see" || this.button==="edit"){
       this.getDate();
@@ -117,13 +123,57 @@ export class PriceMasterModelComponent implements OnInit {
 
   // Methods
 
+  /**
+   * Carga el parámetro FACTOR_CODE_PARAMETER desde la tabla de configuración.
+   * Si el servicio falla o el parámetro no existe, la validación de máximo
+   * no se aplica y el formulario funciona normalmente.
+   */
+  private loadFactorCodeParameter(): Promise<void> {
+    return new Promise((resolve) => {
+      this.equipmentAccesoriesService.configparametersById(999).subscribe(
+        (response) => {
+          if (response.status === 200) {
+            const body = response.body as ConfigParameterResponse;
+            const params: ConfigParameter[] = body?.data ?? [];
+            const factorParam = params.find(p => p.parameterType === 'FACTOR_CODE_PARAMETER');
+            if (factorParam && factorParam.parameterValue !== undefined) {
+              this.factorCodeMaxValue = Number(factorParam.parameterValue);
+            }
+          }
+          resolve();
+        },
+        () => resolve() // Si el servicio falla, el formulario sigue funcionando sin la validación de máximo
+      );
+    });
+  }
+
+  /**
+   * Mensaje de error dinámico que incluye el valor máximo permitido del parámetro.
+   * Ejemplo: "El Código Factor no puede superar el valor máximo permitido: 50"
+   */
+  get factorCodeMaxMessage(): string {
+    return `${messages.FACTOR_CODE_MAX}: ${this.factorCodeMaxValue}`;
+  }
+
+  /**
+   * Construye el arreglo de validadores para el campo factorCode.
+   * Incluye Validators.max solo cuando se pudo obtener el parámetro FACTOR_CODE_PARAMETER.
+   */
+  private buildFactorCodeValidators(): any[] {
+    const validators: any[] = [Validators.required, this.validarNumeroFactor];
+    if (this.factorCodeMaxValue !== null) {
+      validators.push(Validators.max(this.factorCodeMaxValue));
+    }
+    return validators;
+  }
+
   initForm(): FormGroup {
     return this.formBuilder.group({
       inventoryType: ['', [Validators.required, Validators.maxLength(50)]],
       model: ['', [Validators.required, Validators.maxLength(250)]],
       description: ['', [Validators.required, Validators.maxLength(250)]],
       baseCost: [0.00.toFixed(2), [Validators.required, this.validarNumeroDecimal]],
-      factorCode: [0, [Validators.required, this.validarNumeroFactor]],
+      factorCode: [0, this.buildFactorCodeValidators()],
       price: [0.00.toFixed(2), [Validators.required, this.validarNumeroDecimal]],
       userCreated: [this.utilService.getSystemUser(), []],
       screen: ['', [Validators.required, Validators.maxLength(50)]],
@@ -146,7 +196,7 @@ export class PriceMasterModelComponent implements OnInit {
       model: [this.data.model, [Validators.required, Validators.maxLength(250)]],
       description: [this.data.description, [Validators.required, Validators.maxLength(250)]],
       baseCost: [this.data.baseCost.toFixed(2), [Validators.required, this.validarNumeroDecimal]],
-      factorCode: [this.data.factorCode, [Validators.required, this.validarNumeroFactor]],
+      factorCode: [this.data.factorCode, this.buildFactorCodeValidators()],
       price: [this.data.price.toFixed(2), [Validators.required, this.validarNumeroDecimal]],
       userCreated: [this.data.userCreated, []],
       screen: [this.data.screen, [Validators.required]],

@@ -7,6 +7,7 @@ export enum messages {
   ONLY_NUMBERS = "solo se permiten números",
   ONLY_NUMBERS_DECIMAL = "Solo se permiten números, opcional con dos decimas",
   ONLY_NUMBERS_FACTOR = "Solo se permiten números máximo 3 digitos",
+  FACTOR_CODE_MAX = "El Código Factor no puede superar el valor máximo permitido",
 
   //? MAX
   MAX_50 = "Solo se permite un máximo de 50 caracteres",

@@ -1,4 +1,14 @@
-import { PriceMasterModel } from "../model/model";
+import { ConfigParameter, PriceMasterModel } from "../model/model";
+
+/**
+ * Mapea el response del endpoint configparameters/searchById
+ */
+export interface ConfigParameterResponse {
+    code?: number | string;
+    description?: string;
+    data?: ConfigParameter[];
+    errors?: any[];
+}
 
 export interface PriceMasterResponse {
     code?:number;

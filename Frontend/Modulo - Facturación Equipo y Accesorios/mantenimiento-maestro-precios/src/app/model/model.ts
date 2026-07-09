@@ -1,3 +1,18 @@
+/**
+ * Representa la estructura de un parámetro de configuración
+ * proveniente de MEA_CONFIG_PARAMETERS
+ */
+export interface ConfigParameter {
+    id?: number;
+    idApplication?: number;
+    parameterType?: string;
+    parameterName?: string;
+    parameterDescription?: string;
+    parameterValue?: string;
+    stateCode?: number;
+    created?: Date;
+}
+
 export interface PriceMasterModel {
     id?:number;
     inventoryType?:string;

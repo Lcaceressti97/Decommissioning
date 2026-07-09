@@ -116,6 +116,23 @@ export class EquipmentAccesoriesService {
     );
   }
 
+  /**
+   * Método que obtiene los parámetros de configuración por idApplication.
+   * Se utiliza para recuperar valores como FACTOR_CODE_PARAMETER.
+   *
+   * @param id - idApplication registrado en MEA_CONFIG_PARAMETERS
+   * @returns Observable con la lista de parámetros
+   */
+  configparametersById(id: any): Observable<any> {
+    return this.http.get(`${this.localUrl}configparameters/searchById`, {
+      observe: 'response',
+      headers: this.headers,
+      params: {
+        idApplication: id
+      }
+    });
+  }
+
   deletePriceMaster(id: number): Observable<any> {
     return this.http.delete(`${this.localUrl}pricemaster/${id}`, {
       observe: 'response',

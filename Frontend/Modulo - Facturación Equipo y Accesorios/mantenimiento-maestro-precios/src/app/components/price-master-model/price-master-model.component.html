@@ -189,7 +189,8 @@
                                     (dataForm.get('factorCode')?.touched || dataForm.get('factorCode')?.dirty)
                                 ">
                                     {{dataForm.get('factorCode')?.hasError('required') ?
-                                    messages.NO_EMPTY : messages.ONLY_NUMBERS_FACTOR}}
+                                    messages.NO_EMPTY : dataForm.get('factorCode')?.hasError('max') ?
+                                    factorCodeMaxMessage : messages.ONLY_NUMBERS_FACTOR}}
                                 </span>
 
                             </div>
